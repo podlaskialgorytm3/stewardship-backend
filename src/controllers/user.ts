@@ -21,7 +21,7 @@ class UserController {
                 id: id,
                 name: userInfo.name,
                 email: userInfo.email,
-                password: hashedPassword
+                password: await hashedPassword
             });
             console.log("New user created: ", newUser);
         }

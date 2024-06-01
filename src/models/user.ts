@@ -12,7 +12,7 @@ User.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
+            autoIncrement: false,
             primaryKey: true,
         },
         name: {
