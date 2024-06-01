@@ -2,3 +2,6 @@
 .env
 package.json
 package-lock.json
+/config
+/migrations
+/models
