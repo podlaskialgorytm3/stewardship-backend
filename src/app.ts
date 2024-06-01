@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
+import { appConfig } from './configs/config';
 
 const app = express();
-const PORT = 3002;
+const PORT = appConfig.port;
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Hello TypeScript with Express!');
+  res.send(appConfig);
 });
 
 app.listen(PORT, () => {
