@@ -20,6 +20,7 @@ class UserController {
             const newUser = await UserModal.create({
                 id: id,
                 name: userInfo.name,
+                img: userInfo.img,
                 email: userInfo.email,
                 password: await hashedPassword
             });

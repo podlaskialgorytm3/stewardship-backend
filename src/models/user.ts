@@ -4,6 +4,7 @@ import { sequelize } from '../configs/connect';
 class User extends Model {
     public id!: string;
     public name!: string;
+    public img!: string;
     public email!: string;
     public password!: string;
 }
@@ -16,6 +17,10 @@ User.init(
             primaryKey: true,
         },
         name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        img: {
             type: DataTypes.STRING,
             allowNull: false,
         },
