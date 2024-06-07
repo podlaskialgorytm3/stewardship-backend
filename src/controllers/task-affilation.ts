@@ -7,7 +7,7 @@ class TaskAffilationController {
                 console.log('Task Affilation table has been synchronized');
             })
             .catch((error) => {
-                console.error('An error occurred while synchronizing the Group table:', error);
+                console.error('An error occurred while synchronizing the Task Affilation table:', error);
             });
     }
 }
