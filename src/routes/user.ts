@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import express from 'express';
 import UserController  from '../controllers/user';
+import UserAuthentication from '../middlewares/auth';
 import UserInterFace from '../types/user';
 
 const userController = new UserController;
+const userAuthentication = new UserAuthentication;
 
 const router = express.Router();
 
@@ -28,13 +30,14 @@ router.get('/user', async (request: Request, resposne: Response)  => {
         data: users
     });
 })
-router.post('/user/auth', async (request: Request, resposne: Response) => {
+router.post('/user/login', async (request: Request, resposne: Response) => {
     const {email, password} = request.query;
-    const user = await userController.authonticateUser(email as string, password as string);
-    if(user){
+    const token = await userAuthentication.authonticateUser(email as string, password as string);
+    console.log(token)
+    if(token){
         resposne.status(200).json({
             message: 'User authenticated successfully',
-            user: user
+            token: token
         });
     }
     else{

@@ -42,30 +42,7 @@ class UserController {
                 return error;
             }
         }
-    public authonticateUser = async (email: string, password: string) => {
-        try{
-            const user = await UserModal.findOne({
-                where: {
-                    email: email
-                }
-            });
-            if(user){
-                const isPasswordValid: boolean = await this.userUtils.comparePassword(password, user.password);
-                if(isPasswordValid){
-                    return user;
-                }
-                else{
-                    return null;
-                }
-            }
-            else{
-                return null;
-            }
-        }
-        catch(error){
-            return error;
-        }
-    }
+    
 
     
 }
