@@ -52,10 +52,7 @@ class UserController {
             if(user){
                 const isPasswordValid: boolean = await this.userUtils.comparePassword(password, user.password);
                 if(isPasswordValid){
-                    return {
-                        message: "User authenticated successfully",
-                        user: user
-                    };
+                    return user;
                 }
                 else{
                     return null;
