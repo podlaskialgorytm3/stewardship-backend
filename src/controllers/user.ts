@@ -30,6 +30,18 @@ class UserController {
             console.error("An error occurred while creating a new user: ", error);
         }
     }
+    public getUsers = async () => {
+        try{
+            const users = await UserModal.findAll({
+                attributes: ['id','name', 'img', 'email']
+            })
+            return users;
+        }
+        catch(error){
+            return error;
+        }
+    }
+    
 }
 
 export default UserController;
