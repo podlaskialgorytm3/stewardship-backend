@@ -20,7 +20,7 @@ Task.init(
         }
     },
     {
-        tableName: 'task_affilation',
+        tableName: 'task',
         sequelize,
     }
 );
