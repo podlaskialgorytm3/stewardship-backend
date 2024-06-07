@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class User extends Model {
-    public id!: string;
+    public id!: number;
     public name!: string;
     public img!: string;
     public email!: string;

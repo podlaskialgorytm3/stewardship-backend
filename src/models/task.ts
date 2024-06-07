@@ -1,32 +1,28 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
-class Group extends Model {
+class Task extends Model {
     public id!: number;
-    public name!: string;
-    public category!: string;
+    public task!: string;
+    
 }
 
-Group.init(
+Task.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: false,
             primaryKey: true,
         },
-        name: {
+        task: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        category: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
+        }
     },
     {
-        tableName: 'groups',
+        tableName: 'task_affilation',
         sequelize,
     }
 );
 
-export default Group;
+export default Task;

@@ -1,32 +1,32 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
-class Group extends Model {
+class GroupUser extends Model {
     public id!: number;
-    public name!: string;
-    public category!: string;
+    public userId!: number;
+    public groupId!: number;
 }
 
-Group.init(
+GroupUser.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: false,
+            autoIncrement: true,
             primaryKey: true,
         },
-        name: {
-            type: DataTypes.STRING,
+        userId: {
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
-        category: {
-            type: DataTypes.STRING,
+        groupId: {
+            type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
     },
     {
-        tableName: 'groups',
+        tableName: 'group_users',
         sequelize,
     }
 );
 
-export default Group;
+export default GroupUser;
