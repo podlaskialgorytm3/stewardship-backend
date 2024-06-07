@@ -4,6 +4,7 @@ import UserUtils from '../utils/user';
 import { v4 as uuidv4 } from 'uuid';
 
 class UserController {
+    public userUtils = new UserUtils();
     public createTable = async () => {
         UserModal.sync({ alter: true })
             .then(() => {
@@ -15,7 +16,7 @@ class UserController {
     }
     public createUser = async (userInfo: UserInterface) => {
         const id = uuidv4();
-        const hashedPassword = new UserUtils().hashPassword(userInfo.password);
+        const hashedPassword = this.userUtils.hashPassword(userInfo.password);
         try{
             const newUser = await UserModal.create({
                 id: id,
@@ -31,16 +32,44 @@ class UserController {
         }
     }
     public getUsers = async () => {
+            try{
+                const users = await UserModal.findAll({
+                    attributes: ['id','name', 'img', 'email']
+                })
+                return users;
+            }
+            catch(error){
+                return error;
+            }
+        }
+    public authonticateUser = async (email: string, password: string) => {
         try{
-            const users = await UserModal.findAll({
-                attributes: ['id','name', 'img', 'email']
-            })
-            return users;
+            const user = await UserModal.findOne({
+                where: {
+                    email: email
+                }
+            });
+            if(user){
+                const isPasswordValid: boolean = await this.userUtils.comparePassword(password, user.password);
+                if(isPasswordValid){
+                    return {
+                        message: "User authenticated successfully",
+                        user: user
+                    };
+                }
+                else{
+                    return null;
+                }
+            }
+            else{
+                return null;
+            }
         }
         catch(error){
             return error;
         }
     }
+
     
 }
 
