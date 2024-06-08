@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
+import { Payload } from './types/auth'
 
 import UserModal from '../models/user';
 import UserUtils from '../utils/user';
-import jwt from 'jsonwebtoken';
-import passport from 'passport';
+import jwt, { VerifyErrors} from 'jsonwebtoken';
 
 class UserAuthentication {
     refreshToken(arg0: string) {
@@ -44,7 +43,7 @@ class UserAuthentication {
                 message: 'No token provided'
             });
         }
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (error: any ,user: any) => {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (error: VerifyErrors | null, user: Payload | any) => {
             if (error) {
                 return resposne.status(403).json({
                     message: 'Failed to authenticate token',
