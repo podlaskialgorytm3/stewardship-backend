@@ -3,6 +3,7 @@ import express from 'express';
 import UserController  from '../controllers/user';
 import UserAuthentication from '../middlewares/auth';
 import UserInterFace from '../types/user';
+import jwt from 'jsonwebtoken';
 
 const userController = new UserController;
 const userAuthentication = new UserAuthentication;
@@ -33,7 +34,6 @@ router.get('/user', async (request: Request, resposne: Response)  => {
 router.post('/user/login', async (request: Request, resposne: Response) => {
     const {email, password} = request.query;
     const token = await userAuthentication.authonticateUser(email as string, password as string);
-    console.log(token)
     if(token){
         resposne.status(200).json({
             message: 'User authenticated successfully',
@@ -45,6 +45,11 @@ router.post('/user/login', async (request: Request, resposne: Response) => {
             message: 'User not authenticated'
         });
     }
+})
+router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
+    resposne.status(200).json({
+        message: 'User authenticated successfully'
+    });
 })
 
 export default router;
