@@ -3,7 +3,7 @@ import express from 'express';
 import UserController  from '../controllers/user';
 import UserAuthentication from '../middlewares/auth';
 import UserInterFace from '../types/user';
-import jwt from 'jsonwebtoken';
+
 
 const userController = new UserController;
 const userAuthentication = new UserAuthentication;
@@ -48,7 +48,8 @@ router.post('/user/login', async (request: Request, resposne: Response) => {
 })
 router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
     resposne.status(200).json({
-        message: 'User authenticated successfully'
+        message: 'User authenticated successfully',
+        data: request.body
     });
 })
 

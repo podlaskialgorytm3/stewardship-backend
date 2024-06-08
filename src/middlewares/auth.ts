@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+import { JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 
 import UserModal from '../models/user';
 import UserUtils from '../utils/user';
 import jwt from 'jsonwebtoken';
+import passport from 'passport';
 
 class UserAuthentication {
     refreshToken(arg0: string) {
@@ -21,7 +23,7 @@ class UserAuthentication {
                 const isPasswordValid: boolean = await this.userUtils.comparePassword(password, user.password);
                 if (isPasswordValid) {
                     const payload = user.toJSON();
-                    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '15s'});
+                    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '45s'});
                     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string);
                     return {token, refreshToken};
                 } else {
@@ -42,14 +44,23 @@ class UserAuthentication {
                 message: 'No token provided'
             });
         }
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (error, user) => {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string, (error: any ,user: any) => {
             if (error) {
                 return resposne.status(403).json({
-                    message: 'Failed to authenticate token'
+                    message: 'Failed to authenticate token',
+                    error: error.message
                 });
             }
+            request.body.user = {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                img: user.img,
+                iat: new Date(parseInt(user.iat) * 1000 + 60 * 60 * 1000 * 2),
+                exp: new Date(parseInt(user.exp) * 1000 + 60 * 60 * 1000 * 2),
+            };
+            next();
         });
-        next();
     }
 }
 
