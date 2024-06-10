@@ -6,9 +6,6 @@ import UserUtils from '../utils/user';
 import jwt, { VerifyErrors} from 'jsonwebtoken';
 
 class UserAuthentication {
-    refreshToken(arg0: string) {
-        throw new Error('Method not implemented.');
-    }
     public userUtils = new UserUtils();
     public authonticateUser = async (email: string, password: string) => {
         try{
