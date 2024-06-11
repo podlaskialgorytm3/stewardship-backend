@@ -70,7 +70,7 @@ class UserAuthentication {
                 email: user.email,
                 name: user.name,
                 img: user.img,
-                token: token,
+                //token: token,
                 iat: new Date(parseInt(user.iat) * 1000 + 60 * 60 * 1000 * 2),
                 exp: new Date(parseInt(user.exp) * 1000 + 60 * 60 * 1000 * 2),
             };

@@ -45,11 +45,18 @@ router.post('/user/login', async (request: Request, resposne: Response) => {
         });
     }
 })
-router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
+router.post('/user/logout', async (request: Request, resposne: Response) => {
+    const {email} = request.query;
+    userAuthentication.saveAccessToken(email as string, '');
     resposne.status(200).json({
-        message: 'User authenticated successfully',
-        data: request.body
+        message: 'User logged out successfully'
     });
 })
+// router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => { // router for testing
+//     resposne.status(200).json({
+//         message: 'User authenticated successfully',
+//         data: request.body
+//     });
+// })
 
 export default router;
