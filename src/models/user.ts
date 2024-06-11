@@ -7,7 +7,7 @@ class User extends Model {
     public img!: string;
     public email!: string;
     public password!: string;
-    public accessToken!: string;
+    public accessToken!: string | null;
 }
 
 User.init(
@@ -35,7 +35,7 @@ User.init(
             allowNull: false,
         },
         accessToken: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: true,
         },
     },
