@@ -21,6 +21,7 @@ class UserAuthentication {
                     const payload = user.toJSON();
                     const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '10m'});
                     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string);
+                    this.saveAccessToken(email, token);
                     return {token, refreshToken};
                 } else {
                     return null;
@@ -31,6 +32,23 @@ class UserAuthentication {
         }
         catch(error){
             return error;
+        }
+    }
+    public saveAccessToken = async (email: string, saveAccessToken: string) => {
+        try{
+            const user = await UserModal.findOne({
+                where: {
+                    email: email
+                }
+            });
+            if(user){
+                user.accessToken = saveAccessToken;
+                await user.save();
+            }
+        
+        }
+        catch(error){
+            console.error("An error occurred while saving the access token: ", error);
         }
     }
     public authMiddleware = (request: Request, resposne: Response, next: NextFunction) => {
@@ -52,6 +70,7 @@ class UserAuthentication {
                 email: user.email,
                 name: user.name,
                 img: user.img,
+                token: token,
                 iat: new Date(parseInt(user.iat) * 1000 + 60 * 60 * 1000 * 2),
                 exp: new Date(parseInt(user.exp) * 1000 + 60 * 60 * 1000 * 2),
             };
