@@ -4,7 +4,6 @@ import UserController  from '../controllers/user';
 import UserAuthentication from '../middlewares/auth';
 import UserInterFace from '../types/user';
 
-
 const userController = new UserController;
 const userAuthentication = new UserAuthentication;
 

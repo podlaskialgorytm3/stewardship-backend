@@ -19,7 +19,7 @@ class UserAuthentication {
                 const isPasswordValid: boolean = await this.userUtils.comparePassword(password, user.password);
                 if (isPasswordValid) {
                     const payload = user.toJSON();
-                    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '45s'});
+                    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '10m'});
                     const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string);
                     return {token, refreshToken};
                 } else {
