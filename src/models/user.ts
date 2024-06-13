@@ -8,6 +8,7 @@ class User extends Model {
     public email!: string;
     public password!: string;
     public accessToken!: string | null;
+    public resetToken!: string | null;
 }
 
 User.init(
@@ -38,6 +39,10 @@ User.init(
             type: DataTypes.TEXT,
             allowNull: true,
         },
+        resetToken: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        }
     },
     {
         tableName: 'users',
