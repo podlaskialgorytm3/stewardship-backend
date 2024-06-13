@@ -67,6 +67,13 @@ router.post('/user/login', async (request: Request, resposne: Response) => {
         });
     }
 })
+router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
+    const id = request.params.id;
+    userController.deleteUser(parseInt(id));
+    resposne.status(200).json({
+        message: 'User deleted successfully!'
+    });
+})
 router.post('/user/logout', async (request: Request, resposne: Response) => {
     const {email} = request.query;
     userAuthentication.saveAccessToken(email as string, '');

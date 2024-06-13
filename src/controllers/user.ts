@@ -1,10 +1,12 @@
 import UserModal from '../models/user';
 import UserInterface from '../types/user';
 import UserUtils from '../utils/user';
+import UserAuthentication from '../middlewares/auth';
 import { v4 as uuidv4 } from 'uuid';
 
 class UserController {
     public userUtils = new UserUtils();
+    public userAuthentication = new UserAuthentication();
     public createTable = async () => {
         UserModal.sync({ alter: true })
             .then(() => {
@@ -68,6 +70,20 @@ class UserController {
         }
         catch(error){
             console.error("An error occurred while updating the user: ", error);
+        }
+    }
+    public deleteUser = async (id: number) => {
+        try{
+            const user = await UserModal.findByPk(id);
+            if(user){
+                this.userAuthentication.saveAccessToken(user.email as string, '');
+                await user.destroy();
+                console.log("User deleted: ", user);
+            }
+
+        }
+        catch(error){
+            console.error("An error occurred while deleting the user: ", error);
         }
     }
     
