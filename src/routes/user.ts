@@ -11,7 +11,7 @@ const resetPassword = new ResetPassword;
 
 const router = express.Router();
 
-router.post('/user', (request: Request, resposne: Response) => {
+router.post('/user', (request: Request, response: Response) => {
     const {name, img, email, password} = request.query;
     const userInfo: UserInterFace = {
         name: name as string,
@@ -20,28 +20,28 @@ router.post('/user', (request: Request, resposne: Response) => {
         password: password as string
     } 
     userController.createUser(userInfo);
-    resposne.status(201).json({
+    response.status(201).json({
         message: 'User created successfully',
         user: {}
     });
 })
-router.get('/user', async (request: Request, resposne: Response)  => {
+router.get('/user', async (request: Request, response: Response)  => {
     const users = await userController.getUsers();
-    resposne.status(200).json({
+    response.status(200).json({
         message: 'Users fetched successfully!',
         data: users
     });
 })
-router.get(`/user/:id`, userAuthentication.authMiddleware , async (request: Request, resposne: Response) => {
+router.get(`/user/:id`, userAuthentication.authMiddleware , async (request: Request, response: Response) => {
     console.log(userAuthentication.authMiddleware)
     const id = request.params.id;
     const user = await userController.getUser(id);
-    resposne.status(200).json({
+    response.status(200).json({
         message: 'Your data fetched successfully!',
         data: user
     });
 })
-router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
+router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const id = request.params.id;
     const {name, img } = request.query;
     const userData = {
@@ -49,29 +49,29 @@ router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Reque
         img: img as string,
     }
     userController.editUser(id, userData);
-    resposne.status(200).json({
+    response.status(200).json({
         message: 'User updated successfully!'
     });
 })
-router.post('/user/login', async (request: Request, resposne: Response) => {
+router.post('/user/login', async (request: Request, response: Response) => {
     const {email, password} = request.query;
     const token = await userAuthentication.authonticateUser(email as string, password as string);
     if(token){
-        resposne.status(200).json({
+        response.status(200).json({
             message: 'User authenticated successfully!',
             token: token
         });
     }
     else{
-        resposne.status(401).json({
+        response.status(401).json({
             message: 'User not authenticated'
         });
     }
 })
-router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
+router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const id = request.params.id;
     userController.deleteUser(parseInt(id));
-    resposne.status(200).json({
+    response.status(200).json({
         message: 'User deleted successfully!'
     });
 })
