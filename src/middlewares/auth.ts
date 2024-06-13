@@ -18,11 +18,9 @@ class UserAuthentication {
             if (user) {
                 const isPasswordValid: boolean = await this.userUtils.comparePassword(password, user.password);
                 if (isPasswordValid) {
-                    const payload = user.toJSON();
-                    const token =  jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '10m'});
-                    const refreshToken = jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET as string);
+                    const token = this.userUtils.generateToken(email);
                     this.saveAccessToken(email, token);
-                    return {token, refreshToken};
+                    return token;
                 } else {
                     return null;
                 }
