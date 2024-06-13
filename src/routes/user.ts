@@ -3,7 +3,6 @@ import express from 'express';
 import UserController  from '../controllers/user';
 import UserAuthentication from '../middlewares/auth';
 import UserInterFace from '../types/user';
-import { create } from 'domain';
 
 const userController = new UserController;
 const userAuthentication = new UserAuthentication;
@@ -42,7 +41,7 @@ router.get(`/user/:id`, userAuthentication.authMiddleware , async (request: Requ
 })
 router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
     const id = request.params.id;
-    const {name, img, email} = request.query;
+    const {name, img } = request.query;
     const userData = {
         name: name as string,
         img: img as string,
@@ -72,6 +71,13 @@ router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Re
     userController.deleteUser(parseInt(id));
     resposne.status(200).json({
         message: 'User deleted successfully!'
+    });
+})
+router.put('/user/email/change', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
+    const { id, email, password } = request.query;
+    const responseText = await userController.changeEmail(id as string, email as string, password as string);
+    resposne.status(200).json({
+        message: responseText
     });
 })
 router.post('/user/logout', async (request: Request, resposne: Response) => {

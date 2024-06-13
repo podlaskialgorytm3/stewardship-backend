@@ -86,7 +86,26 @@ class UserController {
             console.error("An error occurred while deleting the user: ", error);
         }
     }
-    
+    public changeEmail = async (id: string, email: string, password: string) => {
+        try{
+            const user = await UserModal.findByPk(id);
+            if(user){
+                const isPasswordValid = this.userUtils.comparePassword(password, user.password);
+                if(await isPasswordValid){
+                    user.email = email;
+                    console.log(email)
+                    await user.save();
+                    return "Email updated successfully!"
+                }
+                else{
+                    return "Invalid password!";
+                }
+            }
+        }
+        catch(error){
+            return "An error occurred while updating the email: " + error;
+        }
+    }
 
     
 }
