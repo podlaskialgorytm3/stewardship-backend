@@ -2,10 +2,12 @@ import { Request, Response } from 'express';
 import express from 'express';
 import UserController  from '../controllers/user';
 import UserAuthentication from '../middlewares/auth';
+import ResetPassword from '../services/user/reset-password';
 import UserInterFace from '../types/user';
 
 const userController = new UserController;
 const userAuthentication = new UserAuthentication;
+const resetPassword = new ResetPassword;
 
 const router = express.Router();
 
@@ -80,15 +82,29 @@ router.put('/user/email/change', userAuthentication.authMiddleware, async (reque
         message: responseText
     });
 })
-router.post('/user/logout', async (request: Request, resposne: Response) => {
+router.post('/user/password/reset', async (request: Request, response: Response) => {
+    const { email } = request.query;
+    const responseText = await resetPassword.sendLinkToResetPassword(email as string);
+    response.status(200).json({
+        message: responseText
+    });
+})
+router.put('/user/password/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { newPassword, token } = request.query;
+    const responseText = await resetPassword.resetPassword(newPassword as string, token as string);
+    response.status(200).json({
+        message: responseText
+    });
+})
+router.post('/user/logout', async (request: Request, response: Response) => {
     const {email} = request.query;
     userAuthentication.saveAccessToken(email as string, '');
-    resposne.status(200).json({
+    response.status(200).json({
         message: 'User logged out successfully'
     });
 })
-router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => { // router for testing
-    resposne.status(200).json({
+router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, response: Response) => { // router for testing
+    response.status(200).json({
         message: 'User authenticated successfully',
     });
 })

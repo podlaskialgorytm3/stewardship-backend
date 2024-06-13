@@ -2,11 +2,13 @@ import UserModal from '../models/user';
 import UserInterface from '../types/user';
 import UserUtils from '../utils/user';
 import UserAuthentication from '../middlewares/auth';
+import SendMail from '../services/user/send-mail';
 import { v4 as uuidv4 } from 'uuid';
 
 class UserController {
     public userUtils = new UserUtils();
     public userAuthentication = new UserAuthentication();
+    public sendMail = new SendMail();
     public createTable = async () => {
         UserModal.sync({ alter: true })
             .then(() => {
@@ -105,9 +107,7 @@ class UserController {
         catch(error){
             return "An error occurred while updating the email: " + error;
         }
-    }
-
-    
+    } 
 }
 
 export default UserController;
