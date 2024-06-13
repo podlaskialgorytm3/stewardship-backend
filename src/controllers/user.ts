@@ -42,6 +42,34 @@ class UserController {
                 return error;
             }
         }
+    public getUser = async (id: string) => {
+        try{
+            const user = await UserModal.findByPk(id);
+            return {
+                id: user?.id,
+                name: user?.name,
+                img: user?.img,
+                email: user?.email,
+            };
+        }
+        catch(error){
+            return error;
+        }
+    }
+    public editUser = async (id: string, userInfo: {name: string, img: string}) => {
+        try{
+            const user = await UserModal.findByPk(id);
+            if(user){
+                user.name = userInfo.name;
+                user.img = userInfo.img;
+                await user.save();
+                console.log("User updated: ", user);
+            }
+        }
+        catch(error){
+            console.error("An error occurred while updating the user: ", error);
+        }
+    }
     
 
     
