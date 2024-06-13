@@ -89,7 +89,7 @@ router.post('/user/password/reset', async (request: Request, response: Response)
         message: responseText
     });
 })
-router.put('/user/password/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+router.put('/user/password/reset', async (request: Request, response: Response) => {
     const { newPassword, token } = request.query;
     const responseText = await resetPassword.resetPassword(newPassword as string, token as string);
     response.status(200).json({
