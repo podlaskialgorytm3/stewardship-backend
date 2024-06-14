@@ -39,5 +39,11 @@ router.put('/group/:id',userAuthentication.authMiddleware, async (request: Reque
     const responseText = await groupController.editGroup(id, name as string, category as string, user?.id as number);
     response.status(200).json({ message: responseText });
 })
+router.delete('/group/:id',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
+    const id = request.params.id;
+    const responseText = await groupController.deleteGroup(id, user?.id as number);
+    response.status(200).json({ message: responseText });
+})
 
 export default router; 

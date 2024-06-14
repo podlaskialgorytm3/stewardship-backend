@@ -73,6 +73,25 @@ class GroupController {
             return "You do not have the permission to edit this group";
         }
     }
+    public deleteGroup = async (id: string, userId: number) => {
+        const user = await this.groupUserController.getUser(id, userId) as { role: string };
+        const role = user?.role as string;
+        if(role === 'admin'){
+            try {
+                await Group.destroy({
+                    where: {
+                        id,
+                    },
+                });
+                await this.groupUserController.deleteGroupUsers(id);
+                return "Group deleted successfully";
+            } catch (error) {
+                return "An error occurred while deleting the group: " + error;
+            }
+        } else {
+            return "You do not have the permission to delete this group";
+        }
+    }
 }
 
 export default GroupController;

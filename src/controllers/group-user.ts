@@ -43,6 +43,19 @@ class GroupUserController {
             return error;
         }
     }
+    public deleteGroupUsers = async (groupId: string) => {
+        try {
+            await GroupUser.destroy({
+                where: {
+                    groupId,
+                },
+            });
+            return "Group users deleted successfully";
+        }
+        catch(error){
+            return error;
+        }
+    }
 }
 
 export default GroupUserController;
