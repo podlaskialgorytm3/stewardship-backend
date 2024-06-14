@@ -60,14 +60,14 @@ class UserController {
             return error;
         }
     }
-    public getIdByToken = async (token: string) => {
+    public getUserByToken = async (token: string) => {
         try{
             const user = await UserModal.findOne({
                 where: {
                     accessToken: token
                 }
             });
-            return user?.id;
+            return user;
         }
         catch(error){
             return null;

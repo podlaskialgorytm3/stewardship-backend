@@ -12,8 +12,8 @@ const userController = new UserController();
 
 router.post('/group',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const { name, category } = request.query;
-    const userId = await userController.getIdByToken(request.headers['authorization']?.split(' ')[1] as string);
-    const responseText = await groupController.createGroup(name as string, category as string, userId as number);
+    const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
+    const responseText = await groupController.createGroup(name as string, category as string, user?.id as number);
     response.status(201).json({ message: responseText }); 
 })
 router.get('/group',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
