@@ -17,7 +17,8 @@ router.post('/group',userAuthentication.authMiddleware, async (request: Request,
     response.status(201).json({ message: responseText }); 
 })
 router.get('/group',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const groups = await groupController.getGroups("");
+    const name = request.query.name as string;
+    const groups = await groupController.getGroups(name);
     response.status(200).json({
         message: "Groups retrieved successfully",
         data: groups

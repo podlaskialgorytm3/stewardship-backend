@@ -26,7 +26,8 @@ router.post('/user', (request: Request, response: Response) => {
     });
 })
 router.get('/user', async (request: Request, response: Response)  => {
-    const users = await userController.getUsers();
+    const name = request.query.name as string;
+    const users = await userController.getUsers(name);
     response.status(200).json({
         message: 'Users fetched successfully!',
         data: users
