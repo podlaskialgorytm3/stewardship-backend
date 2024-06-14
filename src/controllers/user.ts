@@ -72,7 +72,7 @@ class UserController {
             };
         }
         catch(error){
-            return error;
+            return null;
         }
     }
     public editUser = async (id: string, userInfo: {name: string, img: string}) => {
