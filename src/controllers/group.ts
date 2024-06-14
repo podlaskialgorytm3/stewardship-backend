@@ -29,6 +29,17 @@ class GroupController {
             return "An error occurred while creating the group: " + error;
         }
     }
+    public getGroups = async (name: string) => {
+        try {
+            const groups = await Group.findAll({
+                attributes: ['id', 'name', 'category'],
+            });
+            return groups.filter((group) => group.name.includes(name) && group);;
+        }
+        catch(error){
+            return error;
+        }
+    }
 }
 
 export default GroupController;
