@@ -60,6 +60,21 @@ class UserController {
             return error;
         }
     }
+    public getUserByToken = async (token: string) => {
+        try{
+            const user = await UserModal.findOne({
+                where: {
+                    accessToken: token
+                }
+            });
+            return {
+                id: user?.id,
+            };
+        }
+        catch(error){
+            return error;
+        }
+    }
     public editUser = async (id: string, userInfo: {name: string, img: string}) => {
         try{
             const user = await UserModal.findByPk(id);
