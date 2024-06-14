@@ -24,5 +24,13 @@ router.get('/group',userAuthentication.authMiddleware, async (request: Request, 
         data: groups
     });
 })
+router.get('/group/:id',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const id = request.params.id;
+    const group = await groupController.getGroup(id);
+    response.status(200).json({
+        message: "Group retrieved successfully",
+        data: group
+    });
+})
 
 export default router; 

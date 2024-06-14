@@ -40,6 +40,19 @@ class GroupController {
             return error;
         }
     }
+    public getGroup = async (id: string) => {
+        try {
+            const group = await Group.findByPk(id);
+            return {
+                id: group?.id,
+                name: group?.name,
+                category: group?.category,
+            };
+        }
+        catch(error){
+            return error;
+        }
+    }
 }
 
 export default GroupController;
