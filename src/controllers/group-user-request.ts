@@ -40,6 +40,44 @@ class GroupUserRequestController {
             return error;
         }
     }
+    public changeStatus = async (groupId: string, userId: number, status: string, role: string) => {
+        try{
+            if(role != "admin"){
+                return "You are not authorized to change the status of the request";
+            }
+            else{
+                if(status === "accepted"){
+                    await this.groupUserController.addUser(userId, "member", groupId);
+                    await GroupUserRequest.update({
+                        status,
+                    }, {
+                        where: {
+                            groupId,
+                            userId,
+                        }
+                    });
+                    return "Request accepted successfully";
+                }
+                else if(status === "rejected"){
+                    await GroupUserRequest.update({
+                        status,
+                    }, {
+                        where: {
+                            groupId,
+                            userId,
+                        }
+                    });
+                    return "Request rejected successfully";
+                }
+                else{
+                    return "Invalid status";
+                }
+            }
+        }
+        catch(error){
+            return error;
+        }
+    }
 }
 
 export default GroupUserRequestController;
