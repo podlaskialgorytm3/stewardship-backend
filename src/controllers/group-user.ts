@@ -24,6 +24,25 @@ class GroupUserController {
             return "An error occurred while adding the user to the group: " + error;
         }
     }
+    public getUser = async (groupId: string, userId: number) => {
+        try {
+            const user = await GroupUser.findOne({
+                where: {
+                    groupId,
+                    userId,
+                },
+            });
+            return {
+                id: user?.id as number,
+                groupId: user?.groupId as number,
+                userId: user?.userId as number,
+                role: user?.role as string,
+            };
+        }
+        catch(error){
+            return error;
+        }
+    }
 }
 
 export default GroupUserController;

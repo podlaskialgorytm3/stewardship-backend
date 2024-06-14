@@ -3,9 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import GroupUserController from "./group-user";
 
-const groupUserController = new GroupUserController();
-
 class GroupController {
+    public groupUserController = new GroupUserController();
     public createTable = async () => {
         Group.sync({ alter: true })
             .then(() => {
@@ -23,7 +22,7 @@ class GroupController {
                 name,
                 category,
             });
-            await groupUserController.addUser(userId, 'admin', groupId);
+            await this.groupUserController.addUser(userId, 'admin', groupId);
             return "Group created successfully";
         } catch (error) {
             return "An error occurred while creating the group: " + error;
@@ -51,6 +50,27 @@ class GroupController {
         }
         catch(error){
             return error;
+        }
+    }
+    public editGroup = async (id: string, name: string, category: string, userId: number) => {
+        const user = await this.groupUserController.getUser(id, userId) as { role: string };
+        const role = user?.role as string;
+        if(role === 'admin'){
+            try {
+                await Group.update({
+                    name,
+                    category,
+                }, {
+                    where: {
+                        id,
+                    },
+                });
+                return "Group updated successfully";
+            } catch (error) {
+                return "An error occurred while updating the group: " + error;
+            }
+        } else {
+            return "You do not have the permission to edit this group";
         }
     }
 }
