@@ -1,6 +1,10 @@
 import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';
 
+import GroupUserController from "./group-user";
+
+const groupUserController = new GroupUserController();
+
 class GroupController {
     public createTable = async () => {
         Group.sync({ alter: true })
@@ -11,13 +15,15 @@ class GroupController {
                 console.error('An error occurred while synchronizing the Group table:', error);
             });
     }
-    public createGroup = async (name: string, category: string) => {
+    public createGroup = async (name: string, category: string, userId: number) => {
+        const groupId = uuidv4() as string;
         try {
             await Group.create({
-                id: uuidv4(),
+                id: groupId,
                 name,
                 category,
             });
+            await groupUserController.addUser(userId, 'admin', groupId);
             return "Group created successfully";
         } catch (error) {
             return "An error occurred while creating the group: " + error;

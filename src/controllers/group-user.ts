@@ -11,6 +11,19 @@ class GroupUserController {
                 console.error('An error occurred while synchronizing the GroupUser table:', error);
             });
     }
+    public addUser = async (userId: number, role: string, groupId: string) => {
+        try {
+            await GroupUser.create({
+                id: uuidv4(),
+                groupId,
+                userId,
+                role,
+            });
+            return "User added to group successfully";
+        } catch (error) {
+            return "An error occurred while adding the user to the group: " + error;
+        }
+    }
 }
 
 export default GroupUserController;
