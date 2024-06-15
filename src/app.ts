@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/stewardship', [userRouter, groupRouter, groupUserRequestRouter, groupUserRouter,taskRouter]);
 
-createTables()
+//createTables()
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

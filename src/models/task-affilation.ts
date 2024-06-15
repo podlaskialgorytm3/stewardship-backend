@@ -15,11 +15,7 @@ TaskAffilation.init(
             autoIncrement: false,
             primaryKey: true,
         },
-        userId: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            allowNull: false,
-        },
-        groupId: {
+        userGroupId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
