@@ -18,8 +18,14 @@ router.get('/group-user', userAuthentication.authMiddleware, async (request: Req
 })
 router.delete('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const { groupId, userId } = request.query;
-    const role = await groupUserUtils.getRole(request.query.groupId as string, request.headers['authorization']?.split(' ')[1] as string);
+    const role = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
     const message = await groupUserController.deleteGroupUser(groupId as string, userId as unknown as number, role as string);
+    response.status(200).json({ message });
+})
+router.put('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { groupId, userId, role } = request.query;
+    const changingPersonRole = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
+    const message = await groupUserController.changeRole(groupId as string, userId as unknown as number, changingPersonRole, role as string);
     response.status(200).json({ message });
 })
 

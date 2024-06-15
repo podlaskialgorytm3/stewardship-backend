@@ -1,5 +1,4 @@
 import GroupUser from "../models/group-user";
-import GroupUserRequestController from "./group-user-request";
 import User from "../models/user";
 import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';
@@ -116,6 +115,28 @@ class GroupUserController {
                 });
                 return "User deleted successfully";
             }
+        }
+        catch(error){
+            return error;
+        }
+    }
+    public changeRole = async (groupId: string, userId: number, changingPersonRole: string, role: string) => {
+        try {
+            if(changingPersonRole !== "admin"){
+                return "You are not authorized to change the role of the user";
+            }
+            else{
+                await GroupUser.update({
+                    role,
+                }, {
+                    where: {
+                        groupId,
+                        userId,
+                    },
+                });
+                return "Role changed successfully";
+            }
+            
         }
         catch(error){
             return error;
