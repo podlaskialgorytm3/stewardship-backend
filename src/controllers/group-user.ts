@@ -101,15 +101,20 @@ class GroupUserController {
             return error;
         }
     }
-    public deleteGroupUser = async (groupId: string, userId: number) => {
+    public deleteGroupUser = async (groupId: string, userId: number, role: string) => {
         try {
-            await GroupUser.destroy({
-                where: {
-                    groupId,
-                    userId,
-                },
-            });
-            return "User from your group deleted successfully";
+            if(role !== "admin"){
+                return "You are not authorized to delete the user";
+            }
+            else{
+                await GroupUser.destroy({
+                    where: {
+                        groupId,
+                        userId,
+                    },
+                });
+                return "User deleted successfully";
+            }
         }
         catch(error){
             return error;
