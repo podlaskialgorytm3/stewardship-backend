@@ -1,4 +1,5 @@
 import GroupUser from "../models/group-user";
+import GroupUserRequestController from "./group-user-request";
 import User from "../models/user";
 import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';

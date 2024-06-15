@@ -48,25 +48,21 @@ class GroupUserRequestController {
             else{
                 if(status === "accepted"){
                     await this.groupUserController.addUser(userId, "member", groupId);
-                    await GroupUserRequest.update({
-                        status,
-                    }, {
+                    await GroupUserRequest.destroy({
                         where: {
                             groupId,
                             userId,
                         }
-                    });
+                    })
                     return "Request accepted successfully";
                 }
                 else if(status === "rejected"){
-                    await GroupUserRequest.update({
-                        status,
-                    }, {
+                    await GroupUserRequest.destroy({
                         where: {
                             groupId,
                             userId,
                         }
-                    });
+                    })
                     return "Request rejected successfully";
                 }
                 else{
