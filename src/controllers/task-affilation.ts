@@ -35,7 +35,7 @@ class TaskAffilationController {
                     taskInfoId
                 }
             });
-            
+
             const groupUsersId = taskAffilations.map((taskAffilation) => taskAffilation.groupUserId)
 
             const usersInfo = await Promise.all(groupUsersId.map(async (groupUserId) => {
@@ -50,6 +50,25 @@ class TaskAffilationController {
         }
         catch(error){
             return "An error occurred while getting task affilation: " + error;
+        }
+    }
+    public deleteTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
+        try{
+            if(role !== "admin"){
+                return "You are not authorized to delete task affilation";
+            }
+            else{
+                await TaskAffilation.destroy({
+                    where: {
+                        taskInfoId,
+                        groupUserId
+                    }
+                });
+                return "Task affilation deleted successfully!";
+            }
+        }
+        catch(error){
+            return "An error occurred while deleting task affilation: " + error;
         }
     }
     
