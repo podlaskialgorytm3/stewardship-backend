@@ -18,8 +18,8 @@ router.post("/task-info", userAuthentication.authMiddleware, async (request: Req
     const { taskId, startDate, endDate, status, priority, comments , groupId  } = request.query;
     const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
     const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
-    const groupUser = await groupUserController.getUser(groupId as string, user?.id as number) as {id: number};
-    const responseText = await taskInfoController.createTaskInfo(taskInfo, groupUser?.id as number);
+    const groupUser = await groupUserController.getUser(groupId as string, user?.id as number) as {id: number; role: string};
+    const responseText = await taskInfoController.createTaskInfo(taskInfo, groupUser?.id as number, groupUser?.role as string);
     response.status(201).json({ message: responseText });
 })
 

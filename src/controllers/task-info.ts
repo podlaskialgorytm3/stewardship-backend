@@ -14,20 +14,25 @@ class TaskInfoController {
                 console.error('An error occurred while synchronizing the TaskInfo table:', error);
             });
     }
-    public createTaskInfo = async (taskInfo: TaskInfoInterface, groupUserId: number) => {
+    public createTaskInfo = async (taskInfo: TaskInfoInterface, groupUserId: number, role: string) => {
         try{
-            await TaskInfo.create({
-                id: uuidv4(),
-                taskId: taskInfo.taskId,
-                startDate: taskInfo.startDate,
-                endDate: taskInfo.endDate,
-                status: taskInfo.status,
-                priority: taskInfo.priority,
-                assignedBy: groupUserId,
-                comments: taskInfo.comments
-            });
-            await this.taskAffilationController.addTaskAffilation(taskInfo.taskId, groupUserId);
-            return "New task info created!";
+            if(role !== "admin"){
+                return "You are not authorized to create a new task info";
+            }
+            else{
+                await TaskInfo.create({
+                    id: uuidv4(),
+                    taskId: taskInfo.taskId,
+                    startDate: taskInfo.startDate,
+                    endDate: taskInfo.endDate,
+                    status: taskInfo.status,
+                    priority: taskInfo.priority,
+                    assignedBy: groupUserId,
+                    comments: taskInfo.comments
+                });
+                await this.taskAffilationController.addTaskAffilation(taskInfo.taskId, groupUserId);
+                return "New task info created!";
+            }
         }
         catch(error){
             return "An error occurred while creating a new task info: " + error;
