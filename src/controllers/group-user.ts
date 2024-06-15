@@ -13,15 +13,31 @@ class GroupUserController {
                 console.error('An error occurred while synchronizing the GroupUser table:', error);
             });
     }
-    public addUser = async (userId: number, role: string, groupId: string) => {
+    public addUser = async (userId: number, role: string, groupId: string, addingPersonRole: string) => {
         try {
-            await GroupUser.create({
-                id: uuidv4(),
-                groupId,
-                userId,
-                role,
-            });
-            return "User added to group successfully";
+            if(addingPersonRole !== "admin"){
+                return "You are not authorized to add the user to the group";
+            }
+            else{
+                const groupUser = await GroupUser.findOne({
+                    where: {
+                        groupId,
+                        userId,
+                    },
+                });
+                if (groupUser) {
+                    return "User already exists in the group";
+                }
+                else {
+                    await GroupUser.create({
+                        id: uuidv4(),
+                        userId,
+                        groupId,
+                        role,
+                    });
+                    return "User added successfully";
+                }
+            }
         } catch (error) {
             return "An error occurred while adding the user to the group: " + error;
         }

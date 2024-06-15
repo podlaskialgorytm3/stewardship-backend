@@ -47,7 +47,7 @@ class GroupUserRequestController {
             }
             else{
                 if(status === "accepted"){
-                    await this.groupUserController.addUser(userId, "member", groupId);
+                    await this.groupUserController.addUser(userId, "member", groupId, role);
                     await GroupUserRequest.destroy({
                         where: {
                             groupId,

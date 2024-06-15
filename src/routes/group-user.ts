@@ -28,6 +28,12 @@ router.put('/group-user', userAuthentication.authMiddleware, async (request: Req
     const message = await groupUserController.changeRole(groupId as string, userId as unknown as number, changingPersonRole, role as string);
     response.status(200).json({ message });
 })
+router.post('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { groupId, userId, role } = request.query;
+    const addingPersonRole = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
+    const message = await groupUserController.addUser(userId as unknown as number,role as string, groupId as string, addingPersonRole as string);
+    response.status(200).json({ message });
+})
 
 
 export default router;

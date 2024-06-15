@@ -22,7 +22,7 @@ class GroupController {
                 name,
                 category,
             });
-            await this.groupUserController.addUser(userId, 'admin', groupId);
+            await this.groupUserController.addUser(userId, 'admin', groupId, "admin");
             return "Group created successfully";
         } catch (error) {
             return "An error occurred while creating the group: " + error;
