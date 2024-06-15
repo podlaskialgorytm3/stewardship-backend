@@ -10,6 +10,7 @@ class TaskAffilationController {
                 console.error('An error occurred while synchronizing the Task Affilation table:', error);
             });
     }
+    
 }
 
 export default TaskAffilationController;
