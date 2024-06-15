@@ -1,4 +1,6 @@
 import GroupUser from "../models/group-user";
+import User from "../models/user";
+import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';
 
 class GroupUserController {
@@ -26,18 +28,61 @@ class GroupUserController {
     }
     public getUser = async (groupId: string, userId: number) => {
         try {
-            const user = await GroupUser.findOne({
+            const groupUser = await GroupUser.findOne({
                 where: {
                     groupId,
                     userId,
                 },
             });
+            const user = await User.findOne({
+                where: {
+                    id: userId,
+                },
+            })
+            const group = await Group.findOne({
+                where: {
+                    id: groupId,
+                },
+            })
             return {
-                id: user?.id as number,
-                groupId: user?.groupId as number,
-                userId: user?.userId as number,
-                role: user?.role as string,
+                name: user?.name as string,
+                email: user?.email as string,
+                group: group?.name as string,
+                img: user?.img as string,
+                role: groupUser?.role as string,
             };
+        }
+        catch(error){
+            return error;
+        }
+    }
+    public getUsers = async (groupId: string, name: string) => {
+        try {
+            const groupUsers = await GroupUser.findAll({
+                where: {
+                    groupId,
+                },
+            });
+            const group = await Group.findOne({
+                where: {
+                    id: groupId,
+                },
+            })
+            const users = await Promise.all(groupUsers.map(async (groupUser) => {
+                const user = await User.findOne({
+                    where: {
+                        id: groupUser.userId,
+                    },
+                });
+                return {
+                    name: user?.name as string,
+                    group: group?.name as string,
+                    email: user?.email as string,
+                    img: user?.img as string,
+                    role: groupUser.role,
+                };
+            }));
+            return users.filter((user) => user.name.includes(name));
         }
         catch(error){
             return error;
@@ -51,6 +96,20 @@ class GroupUserController {
                 },
             });
             return "Group users deleted successfully";
+        }
+        catch(error){
+            return error;
+        }
+    }
+    public deleteGroupUser = async (groupId: string, userId: number) => {
+        try {
+            await GroupUser.destroy({
+                where: {
+                    groupId,
+                    userId,
+                },
+            });
+            return "User from your group deleted successfully";
         }
         catch(error){
             return error;
