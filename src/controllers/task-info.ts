@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import TaskInfo from '../models/task-info';
-import { TaskInfo as TaskInfoInterface } from '../types/task';
+import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
 
 class TaskInfoController {
     public createTable = async () => {
@@ -16,7 +16,7 @@ class TaskInfoController {
         try{
             await TaskInfo.create({
                 id: uuidv4(),
-                taskId: taskInfo.id,
+                taskId: taskInfo.taskId,
                 startDate: taskInfo.startDate,
                 endDate: taskInfo.endDate,
                 status: taskInfo.status,
