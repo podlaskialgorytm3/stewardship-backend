@@ -1,8 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import TaskInfo from '../models/task-info';
 import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
+import TaskAffilationController from './task-affilation';
 
 class TaskInfoController {
+    public taskAffilationController = new TaskAffilationController();
     public createTable = async () => {
         TaskInfo.sync({ alter: true })
             .then(() => {
@@ -12,7 +14,7 @@ class TaskInfoController {
                 console.error('An error occurred while synchronizing the TaskInfo table:', error);
             });
     }
-    public createTaskInfo = async (taskInfo: TaskInfoInterface, creatorId: number) => {
+    public createTaskInfo = async (taskInfo: TaskInfoInterface, groupUserId: number) => {
         try{
             await TaskInfo.create({
                 id: uuidv4(),
@@ -21,9 +23,10 @@ class TaskInfoController {
                 endDate: taskInfo.endDate,
                 status: taskInfo.status,
                 priority: taskInfo.priority,
-                assignedBy: creatorId,
+                assignedBy: groupUserId,
                 comments: taskInfo.comments
             });
+            await this.taskAffilationController.addTaskAffilation(taskInfo.taskId, groupUserId);
             return "New task info created!";
         }
         catch(error){
