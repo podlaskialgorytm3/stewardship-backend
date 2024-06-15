@@ -13,12 +13,15 @@ class TaskController {
     }
     public createTask = async (name: string) => {
         const id = uuidv4();
+        const tasks = await Task.findAll({attributes: ['task']})
         try{
-            const newTask = await Task.create({
-                id: id,
-                task: name
-            });
-            return "New task created: " + newTask.task;
+            if(tasks.some((task) => task.task === name)){
+                return "Task already exists";
+            }
+            else{
+                await Task.create({id, task: name});
+                return "Task created successfully";
+            }
         }
         catch(error){
             return "An error occurred while creating a new task: " + error;
