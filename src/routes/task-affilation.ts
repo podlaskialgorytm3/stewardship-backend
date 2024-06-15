@@ -13,6 +13,11 @@ router.post("/task-affilation", userAuthentication.authMiddleware, async (reques
     const responseText = await taskAffilationController.addTaskAffilation(taskInfoId as unknown as number, groupUserId as unknown as number);
     response.status(201).json({ message: responseText });
 })
+router.get("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { taskInfoId } = request.query;
+    const taskAffilation = await taskAffilationController.getTaskAffilation(taskInfoId as unknown as number);
+    response.status(200).json(taskAffilation);
+})
 
 
 

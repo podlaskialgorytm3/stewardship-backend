@@ -105,6 +105,36 @@ class GroupUserController {
             return error;
         }
     }
+    public getUserByGroupUserId = async (groupUserId: number) => {
+        try {
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    id: groupUserId,
+                },
+            });
+            const user = await User.findOne({
+                where: {
+                    id: groupUser?.userId,
+                },
+            });
+            const group = await Group.findOne({
+                where: {
+                    id: groupUser?.groupId,
+                },
+            });
+            return {
+                id: groupUser?.id as number,
+                name: user?.name as string,
+                email: user?.email as string,
+                group: group?.name as string,
+                img: user?.img as string,
+                role: groupUser?.role as string,
+            };
+        }
+        catch(error){
+            return "An error occurred while getting the user by group user id: " + error;
+        }
+    }
     public deleteGroupUsers = async (groupId: string) => {
         try {
             await GroupUser.destroy({
