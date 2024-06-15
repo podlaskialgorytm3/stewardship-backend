@@ -24,7 +24,15 @@ class TaskController {
             return "An error occurred while creating a new task: " + error;
         }
     }
-    
+    public getTasksByName = async (name: string) => {
+        try{
+            const tasks = await Task.findAll();
+            return tasks.filter((task) => task.task.includes(name));
+        }
+        catch(error){
+            return "An error occurred while getting tasks: " + error;
+        }
+    }
 }
 
 export default TaskController;

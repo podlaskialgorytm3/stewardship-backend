@@ -15,6 +15,14 @@ router.post("/task", userAuthentication.authMiddleware, async (request: Request,
         message: task
     });
 })
+router.get("/task", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { name } = request.query;
+    const tasks = await taskController.getTasksByName(name as string);
+    response.json({
+        message: "Tasks retrieved successfully",
+        data: tasks
+    });
+})
 
 
 export default router;
