@@ -3,8 +3,7 @@ import { sequelize } from '../configs/connect';
 
 class TaskAffilation extends Model {
     public id!: number;
-    public userId!: number;
-    public groupId!: number;
+    public groupUserId!: number;
     public taskInfoId!: number;
 }
 
@@ -15,7 +14,7 @@ TaskAffilation.init(
             autoIncrement: false,
             primaryKey: true,
         },
-        userGroupId: {
+        groupUserId: {
             type: DataTypes.INTEGER.UNSIGNED,
             allowNull: false,
         },
