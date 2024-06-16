@@ -2,7 +2,7 @@ import TaskAffilation from "../models/task-affilation";
 import GroupUserController from "./group-user";
 import { v4 as uuidv4 } from 'uuid';
 
-import {UserInfo} from "../types/group-user";
+import { UserInfo } from "../types/group-user";
 
 class TaskAffilationController {
     public groupUserController = new GroupUserController();
@@ -17,6 +17,13 @@ class TaskAffilationController {
     }
     public addTaskAffilation = async (taskInfoId: number, groupUserId: number) => {
         try{
+            const isTaskAffilation = await TaskAffilation.findOne({
+                where: {
+                    taskInfoId,
+                    groupUserId
+                }
+            });
+            if(isTaskAffilation) return "Task affilation already exists!";
             await TaskAffilation.create({
                 id: uuidv4(),
                 taskInfoId: taskInfoId,
@@ -43,10 +50,7 @@ class TaskAffilationController {
                 return userInfo;
             }))
 
-            return {
-                message: "Task affilation retrieved successfully",
-                data: usersInfo
-            };
+            return usersInfo
         }
         catch(error){
             return "An error occurred while getting task affilation: " + error;

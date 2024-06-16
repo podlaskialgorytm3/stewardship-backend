@@ -3,6 +3,6 @@ export interface UserInfo {
     name: string;
     img: string;
     email: string;
-    password: string;
+    group: string;
     role: string;
 }
