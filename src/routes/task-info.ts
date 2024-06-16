@@ -5,7 +5,7 @@ import TaskInfoController from "../controllers/task-info";
 import UserAuthentication from "../middlewares/auth";
 import UserController from "../controllers/user";
 import GroupUserController from "../controllers/group-user";
-import { TaskInfoCreation } from "../types/task";
+import { TaskInfo, TaskInfoCreation } from "../types/task";
 
 const router = express.Router();
 

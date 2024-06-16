@@ -15,13 +15,14 @@ class TaskInfoController {
             });
     }
     public createTaskInfo = async (taskInfo: TaskInfoInterface, groupUserId: number, role: string) => {
+        const id = uuidv4() as unknown as number;
         try{
             if(role !== "admin"){
                 return "You are not authorized to create a new task info";
             }
             else{
                 await TaskInfo.create({
-                    id: uuidv4(),
+                    id: id,
                     taskId: taskInfo.taskId,
                     startDate: taskInfo.startDate,
                     endDate: taskInfo.endDate,
@@ -30,7 +31,7 @@ class TaskInfoController {
                     assignedBy: groupUserId,
                     comments: taskInfo.comments
                 });
-                await this.taskAffilationController.addTaskAffilation(taskInfo.taskId, groupUserId);
+                await this.taskAffilationController.addTaskAffilation(id, groupUserId);
                 return "New task info created!";
             }
         }
