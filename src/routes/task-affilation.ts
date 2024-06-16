@@ -10,11 +10,15 @@ const router = express.Router();
 const taskAffilationController = new TaskAffilationController();
 const userAuthentication = new UserAuthentication();
 const groupUserController = new GroupUserController();
-const userController = new UserController();
 
 router.post("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const { taskInfoId, groupUserId } = request.query;
-    const responseText = await taskAffilationController.addTaskAffilation(taskInfoId as unknown as number, groupUserId as unknown as number);
+    const user = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {role: string};
+    const responseText = await taskAffilationController.addTaskAffilation(
+        taskInfoId as unknown as number, 
+        groupUserId as unknown as number,
+        user?.role as string
+    );
     response.status(201).json({ message: responseText });
 })
 router.get("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
@@ -25,7 +29,11 @@ router.get("/task-affilation", userAuthentication.authMiddleware, async (request
 router.delete("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const { taskInfoId, groupUserId } = request.query;
     const user = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {role: string};
-    const responseText = await taskAffilationController.deleteTaskAffilation(taskInfoId as unknown as number, groupUserId as unknown as number, user?.role as string);
+    const responseText = await taskAffilationController.deleteTaskAffilation(
+        taskInfoId as unknown as number, 
+        groupUserId as unknown as number, 
+        user?.role as string
+    );
     response.status(200).json({ message: responseText });
 })
 

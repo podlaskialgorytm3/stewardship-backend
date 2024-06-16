@@ -31,7 +31,7 @@ class TaskInfoController {
                     assignedBy: groupUserId,
                     comments: taskInfo.comments
                 });
-                await this.taskAffilationController.addTaskAffilation(id, groupUserId);
+                await this.taskAffilationController.addTaskAffilation(id, groupUserId, role);
                 return "New task info created!";
             }
         }

@@ -15,21 +15,26 @@ class TaskAffilationController {
                 console.error('An error occurred while synchronizing the Task Affilation table:', error);
             });
     }
-    public addTaskAffilation = async (taskInfoId: number, groupUserId: number) => {
+    public addTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
         try{
-            const isTaskAffilation = await TaskAffilation.findOne({
-                where: {
-                    taskInfoId,
-                    groupUserId
-                }
-            });
-            if(isTaskAffilation) return "Task affilation already exists!";
-            await TaskAffilation.create({
-                id: uuidv4(),
-                taskInfoId: taskInfoId,
-                groupUserId: groupUserId
-            });
-            return "New task affilation created!";
+            if(role !== "admin"){
+                return "You are not authorized to create a new task affilation";
+            }
+            else{
+                const isTaskAffilation = await TaskAffilation.findOne({
+                    where: {
+                        taskInfoId,
+                        groupUserId
+                    }
+                });
+                if(isTaskAffilation) return "Task affilation already exists!";
+                await TaskAffilation.create({
+                    id: uuidv4(),
+                    taskInfoId: taskInfoId,
+                    groupUserId: groupUserId
+                });
+                return "New task affilation created!";
+            }
         }
         catch(error){
             return "An error occurred while creating a new task affilation: " + error;
