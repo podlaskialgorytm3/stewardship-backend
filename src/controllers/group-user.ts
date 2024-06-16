@@ -135,6 +135,36 @@ class GroupUserController {
             return "An error occurred while getting the user by group user id: " + error;
         }
     }
+    public getUserByToken = async (token: string) => {
+        try{
+            const user = await User.findOne({
+                where: {
+                    accessToken: token,
+                },
+            });
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    userId: user?.id,
+                },
+            });
+            const group = await Group.findOne({
+                where: {
+                    id: groupUser?.groupId,
+                },
+            });
+            return {
+                id: groupUser?.id as number,
+                name: user?.name as string,
+                email: user?.email as string,
+                group: group?.name as string,
+                img: user?.img as string,
+                role: groupUser?.role as string,
+            }
+        }
+        catch(error){
+            return error
+        }
+    }
     public deleteGroupUsers = async (groupId: string) => {
         try {
             await GroupUser.destroy({
