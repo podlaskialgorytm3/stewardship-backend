@@ -2,8 +2,6 @@ import TaskAffilation from "../models/task-affilation";
 import GroupUserController from "./group-user";
 import { v4 as uuidv4 } from 'uuid';
 
-import { UserInfo } from "../types/group-user";
-
 class TaskAffilationController {
     public groupUserController = new GroupUserController();
     public createTable = async () => {

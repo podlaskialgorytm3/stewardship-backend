@@ -39,6 +39,20 @@ class TaskInfoController {
             return "An error occurred while creating a new task info: " + error;
         }
     }
+    public getTaskInfo = async (taskInfoId: number) => {
+        try{
+            const taskInfo = await TaskInfo.findByPk(taskInfoId);
+            const taskAffilations = await this.taskAffilationController.getTaskAffilation(taskInfoId);
+            console.log(taskAffilations)
+            return {
+                taskInfo: taskInfo,
+                members: taskAffilations
+            };
+        }
+        catch(error){
+            return "An error occurred while getting task info: " + error;
+        }
+    }
 }
 
 export default TaskInfoController;

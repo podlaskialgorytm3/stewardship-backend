@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import TaskAffilationController from "../controllers/task-affilation";
 import UserAuthentication from "../middlewares/auth";
 import GroupUserController from "../controllers/group-user";
-import UserController from "../controllers/user";
 
 const router = express.Router();
 
