@@ -35,6 +35,17 @@ class TaskController {
             return "An error occurred while getting tasks: " + error;
         }
     }
+    public getTaskById = async (id: number) => {
+        try{
+            if(!await Task.findByPk(id)){
+                return "Task does not exist";
+            }
+            return await Task.findByPk(id);
+        }
+        catch(error){
+            return "An error occurred while getting task: " + error;
+        }
+    }
 }
 
 export default TaskController;

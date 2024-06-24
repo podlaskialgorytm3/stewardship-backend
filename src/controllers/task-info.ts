@@ -4,11 +4,13 @@ import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
 import TaskAffilationController from './task-affilation';
 import GroupUserController from './group-user';
 import SubTaskController from './sub-task';
+import TaskController from './task';
 
 class TaskInfoController {
     public taskAffilationController = new TaskAffilationController();
     public groupUserController = new GroupUserController();
     public subTaskController = new SubTaskController();
+    public taskController = new TaskController();
     public createTable = async () => {
         TaskInfo.sync({ alter: true })
             .then(() => {
@@ -51,7 +53,7 @@ class TaskInfoController {
             return {
                 taskInfo: {
                     id: taskInfo?.id,
-                    taskId: taskInfo?.taskId,
+                    taskId: await this.taskController.getTaskById(taskInfo?.taskId as number),
                     startDate: taskInfo?.startDate,
                     endDate: taskInfo?.endDate,
                     status: taskInfo?.status,
