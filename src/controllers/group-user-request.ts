@@ -2,9 +2,13 @@ import GroupUserRequest from '../models/group-user-request';
 import { v4 as uuidv4 } from 'uuid';
 
 import GroupUserController from './group-user';
+import UserController from './user';
+import GroupController from './group';
 
 class GroupUserRequestController {
     public groupUserController = new GroupUserController();
+    public userController = new UserController();
+    public groupController = new GroupController();
     public createTable = async () => {
         GroupUserRequest.sync({ alter: true })
             .then(() => {
@@ -34,7 +38,16 @@ class GroupUserRequestController {
                     groupId,
                 }
             });
-            return requests;
+            return {
+                requests: await Promise.all(requests.map(async (request) => {
+                    return {
+                        id: request.id,
+                        userId: await this.userController.getUser(String(request.userId)),
+                        groupId: await this.groupController.getGroup(String(request.groupId)),
+                        status: request.status,
+                    }
+                }))
+            };
         }
         catch(error){
             return error;

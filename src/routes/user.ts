@@ -34,7 +34,6 @@ router.get('/user', async (request: Request, response: Response)  => {
     });
 })
 router.get(`/user/:id`, userAuthentication.authMiddleware , async (request: Request, response: Response) => {
-    console.log(userAuthentication.authMiddleware)
     const id = request.params.id;
     const user = await userController.getUser(id);
     response.status(200).json({
