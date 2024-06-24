@@ -43,4 +43,14 @@ router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: 
     response.status(200).json({ message: responseText });
 })
 
+router.delete("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const taskInfoId = parseInt(request.params.id);
+    const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
+    const responseText = await taskInfoController.deleteTaskInfo(
+        taskInfoId,
+        groupUser?.role as string
+    );
+    response.status(200).json({ message: responseText });
+})
+
 export default router;

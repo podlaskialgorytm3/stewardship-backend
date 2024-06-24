@@ -78,6 +78,24 @@ class TaskAffilationController {
             return "An error occurred while deleting task affilation: " + error;
         }
     }
+    public deleteTaskAffilationByTaskInfoId = async (taskInfoId: number, role: string) => {
+        try{
+            if(role !== "admin"){
+                return "You are not authorized to delete task affilation";
+            }
+            else{
+                await TaskAffilation.destroy({
+                    where: {
+                        taskInfoId
+                    }
+                });
+                return "Task affilation deleted successfully!";
+            }
+        }
+        catch(error){
+            return "An error occurred while deleting task affilation: " + error;
+        }
+    }
     
     
 }

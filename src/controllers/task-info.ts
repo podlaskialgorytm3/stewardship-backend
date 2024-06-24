@@ -78,6 +78,25 @@ class TaskInfoController {
             return "An error occurred while updating task info: " + error;
         }
     }
+    public deleteTaskInfo = async (taskInfoId: number, role: string) => {
+        try{
+            if(role !== "admin"){
+                return "You are not authorized to delete this task info";
+            }
+            else{
+                await TaskInfo.destroy({
+                    where: {
+                        id: taskInfoId
+                    }
+                });
+                await this.taskAffilationController.deleteTaskAffilationByTaskInfoId(taskInfoId, role);
+                return "Task info deleted!";
+            }
+        }
+        catch(error){
+            return "An error occurred while deleting task info: " + error;
+        }
+    }
 }
 
 export default TaskInfoController;
