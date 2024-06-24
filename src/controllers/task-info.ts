@@ -2,9 +2,11 @@ import { v4 as uuidv4 } from 'uuid';
 import TaskInfo from '../models/task-info';
 import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
 import TaskAffilationController from './task-affilation';
+import GroupUserController from './group-user';
 
 class TaskInfoController {
     public taskAffilationController = new TaskAffilationController();
+    public groupUserController = new GroupUserController();
     public createTable = async () => {
         TaskInfo.sync({ alter: true })
             .then(() => {
@@ -45,7 +47,16 @@ class TaskInfoController {
             const taskAffilations = await this.taskAffilationController.getTaskAffilation(taskInfoId);
             console.log(taskAffilations)
             return {
-                taskInfo: taskInfo,
+                taskInfo: {
+                    id: taskInfo?.id,
+                    taskId: taskInfo?.taskId,
+                    startDate: taskInfo?.startDate,
+                    endDate: taskInfo?.endDate,
+                    status: taskInfo?.status,
+                    priority: taskInfo?.priority,
+                    assignedBy: await this.groupUserController.getUserByGroupUserId(taskInfo?.assignedBy as number),
+                    comments: taskInfo?.comments
+                },
                 members: taskAffilations
             };
         }
