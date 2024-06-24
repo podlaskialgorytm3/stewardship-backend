@@ -33,6 +33,9 @@ class SubTaskController {
     public getSubTask = async (subTaskId: number) => {
         try {
             const subTask = await SubTask.findByPk(subTaskId);
+            if (!subTask) {
+                return "Sub-task not found";
+            }
             return {
                 id: subTask?.id,
                 taskInfoId: subTask?.taskInfoId,
