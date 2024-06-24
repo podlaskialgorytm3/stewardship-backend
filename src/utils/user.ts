@@ -12,7 +12,7 @@ class UserUtils {
         return isPasswordValid;
     } 
     public generateToken = (email: string) => {
-        const token =  jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '60m'});
+        const token =  jwt.sign({email: email}, process.env.ACCESS_TOKEN_SECRET as string, {expiresIn: '24h'});
         return token;
     }
 }
