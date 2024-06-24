@@ -71,6 +71,21 @@ class SubTaskController {
             return "An error occurred while deleting the sub-task: " + error;
         }
     }
+    public deleteSubTask = async (subTaskId: number,groupUserId: number) => {
+        try{
+            const subTask = await SubTask.findByPk(subTaskId);
+            if(subTask?.assignedBy !== groupUserId){
+                return "You are not authorized to delete this sub-task";
+            }
+            else{
+                await SubTask.destroy({ where: { id: subTaskId } });
+                return "Sub-task deleted successfully";
+            }
+        }
+        catch(error){
+            return "An error occurred while deleting the sub-task: " + error;
+        }
+    }
 }
 
 export default SubTaskController;
