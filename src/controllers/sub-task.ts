@@ -86,6 +86,25 @@ class SubTaskController {
             return "An error occurred while deleting the sub-task: " + error;
         }
     }
+    public updateSubTask = async (subTaskId: number, subTaskData: SubTaskCreation, groupUserId: number) => {
+        try{
+            const subTask = await SubTask.findByPk(subTaskId);
+            if(subTask?.assignedBy !== groupUserId){
+                return "You are not authorized to update this sub-task";
+            }
+            else{
+                await SubTask.update({
+                    title: subTaskData.title,
+                    description: subTaskData.description,
+                    status: subTaskData.status
+                }, { where: { id: subTaskId } });
+                return "Sub-task updated successfully";
+            }
+        }
+        catch(error){
+            return "An error occurred while updating the sub-task: " + error;
+        }
+    }
 }
 
 export default SubTaskController;

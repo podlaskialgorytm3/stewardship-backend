@@ -38,4 +38,15 @@ router.delete('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (
     });
 })
 
+router.put('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const subTaskId = request.params.subTaskId;
+    const { title, description, status } = request.query;
+    const subTaskData = { title, description, status } as unknown as SubTaskCreation;
+    const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as { id: number };
+    const responseText = await subTaskController.updateSubTask(Number(subTaskId), subTaskData, groupUser.id);
+    response.status(200).json({
+        message: responseText
+    });
+})
+
 export default router;
