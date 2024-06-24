@@ -105,6 +105,17 @@ class SubTaskController {
             return "An error occurred while updating the sub-task: " + error;
         }
     }
+    public changeStatus = async (subTaskId: number, status: string) => {
+        try{
+            await SubTask.update({
+                status: status
+            }, { where: { id: subTaskId } });
+            return "Sub-task status updated successfully";
+        }
+        catch(error){
+            return "An error occurred while updating the sub-task status: " + error;
+        }
+    }
 }
 
 export default SubTaskController;

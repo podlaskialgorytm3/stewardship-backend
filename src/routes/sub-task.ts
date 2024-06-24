@@ -49,4 +49,13 @@ router.put('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (req
     });
 })
 
+router.put('/sub-task/change-status/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const subTaskId = request.params.subTaskId;
+    const { status } = request.query;
+    const responseText = await subTaskController.changeStatus(Number(subTaskId), status as string);
+    response.status(200).json({
+        message: responseText
+    });
+})
+
 export default router;
