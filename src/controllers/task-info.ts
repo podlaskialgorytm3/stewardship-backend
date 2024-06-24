@@ -53,6 +53,31 @@ class TaskInfoController {
             return "An error occurred while getting task info: " + error;
         }
     }
+    public editTaskInfo = async (taskInfoId: number, taskInfo: TaskInfoInterface, role: string) => {
+        try{
+            if(role !== "admin"){
+                return "You are not authorized to edit this task info";
+            }
+            else{
+                await TaskInfo.update({
+                    taskId: taskInfo.taskId,
+                    startDate: taskInfo.startDate,
+                    endDate: taskInfo.endDate,
+                    status: taskInfo.status,
+                    priority: taskInfo.priority,
+                    comments: taskInfo.comments
+                }, {
+                    where: {
+                        id: taskInfoId
+                    }
+                });
+                return "Task info updated!";
+            }
+        }
+        catch(error){
+            return "An error occurred while updating task info: " + error;
+        }
+    }
 }
 
 export default TaskInfoController;

@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 
 import TaskInfoController from "../controllers/task-info";
 import UserAuthentication from "../middlewares/auth";
-import UserController from "../controllers/user";
 import GroupUserController from "../controllers/group-user";
 import { TaskInfoCreation } from "../types/task";
 
@@ -29,6 +28,19 @@ router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: 
     const taskInfoId = parseInt(request.params.id);
     const taskInfo = await taskInfoController.getTaskInfo(taskInfoId);
     response.status(200).json(taskInfo);
+})
+
+router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const {taskId, startDate, endDate, status, priority, comments } = request.query;
+    const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
+    const taskInfoId = parseInt(request.params.id);
+    const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
+    const responseText = await taskInfoController.editTaskInfo(
+        taskInfoId,
+        taskInfo,
+        groupUser?.role as string
+    );
+    response.status(200).json({ message: responseText });
 })
 
 export default router;
