@@ -23,7 +23,7 @@ router.post('/sub-task', userAuthentication.authMiddleware, async (request: Requ
 
 router.get('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const subTaskId = request.params.subTaskId;
-    const subTask = await subTaskController.getSubTask(subTaskId);
+    const subTask = await subTaskController.getSubTask(Number(subTaskId));
     response.status(200).json({
         subTask: subTask
     });

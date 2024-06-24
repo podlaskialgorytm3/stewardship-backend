@@ -30,7 +30,7 @@ class SubTaskController {
             return "An error occurred while creating the sub-task: " + error;
         }
     }
-    public getSubTask = async (subTaskId: string) => {
+    public getSubTask = async (subTaskId: number) => {
         try {
             const subTask = await SubTask.findByPk(subTaskId);
             return {
@@ -43,6 +43,23 @@ class SubTaskController {
             }
         } catch (error) {
             return "An error occurred while getting the sub-task: " + error;
+        }
+    }
+    public getSubTasks = async (taskInfoId: number) => {
+        try {
+            const subTask = await SubTask.findAll({ where: { taskInfoId: taskInfoId } });
+            return Promise.all(subTask.map(async (subTask) => {
+                return {
+                    id: subTask.id,
+                    taskInfoId: subTask.taskInfoId,
+                    title: subTask.title,
+                    description: subTask.description,
+                    status: subTask.status,
+                    assignedBy: await this.groupUserController.getUserByGroupUserId(subTask.assignedBy as number)
+                }
+            }))
+        } catch (error) {
+            return "An error occurred while getting the sub-task ID: " + error;
         }
     }
 }

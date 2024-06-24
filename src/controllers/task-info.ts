@@ -3,10 +3,12 @@ import TaskInfo from '../models/task-info';
 import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
 import TaskAffilationController from './task-affilation';
 import GroupUserController from './group-user';
+import SubTaskController from './sub-task';
 
 class TaskInfoController {
     public taskAffilationController = new TaskAffilationController();
     public groupUserController = new GroupUserController();
+    public subTaskController = new SubTaskController();
     public createTable = async () => {
         TaskInfo.sync({ alter: true })
             .then(() => {
@@ -45,7 +47,7 @@ class TaskInfoController {
         try{
             const taskInfo = await TaskInfo.findByPk(taskInfoId);
             const taskAffilations = await this.taskAffilationController.getTaskAffilation(taskInfoId);
-            console.log(taskAffilations)
+            const subTasks = await this.subTaskController.getSubTasks(taskInfoId);
             return {
                 taskInfo: {
                     id: taskInfo?.id,
@@ -55,8 +57,9 @@ class TaskInfoController {
                     status: taskInfo?.status,
                     priority: taskInfo?.priority,
                     assignedBy: await this.groupUserController.getUserByGroupUserId(taskInfo?.assignedBy as number),
-                    comments: taskInfo?.comments
+                    comments: taskInfo?.comments,
                 },
+                subTasks: subTasks,
                 members: taskAffilations
             };
         }
