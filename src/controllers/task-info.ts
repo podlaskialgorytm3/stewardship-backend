@@ -104,6 +104,7 @@ class TaskInfoController {
                     }
                 });
                 await this.taskAffilationController.deleteTaskAffilationByTaskInfoId(taskInfoId, role);
+                await this.subTaskController.deleteSubTaskByTaskInfoId(taskInfoId);
                 return "Task info deleted!";
             }
         }

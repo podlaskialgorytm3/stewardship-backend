@@ -62,6 +62,15 @@ class SubTaskController {
             return "An error occurred while getting the sub-task ID: " + error;
         }
     }
+    public deleteSubTaskByTaskInfoId = async (taskInfoId: number) => {
+        try{
+            await SubTask.destroy({ where: { taskInfoId: taskInfoId } });
+            return "Sub-task deleted successfully";
+        }
+        catch(error){
+            return "An error occurred while deleting the sub-task: " + error;
+        }
+    }
 }
 
 export default SubTaskController;
