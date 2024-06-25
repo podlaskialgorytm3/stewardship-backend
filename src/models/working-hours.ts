@@ -14,7 +14,7 @@ WorkingHours.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
+            autoIncrement: false,
             primaryKey: true,
         },
         groupUserId: {
@@ -29,8 +29,8 @@ WorkingHours.init(
             type: DataTypes.DATE,
             allowNull: false,
         },
-        totalHorus: {
-            type: DataTypes.INTEGER,
+        totalHours: {
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
     },
