@@ -6,7 +6,7 @@ class WorkingHours extends Model {
     public groupUserId!: number;
     public start!: Date;
     public end!: Date;
-    public totalHorus!: number;
+    public totalHours!: number;
 }
 
 

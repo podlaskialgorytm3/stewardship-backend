@@ -24,5 +24,14 @@ router.post("/working-hours", userAuthentication.authMiddleware, async (request:
     }
 })
 
+router.get("/working-hours", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try {
+        const { groupId, name } = request.query;
+        const result = await workingHoursController.getWorkingHours(groupId as string, name as string);
+        response.status(200).send(result);
+    } catch (error) {
+        response.status(400).send(error);
+    }
+})
 
 export default router;
