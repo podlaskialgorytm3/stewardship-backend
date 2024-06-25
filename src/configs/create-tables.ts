@@ -6,6 +6,7 @@ import TaskAffilationController from '../controllers/task-affilation';
 import GroupUserRequestController from '../controllers/group-user-request';
 import TaskInfoController from '../controllers/task-info';
 import SubTaskController from '../controllers/sub-task';
+import WorkingHoursController from '../controllers/working-hours';
 
 const groupUser = new GroupUserController();
 const group = new GroupController();
@@ -15,6 +16,7 @@ const taskAffilation = new TaskAffilationController();
 const groupUserRequest = new GroupUserRequestController();
 const taskInfo = new TaskInfoController();
 const subTask = new SubTaskController();
+const workingHours = new WorkingHoursController();
 
 const createTables = async () => {
     groupUser.createTable();
@@ -25,6 +27,7 @@ const createTables = async () => {
     groupUserRequest.createTable();
     taskInfo.createTable();
     subTask.createTable();
+    workingHours.createTable();
 }
 
 export default createTables;
