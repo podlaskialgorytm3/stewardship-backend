@@ -24,4 +24,5 @@ router.post("/working-hours", userAuthentication.authMiddleware, async (request:
     }
 })
 
+
 export default router;
