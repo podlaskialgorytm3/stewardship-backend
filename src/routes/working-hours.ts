@@ -64,4 +64,15 @@ router.put("/working-hours/:id", userAuthentication.authMiddleware, async (reque
     }
 })
 
+router.delete("/working-hours/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const workingHourId = request.params.id;
+        const result = await workingHoursController.deleteWorkingHours(workingHourId);
+        response.status(200).send(result);
+    }
+    catch(error){
+        response.status(400).send(error);
+    }
+})
+
 export default router;

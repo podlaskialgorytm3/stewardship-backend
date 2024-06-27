@@ -113,6 +113,17 @@ class WorkingHoursController {
             return "An error occurred while updating working hours: " + error;
         }
     }
+    public deleteWorkingHours = async (workingHourId: string) => {
+        try{
+            const workingHours = await WorkingHours.findByPk(workingHourId);
+            if(!workingHours) return "Working hours not found";
+            await workingHours.destroy();
+            return "Working hours deleted successfully";
+        }
+        catch(error){
+            return "An error occurred while deleting working hours: " + error;
+        }
+    }
 }
 
 export default WorkingHoursController;
