@@ -35,4 +35,17 @@ router.get("/working-hours", userAuthentication.authMiddleware, async (request: 
     }
 })
 
+router.get("/working-hours/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const groupUserId = request.params.id;
+        const year = request.query.year as string;
+        const month = request.query.month as string;
+        const result = await workingHoursController.getWorkingHoursByGroupUserId(parseInt(groupUserId) as number, parseInt(month) as number, parseInt(year) as number);
+        response.status(200).send(result);
+    }
+    catch(error){
+        response.status(400).send(error);
+    }
+});
+
 export default router;

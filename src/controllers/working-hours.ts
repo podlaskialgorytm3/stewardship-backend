@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 class WorkingHoursController {
     private groupUserController = new GroupUserController();
+    private currentMonth = new Date().getMonth() + 1;
+    private currentYear = new Date().getFullYear();
     public createTable = async () => {
         WorkingHours.sync({ alter: true })
             .then(() => {
@@ -53,21 +55,25 @@ class WorkingHoursController {
             return "An error occurred while checking working hours: " + error;
         }
     }
-    private getWorkingHoursByGroupUserId = async (groupUserId: number) => {
+    public getWorkingHoursByGroupUserId = async (groupUserId: number, month: number = this.currentMonth as number, year: number = this.currentYear as number) => {
         try{
             const workingHours = await WorkingHours.findAll({
                 where: {
-                    groupUserId: groupUserId
+                    groupUserId: groupUserId,
                 }
             });
-            return workingHours.map((workingHour) => {
-                return {
-                    id: workingHour.id as number,
-                    start: workingHour.start as Date,
-                    end: workingHour.end as Date,
-                    totalHours: workingHour.totalHours as number
-                }
-            })
+            return Promise.all(
+                workingHours.filter((workingHour) => {
+                    if (workingHour.start.getMonth() + 1 === month && workingHour.start.getFullYear() === year) {
+                        return {
+                            id: workingHour.id,
+                            start: workingHour.start,
+                            end: workingHour.end,
+                            totalHours: workingHour.totalHours
+                        }
+                    }
+                })
+            )
         }
         catch(error){
             return "An error occurred while getting working hours: " + error;
@@ -79,15 +85,13 @@ class WorkingHoursController {
             const groupUsers = await this.groupUserController.getUserByName(groupId, name) as {id: number}[];
             return {
                 message: "Working hours retrieved successfully",
-                data: {
-                    workingHours: await Promise.all(groupUsers.map(async (groupUser) => {
+                data: await Promise.all(groupUsers.map(async (groupUser) => {
                         return {
                             groupUser: await this.groupUserController.getUserByGroupUserId(groupUser.id),
                             workingHours: await this.getWorkingHoursByGroupUserId(groupUser.id)
                         }
                     })
                 )
-                }
             };
         }
         catch(error){
