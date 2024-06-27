@@ -73,8 +73,9 @@ class WorkingHoursController {
             return "An error occurred while getting working hours: " + error;
         }
     }
-    public getWorkingHours = async (groupId: string, name: string) => {
+    public getWorkingHours = async (groupId: string, name: string, role: string) => {
         try{
+            if(role !== "admin") return "You are not authorized to view working hours";
             const groupUsers = await this.groupUserController.getUserByName(groupId, name) as {id: number}[];
             return {
                 message: "Working hours retrieved successfully",
