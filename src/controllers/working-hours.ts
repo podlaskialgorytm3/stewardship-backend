@@ -104,6 +104,7 @@ class WorkingHoursController {
     public editWorkingHours = async (workingHoursData: WorkingHoursInterface, workingHourId: string) => {
         try{
             const workingHours = await WorkingHours.findByPk(workingHourId);
+            if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return "Start time cannot be greater than end time.";
             if(!workingHours) return "Working hours not found";
             await workingHours.update({
                 start: workingHoursData.start,
