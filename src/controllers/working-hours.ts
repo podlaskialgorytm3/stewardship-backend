@@ -19,6 +19,7 @@ class WorkingHoursController {
     public addWorkingHours = async (workingHoursData: WorkingHoursInterface, groupUserId: number) => {
         try{
             const id = uuidv4();
+            if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return "Start time cannot be greater than end time.";
             if (await this.isNotOverlap(groupUserId, workingHoursData.start, workingHoursData.end)) return "Working hours overlap with existing working hours";
             await WorkingHours.create({
                 id: id,
