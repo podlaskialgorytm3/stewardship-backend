@@ -98,6 +98,21 @@ class WorkingHoursController {
             return "An error occurred while getting working hours: " + error;
         }
     }
+    public editWorkingHours = async (workingHoursData: WorkingHoursInterface, workingHourId: string) => {
+        try{
+            const workingHours = await WorkingHours.findByPk(workingHourId);
+            if(!workingHours) return "Working hours not found";
+            await workingHours.update({
+                start: workingHoursData.start,
+                end: workingHoursData.end,
+                totalHours: (workingHoursData.end.getTime() - workingHoursData.start.getTime()) / 3600000
+            });
+            return "Working hours updated successfully";
+        }
+        catch(error){
+            return "An error occurred while updating working hours: " + error;
+        }
+    }
 }
 
 export default WorkingHoursController;

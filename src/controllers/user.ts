@@ -80,7 +80,6 @@ class UserController {
                 user.name = userInfo.name;
                 user.img = userInfo.img;
                 await user.save();
-                console.log("User updated: ", user);
             }
         }
         catch(error){

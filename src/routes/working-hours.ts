@@ -48,4 +48,20 @@ router.get("/working-hours/:id", userAuthentication.authMiddleware, async (reque
     }
 });
 
+router.put("/working-hours/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const workingHourId = request.params.id;
+        const { start, end } = request.query;
+        const workingHoursData = {
+            start: new Date(start as string),
+            end: new Date(end as string)
+        }
+        const result = await workingHoursController.editWorkingHours(workingHoursData, workingHourId);
+        response.status(200).send(result);
+    }
+    catch(error){
+        response.status(400).send(error);
+    }
+})
+
 export default router;
