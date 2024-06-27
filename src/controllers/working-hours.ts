@@ -62,6 +62,8 @@ class WorkingHoursController {
                     groupUserId: groupUserId,
                 }
             });
+            month = !month ? this.currentMonth : month;
+            year = !year ? this.currentYear : year;
             return Promise.all(
                 workingHours.filter((workingHour) => {
                     if (workingHour.start.getMonth() + 1 === month && workingHour.start.getFullYear() === year) {
