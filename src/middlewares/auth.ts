@@ -46,7 +46,10 @@ class UserAuthentication {
         
         }
         catch(error){
-            console.error("An error occurred while saving the access token: ", error);
+            return {
+                message: "An error occurred while saving the access token: " + error,
+                type: "error"
+            }
         }
     }
     public authMiddleware = (request: Request, resposne: Response, next: NextFunction) => {

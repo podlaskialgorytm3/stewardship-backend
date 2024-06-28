@@ -22,6 +22,7 @@ class ResetPassword {
                     email: email
                 }
             });
+            console.log(user)
             if(user){
                 const token = this.userUtils.generateToken(email);
                 await this.sendMail.sendMail(
@@ -30,14 +31,23 @@ class ResetPassword {
                     `Click on the link to reset your password: ${process.env.URL}/reset-password/${token}`
                 );
                 this.updateResetToken(email, token);
-                return "Password reset link sent successfully!";
+                return {
+                    message: "Password reset link sent successfully!",
+                    type: "success"
+                }
             }
             else{
-                return "User not found!";
+                return {
+                    message: "User not found!",
+                    type: "error"
+                }
             }  
         }
         catch(error){
-            return "An error occurred while sending the email: " + error;
+            return {
+                message: "An error occurred while sending the password reset link: " + error,
+                type: "error"
+            }
         }
     }
     public resetPassword = async (newPassword: string, token: string) => {
@@ -50,14 +60,23 @@ class ResetPassword {
             if(user){
                 user.password = await this.userUtils.hashPassword(newPassword);
                 await user.save();
-                return "Password reset successfully!";
+                return {
+                    message: "Password reset successfully!",
+                    type: "success"
+                }
             }
             else{
-                return "User not found!";
+                return {
+                    message: "User not found or your token is invalid!",
+                    type: "error"
+                }
             }
         }
         catch(error){
-            return "An error occurred while resetting the password: " + error;
+            return {
+                message: "An error occurred while resetting the password: " + error,
+                type: "error"
+            }
         }
     }
 }

@@ -11,102 +11,131 @@ const resetPassword = new ResetPassword;
 
 const router = express.Router();
 
-router.post('/user', (request: Request, response: Response) => {
-    const {name, img, email, password} = request.query;
-    const userInfo: UserInterFace = {
-        name: name as string,
-        img: img as string,
-        email: email as string,
-        password: password as string
-    } 
-    userController.createUser(userInfo);
-    response.status(201).json({
-        message: 'User created successfully',
-        user: {}
-    });
+router.post('/user', async (request: Request, response: Response) => {
+    try{
+        const {name, img, email, password} = request.query;
+        const userInfo: UserInterFace = {
+            name: name as string,
+            img: img as string,
+            email: email as string,
+            password: password as string
+        } 
+        const result = await userController.createUser(userInfo);
+        response.status(201).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 router.get('/user', async (request: Request, response: Response)  => {
-    const name = request.query.name as string;
-    const users = await userController.getUsers(name);
-    response.status(200).json({
-        message: 'Users fetched successfully!',
-        data: users
-    });
+    try{
+        const name = request.query.name as string;
+        const result = await userController.getUsers(name);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
 })
 router.get(`/user/:id`, userAuthentication.authMiddleware , async (request: Request, response: Response) => {
-    const id = request.params.id;
-    const user = await userController.getUser(id);
-    response.status(200).json({
-        message: 'Your data fetched successfully!',
-        data: user
-    });
+    try{
+        const id = request.params.id;
+        const result = await userController.getUser(id);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
 })
 router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const id = request.params.id;
-    const {name, img } = request.query;
-    const userData = {
-        name: name as string,
-        img: img as string,
+    try{
+        const id = request.params.id;
+        const {name, img } = request.query;
+        const userData = {
+            name: name as string,
+            img: img as string,
+        }
+        const result = await userController.editUser(id, userData);
+        response.status(200).json(result);
     }
-    userController.editUser(id, userData);
-    response.status(200).json({
-        message: 'User updated successfully!'
-    });
+    catch(error){
+        response.status(400).json(error);
+    }
 })
 router.post('/user/login', async (request: Request, response: Response) => {
-    const {email, password} = request.query;
-    const token = await userAuthentication.authonticateUser(email as string, password as string);
-    if(token){
-        response.status(200).json({
-            message: 'User authenticated successfully!',
-            token: token
-        });
+    try{
+        const {email, password} = request.query;
+        const token = await userAuthentication.authonticateUser(email as string, password as string);
+        if(token){
+            response.status(200).json({
+                message: 'User authenticated successfully!',
+                type: 'success',
+                token: token
+            });
+        }
+        else{
+            response.status(401).json({
+                message: 'User not authenticated',
+                type: 'error'
+            });
+        }
     }
-    else{
-        response.status(401).json({
-            message: 'User not authenticated'
-        });
+    catch(error){
+        response.status(400).json(error);
     }
 })
 router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const id = request.params.id;
-    userController.deleteUser(parseInt(id));
-    response.status(200).json({
-        message: 'User deleted successfully!'
-    });
+    try{
+        const id = request.params.id;
+        const result = userController.deleteUser(parseInt(id));
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
 })
 router.put('/user/email/change', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
-    const { id, email, password } = request.query;
-    const responseText = await userController.changeEmail(id as string, email as string, password as string);
-    resposne.status(200).json({
-        message: responseText
-    });
+    try{
+        const { id, email, password } = request.query;
+        const result = await userController.changeEmail(id as string, email as string, password as string);
+        resposne.status(200).json(result);
+    }
+    catch(error){
+        resposne.status(400).json(error);
+    }
 })
 router.post('/user/password/reset', async (request: Request, response: Response) => {
-    const { email } = request.query;
-    const responseText = await resetPassword.sendLinkToResetPassword(email as string);
-    response.status(200).json({
-        message: responseText
-    });
+    try{
+        const { email } = request.query;
+        const result = await resetPassword.sendLinkToResetPassword(email as string);
+        response.status(200).json(result);
+    }
+    catch(erorr){
+        response.status(400).json(erorr);
+    }
 })
 router.put('/user/password/reset', async (request: Request, response: Response) => {
-    const { newPassword, token } = request.query;
-    const responseText = await resetPassword.resetPassword(newPassword as string, token as string);
-    response.status(200).json({
-        message: responseText
-    });
+    try{
+        const { newPassword, token } = request.query;
+        const result = await resetPassword.resetPassword(newPassword as string, token as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
 })
-router.post('/user/logout', async (request: Request, response: Response) => {
-    const {email} = request.query;
-    userAuthentication.saveAccessToken(email as string, '');
-    response.status(200).json({
-        message: 'User logged out successfully'
-    });
-})
-router.get('/user/auth', userAuthentication.authMiddleware, async (request: Request, response: Response) => { // router for testing
-    response.status(200).json({
-        message: 'User authenticated successfully',
-    });
+router.post('/user/logout', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
+    try{
+        const {email} = request.query;
+        userAuthentication.saveAccessToken(email as string, '');
+        response.status(200).json({
+            message: 'User logged out successfully',
+            type: 'success'
+        });
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
 })
 
 export default router;

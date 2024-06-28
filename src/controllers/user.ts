@@ -22,17 +22,23 @@ class UserController {
         const id = uuidv4();
         const hashedPassword = this.userUtils.hashPassword(userInfo.password);
         try{
-            const newUser = await UserModal.create({
+            await UserModal.create({
                 id: id,
                 name: userInfo.name,
                 img: userInfo.img,
                 email: userInfo.email,
                 password: await hashedPassword
             });
-            console.log("New user created: ", newUser);
+            return {
+                message: "User created successfully!",
+                type: "success"
+            }
         }
         catch(error){
-            console.error("An error occurred while creating a new user: ", error);
+            return{
+                message: "An error occurred while creating the user: " + error,
+                type: "error"
+            }
         }
     }
     public getUsers = async (name: string) => {
@@ -40,24 +46,38 @@ class UserController {
                 const users = await UserModal.findAll({
                     attributes: ['id','name', 'img', 'email']
                 })
-                return users.filter((user) => user.name.includes(name) && user);
+                return {
+                    message: "Users fetched successfully!",
+                    type: "success",
+                    data: users.filter((user) => user.name.includes(name) && user)
+                }
             }
             catch(error){
-                return error;
+                return {
+                    message: "An error occurred while fetching the users: " + error,
+                    type: "error"
+                };
             }
         }
     public getUser = async (id: string) => {
         try{
             const user = await UserModal.findByPk(id);
             return {
-                id: user?.id,
-                name: user?.name,
-                img: user?.img,
-                email: user?.email,
-            };
+                message: "User fetched successfully!",
+                type: "success",
+                data: {
+                    id: user?.id,
+                    name: user?.name,
+                    img: user?.img,
+                    email: user?.email,
+                }
+            }
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while fetching the user: " + error,
+                type: "error"
+            };
         }
     }
     public getUserByToken = async (token: string) => {
@@ -81,9 +101,16 @@ class UserController {
                 user.img = userInfo.img;
                 await user.save();
             }
+            return {
+                message: "User updated",
+                type: "success"
+            }
         }
         catch(error){
-            console.error("An error occurred while updating the user: ", error);
+            return {
+                message: "An error occurred while updating the user: " + error,
+                type: "error"
+            }
         }
     }
     public deleteUser = async (id: number) => {
@@ -92,12 +119,18 @@ class UserController {
             if(user){
                 this.userAuthentication.saveAccessToken(user.email as string, '');
                 await user.destroy();
-                console.log("User deleted: ", user);
+                return {
+                    message: "User deleted successfully!",
+                    type: "success"
+                }
             }
 
         }
         catch(error){
-            console.error("An error occurred while deleting the user: ", error);
+            return {
+                message: "An error occurred while deleting the user: " + error,
+                type: "error"
+            }
         }
     }
     public changeEmail = async (id: string, email: string, password: string) => {
@@ -107,17 +140,25 @@ class UserController {
                 const isPasswordValid = this.userUtils.comparePassword(password, user.password);
                 if(await isPasswordValid){
                     user.email = email;
-                    console.log(email)
                     await user.save();
-                    return "Email updated successfully!"
+                    return {
+                        message: "Email updated successfully!",
+                        type: "success"
+                    }
                 }
                 else{
-                    return "Invalid password!";
+                    return {
+                        message: "Invalid password",
+                        type: "info"
+                    }
                 }
             }
         }
         catch(error){
-            return "An error occurred while updating the email: " + error;
+            return {
+                message: "An error occurred while updating the email: " + error,
+                type: "error"
+            }
         }
     } 
 }
