@@ -29,6 +29,14 @@ router.get('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (req
     });
 })
 
+router.get('/sub-task', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { taskInfoId } = request.query;
+    const subTasks = await subTaskController.getSubTasks(Number(taskInfoId));
+    response.status(200).json({
+        subTasks: subTasks
+    });
+})
+
 router.delete('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const subTaskId = request.params.subTaskId;
     const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as { id: number };
