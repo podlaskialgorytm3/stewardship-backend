@@ -13,44 +13,79 @@ const userAuthentication = new UserAuthentication();
 const groupUserController = new GroupUserController();
 
 router.post("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const { taskId, startDate, endDate, status, priority, comments } = request.query;
-    const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
-    const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
-    const responseText = await taskInfoController.createTaskInfo(
-        taskInfo,
-        groupUser?.id as number,
-        groupUser?.role as string
-    );
-    response.status(201).json({ message: responseText });
+    try{
+        const { taskId, startDate, endDate, status, priority, comments } = request.query;
+        const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
+        const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
+        const result = await taskInfoController.createTaskInfo(
+            taskInfo,
+            groupUser?.id as number,
+            groupUser?.role as string
+        );
+        response.status(201).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 
 router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const taskInfoId = parseInt(request.params.id);
-    const taskInfo = await taskInfoController.getTaskInfo(taskInfoId);
-    response.status(200).json(taskInfo);
+    try{
+        const taskInfoId = parseInt(request.params.id);
+        const result = await taskInfoController.getTaskInfo(taskInfoId);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
+})
+
+router.get("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { groupUserId } = request.query;
+        const result = await taskInfoController.getTasksInfo(parseInt(groupUserId as string));
+        response.status(200).json({
+            message: "Tasks info fetched successfully",
+            type: "success",
+            data: result
+        });
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 
 router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const {taskId, startDate, endDate, status, priority, comments } = request.query;
-    const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
-    const taskInfoId = parseInt(request.params.id);
-    const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
-    const responseText = await taskInfoController.editTaskInfo(
-        taskInfoId,
-        taskInfo,
-        groupUser?.role as string
-    );
-    response.status(200).json({ message: responseText });
+    try{
+        const {taskId, startDate, endDate, status, priority, comments } = request.query;
+        const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
+        const taskInfoId = parseInt(request.params.id);
+        const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
+        const result = await taskInfoController.editTaskInfo(
+            taskInfoId,
+            taskInfo,
+            groupUser?.role as string
+        );
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 
 router.delete("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const taskInfoId = parseInt(request.params.id);
-    const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
-    const responseText = await taskInfoController.deleteTaskInfo(
-        taskInfoId,
-        groupUser?.role as string
-    );
-    response.status(200).json({ message: responseText });
+    try{
+        const taskInfoId = parseInt(request.params.id);
+        const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number, role: string};
+        const result = await taskInfoController.deleteTaskInfo(
+            taskInfoId,
+            groupUser?.role as string
+        );
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 
 export default router;

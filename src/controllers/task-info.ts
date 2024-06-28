@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import TaskInfo from '../models/task-info';
+import TaskAffilation from '../models/task-affilation';
 import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
 import TaskAffilationController from './task-affilation';
 import GroupUserController from './group-user';
@@ -24,7 +25,10 @@ class TaskInfoController {
         const id = uuidv4() as unknown as number;
         try{
             if(role !== "admin"){
-                return "You are not authorized to create a new task info";
+                return {
+                    message: "You are not authorized to create task info",
+                    type: "info"
+                }
             }
             else{
                 await TaskInfo.create({
@@ -38,11 +42,17 @@ class TaskInfoController {
                     comments: taskInfo.comments
                 });
                 await this.taskAffilationController.addTaskAffilation(id, groupUserId, role);
-                return "New task info created!";
+                return {
+                    message: "Task info created successfully",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while creating a new task info: " + error;
+            return {
+                message: "An error occurred while creating task info: " + error,
+                type: "error"
+            }
         }
     }
     public getTaskInfo = async (taskInfoId: number) => {
@@ -66,13 +76,40 @@ class TaskInfoController {
             };
         }
         catch(error){
-            return "An error occurred while getting task info: " + error;
+            return {
+                message: "An error occurred while getting task info: " + error,
+                type: "error"
+            }
         }
     }
+    public getTasksInfo = async (groupUserId: number) => {
+        try{
+            const taskInfoIds = await TaskAffilation.findAll({
+                where: {
+                    groupUserId: groupUserId
+                },
+                attributes: ['taskInfoId']
+            });        
+            return Promise.all(
+                taskInfoIds.map(async (taskInfoId: {taskInfoId: number}) => {
+                    return await this.getTaskInfo(taskInfoId.taskInfoId);
+                }))
+        }
+        catch(error){
+            return {
+                message: "An error occurred while getting tasks info: " + error,
+                type: "error"
+            }
+        }
+    }
+
     public editTaskInfo = async (taskInfoId: number, taskInfo: TaskInfoInterface, role: string) => {
         try{
             if(role !== "admin"){
-                return "You are not authorized to edit this task info";
+                return {
+                    message: "You are not authorized to edit this task info",
+                    type: "info"
+                }
             }
             else{
                 await TaskInfo.update({
@@ -87,17 +124,27 @@ class TaskInfoController {
                         id: taskInfoId
                     }
                 });
-                return "Task info updated!";
+                return {
+                    message: "Task info updated successfully",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while updating task info: " + error;
+            return  {
+                message: "An error occurred while updating task info: " + error,
+                type: "error"
+            
+            }
         }
     }
     public deleteTaskInfo = async (taskInfoId: number, role: string) => {
         try{
             if(role !== "admin"){
-                return "You are not authorized to delete this task info";
+                return {
+                    message: "You are not authorized to delete this task info",
+                    type: "info"
+                }
             }
             else{
                 await TaskInfo.destroy({
@@ -107,11 +154,17 @@ class TaskInfoController {
                 });
                 await this.taskAffilationController.deleteTaskAffilationByTaskInfoId(taskInfoId, role);
                 await this.subTaskController.deleteSubTaskByTaskInfoId(taskInfoId);
-                return "Task info deleted!";
+                return {
+                    message: "Task info deleted successfully",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while deleting task info: " + error;
+            return {
+                message: "An error occurred while deleting task info: " + error,
+                type: "error"
+            }
         }
     }
 }
