@@ -19,8 +19,14 @@ class WorkingHoursController {
     public addWorkingHours = async (workingHoursData: WorkingHoursInterface, groupUserId: number) => {
         try{
             const id = uuidv4();
-            if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return "Start time cannot be greater than end time.";
-            if (await this.isNotOverlap(groupUserId, workingHoursData.start, workingHoursData.end)) return "Working hours overlap with existing working hours";
+            if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return {
+                message: "Start time cannot be greater than end time.",
+                type: "info",
+            }
+            if (await this.isNotOverlap(groupUserId, workingHoursData.start, workingHoursData.end)) return {
+                message: "Working hours cannot overlap",
+                type: "info",
+            }
             await WorkingHours.create({
                 id: id,
                 groupUserId: groupUserId,
@@ -28,10 +34,16 @@ class WorkingHoursController {
                 end: workingHoursData.end,
                 totalHours: (workingHoursData.end.getTime() - workingHoursData.start.getTime()) / 3600000
             });
-            return "Working hours added successfully";
+            return {
+                message: "Working hours added successfully",
+                type: "success",
+            }
         }
         catch(error){
-            throw "An error occurred while adding working hours: " + error;
+            return {
+                message: "An error occurred while adding working hours: " + error,
+                type: "error",
+            }
         }
     }
     private isNotOverlap = async (groupUserId: number, startToCheck: Date, endToCheck: Date) => {
@@ -50,10 +62,12 @@ class WorkingHoursController {
                 }
             }
             return false
-            
         }
         catch(error){
-            return "An error occurred while checking working hours: " + error;
+            return {
+                message: "An error occurred while checking for overlap: " + error,
+                type: "error",
+            }
         }
     }
     public getWorkingHoursByGroupUserId = async (groupUserId: number, month: number = this.currentMonth as number, year: number = this.currentYear as number) => {
@@ -79,7 +93,10 @@ class WorkingHoursController {
             )
         }
         catch(error){
-            return "An error occurred while getting working hours: " + error;
+            return {
+                message: "An error occurred while getting working hours: " + error,
+                type: "error",
+            }
         }
     }
     public getWorkingHours = async (groupId: string, name: string, role: string) => {
@@ -88,6 +105,7 @@ class WorkingHoursController {
             const groupUsers = await this.groupUserController.getUserByName(groupId, name) as {id: number}[];
             return {
                 message: "Working hours retrieved successfully",
+                type: "success",
                 data: await Promise.all(groupUsers.map(async (groupUser) => {
                         return {
                             groupUser: await this.groupUserController.getUserByGroupUserId(groupUser.id),
@@ -98,34 +116,58 @@ class WorkingHoursController {
             };
         }
         catch(error){
-            return "An error occurred while getting working hours: " + error;
+            return {
+                message: "An error occurred while getting working hours: " + error,
+                type: "error",
+            }
         }
     }
     public editWorkingHours = async (workingHoursData: WorkingHoursInterface, workingHourId: string) => {
         try{
             const workingHours = await WorkingHours.findByPk(workingHourId);
-            if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return "Start time cannot be greater than end time.";
-            if(!workingHours) return "Working hours not found";
+            if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return {
+                message: "Start time cannot be greater than end time.",
+                type: "info",
+            }
+            if(!workingHours) return {
+                message: "Working hours not found",
+                type: "info",
+            }
             await workingHours.update({
                 start: workingHoursData.start,
                 end: workingHoursData.end,
                 totalHours: (workingHoursData.end.getTime() - workingHoursData.start.getTime()) / 3600000
             });
-            return "Working hours updated successfully";
+            return {
+                message: "Working hours updated successfully",
+                type: "success",
+            }
         }
         catch(error){
-            return "An error occurred while updating working hours: " + error;
+            return {
+                message: "An error occurred while editing working hours: " + error,
+                type: "error",
+            }
         }
     }
     public deleteWorkingHours = async (workingHourId: string) => {
         try{
             const workingHours = await WorkingHours.findByPk(workingHourId);
-            if(!workingHours) return "Working hours not found";
+            if(!workingHours) return {
+                message: "Working hours not found",
+                type: "info",
+            }
             await workingHours.destroy();
-            return "Working hours deleted successfully";
+            return {
+                message: "Working hours deleted successfully",
+                type: "success",
+            }
         }
         catch(error){
-            return "An error occurred while deleting working hours: " + error;
+            return {
+                message: "An error occurred while deleting working hours: " + error,
+                type: "error",
+            }
         }
     }
 }

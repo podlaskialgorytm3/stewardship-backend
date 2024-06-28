@@ -41,7 +41,11 @@ router.get("/working-hours/:id", userAuthentication.authMiddleware, async (reque
         const year = request.query.year as string;
         const month = request.query.month as string;
         const result = await workingHoursController.getWorkingHoursByGroupUserId(parseInt(groupUserId) as number, parseInt(month) as number, parseInt(year) as number);
-        response.status(200).send(result);
+        response.status(200).send({
+            message: "Working hours retrieved successfully",
+            type: "success",
+            data: result
+        });
     }
     catch(error){
         response.status(400).send(error);
