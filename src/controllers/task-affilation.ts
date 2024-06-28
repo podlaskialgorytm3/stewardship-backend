@@ -16,7 +16,10 @@ class TaskAffilationController {
     public addTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
         try{
             if(role !== "admin"){
-                return "You are not authorized to create a new task affilation";
+                return {
+                    message: "You are not authorized to create task affilation",
+                    type: "info"
+                }
             }
             else{
                 const isTaskAffilation = await TaskAffilation.findOne({
@@ -25,17 +28,26 @@ class TaskAffilationController {
                         groupUserId
                     }
                 });
-                if(isTaskAffilation) return "Task affilation already exists!";
+                if(isTaskAffilation) return {
+                    message: "Task affilation already exists",
+                    type: "info"
+                }
                 await TaskAffilation.create({
                     id: uuidv4(),
                     taskInfoId: taskInfoId,
                     groupUserId: groupUserId
                 });
-                return "New task affilation created!";
+                return {
+                    message: "New task affilation created!",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while creating a new task affilation: " + error;
+            return {
+                message: "An error occurred while creating a new task affilation: " + error,
+                type: "error"
+            }
         }
     }
     public getTaskAffilation = async (taskInfoId: number) => {
@@ -53,16 +65,26 @@ class TaskAffilationController {
                 return userInfo;
             }))
 
-            return usersInfo
+            return {
+                message: "Task affilation fetched successfully",
+                type: "success",
+                data: usersInfo
+            }
         }
         catch(error){
-            return "An error occurred while getting task affilation: " + error;
+            return {
+                message: "An error occurred while fetching task affilation: " + error,
+                type: "error"
+            }
         }
     }
     public deleteTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
         try{
             if(role !== "admin"){
-                return "You are not authorized to delete task affilation";
+                return {
+                    message: "You are not authorized to delete task affilation",
+                    type: "info"
+                }
             }
             else{
                 await TaskAffilation.destroy({
@@ -71,17 +93,26 @@ class TaskAffilationController {
                         groupUserId
                     }
                 });
-                return "Task affilation deleted successfully!";
+                return {
+                    message: "Task affilation deleted successfully!",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while deleting task affilation: " + error;
+            return {
+                message: "An error occurred while deleting task affilation: " + error,
+                type: "error"
+            }
         }
     }
     public deleteTaskAffilationByTaskInfoId = async (taskInfoId: number, role: string) => {
         try{
             if(role !== "admin"){
-                return "You are not authorized to delete task affilation";
+                return {
+                    message: "You are not authorized to delete task affilation",
+                    type: "info"
+                }
             }
             else{
                 await TaskAffilation.destroy({
@@ -89,11 +120,17 @@ class TaskAffilationController {
                         taskInfoId
                     }
                 });
-                return "Task affilation deleted successfully!";
+                return {
+                    message: "Task affilation deleted successfully!",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while deleting task affilation: " + error;
+            return {
+                message: "An error occurred while deleting task affilation: " + error,
+                type: "error"
+            }
         }
     }
     
