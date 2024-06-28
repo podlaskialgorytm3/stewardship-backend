@@ -9,19 +9,24 @@ const userAuthentication = new UserAuthentication();
 const taskController = new TaskController();
 
 router.post("/task", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const { name } = request.query;
-    const task = await taskController.createTask(name as string);
-    response.json({
-        message: task
-    });
+    try{
+        const { name } = request.query;
+        const result = await taskController.createTask(name as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 router.get("/task", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    const { name } = request.query;
-    const tasks = await taskController.getTasksByName(name as string);
-    response.json({
-        message: "Tasks retrieved successfully",
-        data: tasks
-    });
+    try{
+        const { name } = request.query;
+        const result = await taskController.getTasksByName(name as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
 })
 
 

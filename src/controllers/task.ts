@@ -15,24 +15,39 @@ class TaskController {
         const tasks = await Task.findAll({attributes: ['task']})
         try{
             if(tasks.some((task) => task.task === name)){
-                return "Task already exists";
+                return {
+                    message: "Task already exists",
+                    type: "info"
+                }
             }
             else{
                 await Task.create({id: uuidv4(), task: name});
-                return "Task created successfully";
+                return {
+                    message: "Task created successfully",
+                    type: "success"
+                }
             }
         }
         catch(error){
-            return "An error occurred while creating a new task: " + error;
+            return {
+                message: "An error occurred while creating task: " + error,
+                type: "error"
+            }
         }
     }
     public getTasksByName = async (name: string) => {
         try{
             const tasks = await Task.findAll();
-            return tasks.filter((task) => task.task.includes(name));
+            return {
+                message: "Tasks retrieved successfully",
+                data: tasks.filter((task) => task.task.includes(name))
+            }
         }
         catch(error){
-            return "An error occurred while getting tasks: " + error;
+            return {
+                message: "An error occurred while getting tasks: " + error,
+                type: "error"
+            }
         }
     }
     public getTaskById = async (id: number) => {
