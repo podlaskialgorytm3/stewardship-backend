@@ -13,9 +13,16 @@ const router = express.Router();
 
 router.get('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const { groupId, username } = request.query;
-    const users = await groupUserController.getUsers(groupId as string, username as string);
-    response.status(200).json({ users });
+    const result = await groupUserController.getUsers(groupId as string, username as string);
+    response.status(200).json(result);
 })
+
+router.get('/group-user/:userId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    const { groupId, userId } = request.params;
+    const result = await groupUserController.getUser(groupId, parseInt(userId));
+    response.status(200).json(result);
+})
+
 router.delete('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     const { groupId, userId } = request.query;
     const role = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
