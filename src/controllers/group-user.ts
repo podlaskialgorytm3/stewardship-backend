@@ -16,7 +16,10 @@ class GroupUserController {
     public addUser = async (userId: number, role: string, groupId: string, addingPersonRole: string) => {
         try {
             if(addingPersonRole !== "admin"){
-                return "You are not authorized to add the user to the group";
+                return {
+                    message: "You are not authorized to add the user",
+                    type: "error",
+                }
             }
             else{
                 const groupUser = await GroupUser.findOne({
@@ -26,7 +29,10 @@ class GroupUserController {
                     },
                 });
                 if (groupUser) {
-                    return "User already exists in the group";
+                    return {
+                        message: "User already exists in the group",
+                        type: "error"
+                    }
                 }
                 else {
                     await GroupUser.create({
@@ -35,11 +41,17 @@ class GroupUserController {
                         groupId,
                         role,
                     });
-                    return "User added successfully";
+                    return {
+                        message: "User added successfully",
+                        type: "success"
+                    }
                 }
             }
         } catch (error) {
-            return "An error occurred while adding the user to the group: " + error;
+            return {
+                message: "An error occurred while adding the user: " + error,
+                type: "error"
+            }
         }
     }
     public getUser = async (groupId: string, userId: number) => {
@@ -61,12 +73,12 @@ class GroupUserController {
                 },
             })
             return {
-                id: groupUser?.id as number,
-                name: user?.name as string,
-                email: user?.email as string,
-                group: group?.name as string,
-                img: user?.img as string,
-                role: groupUser?.role as string,
+                    id: groupUser?.id as number,
+                    name: user?.name as string,
+                    email: user?.email as string,
+                    group: group?.name as string,
+                    img: user?.img as string,
+                    role: groupUser?.role as string,
             };
         }
         catch(error){
@@ -99,10 +111,17 @@ class GroupUserController {
                     role: groupUser.role,
                 };
             }));
-            return users.filter((user) => user.name.includes(name));
+            return {
+                message: "Users retrieved successfully",
+                data: users.filter((user) => user.name.includes(name)),
+                type: "success"
+            }
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while getting the users: " + error,
+                type: "error"
+            };
         }
     }
     public getUserByGroupUserId = async (groupUserId: number) => {
@@ -214,7 +233,10 @@ class GroupUserController {
     public deleteGroupUser = async (groupId: string, userId: number, role: string) => {
         try {
             if(role !== "admin"){
-                return "You are not authorized to delete the user";
+                return {
+                    message: "You are not authorized to delete the user",
+                    type: "error",
+                }
             }
             else{
                 await GroupUser.destroy({
@@ -223,17 +245,26 @@ class GroupUserController {
                         userId,
                     },
                 });
-                return "User deleted successfully";
+                return {
+                    message: "User deleted successfully",
+                    type: "success",
+                }
             }
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while deleting the user: " + error,
+                type: "error",
+            };
         }
     }
     public changeRole = async (groupId: string, userId: number, changingPersonRole: string, role: string) => {
         try {
             if(changingPersonRole !== "admin"){
-                return "You are not authorized to change the role of the user";
+                return {
+                    message: "You are not authorized to change the role",
+                    type: "error",
+                }
             }
             else{
                 await GroupUser.update({
@@ -244,12 +275,18 @@ class GroupUserController {
                         userId,
                     },
                 });
-                return "Role changed successfully";
+                return {
+                    message: "Role changed successfully",
+                    type: "success",
+                }
             }
             
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while changing the role: " + error,
+                type: "error",
+            };
         }
     }
 }
