@@ -26,9 +26,15 @@ class GroupUserRequestController {
                 userId,
                 status: "pending",
             });
-            return "Request sent successfully";
+            return {
+                message: "Request sent successfully",
+                type: "success"
+            }
         } catch (error) {
-            return "An error occurred while sending the request: " + error;
+            return {
+                message: "An error occurred while sending the request: " + error,
+                type: "error"
+            }
         }
     }
     public getRequests = async (groupId: string) => {
@@ -39,7 +45,9 @@ class GroupUserRequestController {
                 }
             });
             return {
-                requests: await Promise.all(requests.map(async (request) => {
+                message: "Requests fetched successfully",
+                type: "success",
+                data: await Promise.all(requests.map(async (request) => {
                     return {
                         id: request.id,
                         userId: await this.userController.getUser(String(request.userId)),
@@ -50,13 +58,19 @@ class GroupUserRequestController {
             };
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while fetching the requests: " + error,
+                type: "error"
+            };
         }
     }
     public changeStatus = async (groupId: string, userId: number, status: string, role: string) => {
         try{
             if(role != "admin"){
-                return "You are not authorized to change the status of the request";
+                return {
+                    message: "You are not authorized to change the status",
+                    type: "error"
+                };
             }
             else{
                 if(status === "accepted"){
@@ -67,7 +81,10 @@ class GroupUserRequestController {
                             userId,
                         }
                     })
-                    return "Request accepted successfully";
+                    return {
+                        message: "Request accepted successfully",
+                        type: "success"
+                    };
                 }
                 else if(status === "rejected"){
                     await GroupUserRequest.destroy({
@@ -76,15 +93,24 @@ class GroupUserRequestController {
                             userId,
                         }
                     })
-                    return "Request rejected successfully";
+                    return {
+                        message: "Request rejected successfully",
+                        type: "success"
+                    };
                 }
                 else{
-                    return "Invalid status";
+                    return {
+                        message: "Invalid status",
+                        type: "error"
+                    };
                 }
             }
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while changing the status: " + error,
+                type: "error"
+            };
         }
     }
 }
