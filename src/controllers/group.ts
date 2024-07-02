@@ -23,9 +23,15 @@ class GroupController {
                 category,
             });
             await this.groupUserController.addUser(userId, 'admin', groupId, "admin");
-            return "Group created successfully";
+            return {
+                message: "Group created successfully",
+                type: "success",
+            }
         } catch (error) {
-            return "An error occurred while creating the group: " + error;
+            return {
+                message: "An error occurred while creating the group: " + error,
+                type: "error",
+            }
         }
     }
     public getGroups = async (name: string) => {
@@ -33,23 +39,37 @@ class GroupController {
             const groups = await Group.findAll({
                 attributes: ['id', 'name', 'category'],
             });
-            return groups.filter((group) => group.name.includes(name) && group);;
+            return {
+                message: "Groups retrieved successfully",
+                data: groups.filter((group) => group.name.includes(name) && group),
+                type: "success"
+            }
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while retrieving the groups: " + error,
+                type: "error"
+            };
         }
     }
     public getGroup = async (id: string) => {
         try {
             const group = await Group.findByPk(id);
             return {
-                id: group?.id,
-                name: group?.name,
-                category: group?.category,
-            };
+                message: "Group retrieved successfully",
+                data: {
+                    id: group?.id,
+                    name: group?.name,
+                    category: group?.category,
+                },
+                type: "success"
+            }
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while retrieving the group: " + error,
+                type: "error"
+            };
         }
     }
     public editGroup = async (id: string, name: string, category: string, userId: number) => {
@@ -65,12 +85,21 @@ class GroupController {
                         id,
                     },
                 });
-                return "Group updated successfully";
+                return {
+                    message: "Group updated successfully",
+                    type: "success",
+                }
             } catch (error) {
-                return "An error occurred while updating the group: " + error;
+                return {
+                    message: "An error occurred while updating the group: " + error,
+                    type: "error",
+                }
             }
         } else {
-            return "You do not have the permission to edit this group";
+            return {
+                message: "You do not have the permission to edit this group",
+                type: "error",
+            }
         }
     }
     public deleteGroup = async (id: string, userId: number) => {
@@ -84,12 +113,21 @@ class GroupController {
                     },
                 });
                 await this.groupUserController.deleteGroupUsers(id);
-                return "Group deleted successfully";
+                return {
+                    message: "Group deleted successfully",
+                    type: "success",
+                }
             } catch (error) {
-                return "An error occurred while deleting the group: " + error;
+                return {
+                    message: "An error occurred while deleting the group: " + error,
+                    type: "error",
+                }
             }
         } else {
-            return "You do not have the permission to delete this group";
+            return {
+                message: "You do not have the permission to delete this group",
+                type: "error",
+            }
         }
     }
 }
