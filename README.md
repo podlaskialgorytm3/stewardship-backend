@@ -1,6 +1,6 @@
 # Stewardship Backend
 
-This is a web application for managing stewardship tasks.
+This is a web application for managing stewardship tasks. Software that helps keep track of tasks performed by group members. Helps in managing and monitoring working hours.
 
 ## Features
 
