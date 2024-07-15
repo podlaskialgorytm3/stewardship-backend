@@ -13,9 +13,9 @@ const groupUserController = new GroupUserController();
 
 router.post('/sub-task', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId, title, description, status } = request.query;
+        const { taskInfoId, title, description, status, groupId } = request.query;
         const subTaskData = { taskInfoId, title, description, status } as unknown as SubTaskCreation;
-        const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as { id: number };
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await subTaskController.createSubTask(subTaskData, groupUser.id);
         response.status(201).json(result);
     }
@@ -52,8 +52,9 @@ router.get('/sub-task', userAuthentication.authMiddleware, async (request: Reque
 
 router.delete('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
+        const { groupId } = request.query;
         const subTaskId = request.params.subTaskId;
-        const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as { id: number };
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await subTaskController.deleteSubTask(Number(subTaskId), groupUser.id);
         response.status(200).json(result);
     }
