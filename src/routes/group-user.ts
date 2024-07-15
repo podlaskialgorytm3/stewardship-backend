@@ -36,8 +36,8 @@ router.get('/group-user/:userId', userAuthentication.authMiddleware, async (requ
 router.delete('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { groupId, userId } = request.query;
-        const role = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
-        const result = await groupUserController.deleteGroupUser(groupId as string, userId as unknown as number, role as string);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const result = await groupUserController.deleteGroupUser(groupId as string, userId as unknown as number, groupUser.role );
         response.status(200).json(result);
     }
     catch(error){
@@ -47,8 +47,8 @@ router.delete('/group-user', userAuthentication.authMiddleware, async (request: 
 router.put('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { groupId, userId, role } = request.query;
-        const changingPersonRole = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
-        const result = await groupUserController.changeRole(groupId as string, userId as unknown as number, changingPersonRole, role as string);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const result = await groupUserController.changeRole(groupId as string, userId as unknown as number, groupUser.role , role as string);
         response.status(200).json(result);
     }
     catch(error){
@@ -58,8 +58,8 @@ router.put('/group-user', userAuthentication.authMiddleware, async (request: Req
 router.post('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { groupId, userId, role } = request.query;
-        const addingPersonRole = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
-        const result = await groupUserController.addUser(userId as unknown as number,role as string, groupId as string, addingPersonRole as string);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const result = await groupUserController.addUser(userId as unknown as number,role as string, groupId as string, groupUser.role as string);
         response.status(200).json(result);
     }
     catch(error){

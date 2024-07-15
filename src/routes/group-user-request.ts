@@ -3,14 +3,14 @@ import { Request, Response } from 'express';
 import GroupUserRequestController from '../controllers/group-user-request';
 import UserAuthentication from '../middlewares/auth';
 import UserController from '../controllers/user';
-import GroupUserUtils from '../utils/group-user';
+import GroupUserController from '../controllers/group-user';
 
 const router = express.Router();
 
 const groupUserRequestController = new GroupUserRequestController();    
 const userAuthentication = new UserAuthentication();
 const userController = new UserController();
-const groupUserUtils = new GroupUserUtils();
+const groupUserController = new GroupUserController();
 
 router.post('/group-user-request', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
@@ -37,8 +37,8 @@ router.get('/group-user-request', userAuthentication.authMiddleware , async (req
 router.put('/group-user-request', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
     try{
         const { groupId, userId, status } = request.query;
-        const role = await groupUserUtils.getRole(groupId as string, request.headers['authorization']?.split(' ')[1] as string);
-        const result = await groupUserRequestController.changeStatus(groupId as string, userId as unknown as number,status as string, role as string);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const result = await groupUserRequestController.changeStatus(groupId as string, userId as unknown as number,status as string, groupUser.role as string);
         response.status(201).json(result);
     }
     catch(error){
