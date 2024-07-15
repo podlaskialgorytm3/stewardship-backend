@@ -12,8 +12,8 @@ const groupUserController = new GroupUserController();
 
 router.post("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId, groupUserId } = request.query;
-        const user = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {role: string};
+        const { taskInfoId, groupUserId, groupId } = request.query;
+        const user = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await taskAffilationController.addTaskAffilation(
             taskInfoId as unknown as number, 
             groupUserId as unknown as number,
@@ -37,8 +37,8 @@ router.get("/task-affilation", userAuthentication.authMiddleware, async (request
 })
 router.delete("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId, groupUserId } = request.query;
-        const user = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {role: string};
+        const { taskInfoId, groupUserId, groupId } = request.query;
+        const user = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await taskAffilationController.deleteTaskAffilation(
             taskInfoId as unknown as number, 
             groupUserId as unknown as number, 
