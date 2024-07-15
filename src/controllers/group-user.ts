@@ -184,6 +184,37 @@ class GroupUserController {
             return error
         }
     }
+    public getUserByTokenGroup = async (token: string, groupId: string) => {
+        try{
+            const user = await User.findOne({
+                where: {
+                    accessToken: token,
+                },
+            });
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    userId: user?.id,
+                    groupId: groupId,
+                },
+            });
+            const group = await Group.findOne({
+                where: {
+                    id: groupUser?.groupId,
+                },
+            });
+            return {
+                id: groupUser?.id as number,
+                name: user?.name as string,
+                email: user?.email as string,
+                group: group?.name as string,
+                img: user?.img as string,
+                role: groupUser?.role as string,
+            }
+        }
+        catch(error){
+            return error
+        }
+    }
     public getUserByName = async (groupId: string, name: string) => {
         try {
             const groupUsers = await GroupUser.findAll({

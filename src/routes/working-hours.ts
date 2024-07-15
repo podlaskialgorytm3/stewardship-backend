@@ -11,13 +11,13 @@ const groupUserController = new GroupUserController();
 
 router.post("/working-hours", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try {
-        const { start, end } = request.query;
-        const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number};
+        const { start, end, groupUserId } = request.query
+        //const groupUser = await groupUserController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number};
         const workingHoursData = {
             start: new Date(start as string),
             end: new Date(end as string)
         }
-        const result = await workingHoursController.addWorkingHours(workingHoursData, groupUser.id);
+        const result = await workingHoursController.addWorkingHours(workingHoursData, parseInt(groupUserId as string) as number);
         response.status(200).send(result);
     } catch (error) {
         response.status(400).send(error);
