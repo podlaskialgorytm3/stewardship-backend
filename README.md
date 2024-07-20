@@ -80,7 +80,7 @@ To get started with the Stewardship Backend application, follow these steps:
 #### Login
 
 ```http
-  POST /stewardship/user/:id
+  POST /stewardship/user/login
 ```
 
 | Parameter | Type     | Description                |
