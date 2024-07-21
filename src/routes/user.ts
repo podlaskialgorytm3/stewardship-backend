@@ -13,7 +13,7 @@ const router = express.Router();
 
 router.post('/user', async (request: Request, response: Response) => {
     try{
-        const {name, img, email, password} = request.query;
+        const {name, img, email, password} = request.body;
         const userInfo: UserInterFace = {
             name: name as string,
             img: img as string,
@@ -107,7 +107,8 @@ router.put('/user/email/change', userAuthentication.authMiddleware, async (reque
 })
 router.post('/user/password/reset', async (request: Request, response: Response) => {
     try{
-        const { email } = request.query;
+        const { email } = request.body;
+        console.log(email)
         const result = await resetPassword.sendLinkToResetPassword(email as string);
         response.status(200).json(result);
     }
@@ -117,7 +118,7 @@ router.post('/user/password/reset', async (request: Request, response: Response)
 })
 router.put('/user/password/reset', async (request: Request, response: Response) => {
     try{
-        const { newPassword, token } = request.query;
+        const { newPassword, token } = request.body;
         const result = await resetPassword.resetPassword(newPassword as string, token as string);
         response.status(200).json(result);
     }
