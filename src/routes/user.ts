@@ -64,8 +64,9 @@ router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Reque
 })
 router.post('/user/login', async (request: Request, response: Response) => {
     try{
-        const {email, password} = request.query;
+        const {email, password} = request.body;
         const token = await userAuthentication.authonticateUser(email as string, password as string);
+        console.log({email,password})
         if(token){
             response.status(200).json({
                 message: 'User authenticated successfully!',
@@ -132,6 +133,16 @@ router.post('/user/logout', userAuthentication.authMiddleware , async (request: 
             message: 'User logged out successfully',
             type: 'success'
         });
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
+router.get('/user/token/validate', async (request: Request, response: Response) => {
+    try{
+        const {token} = request.body;
+        const result = await userController.isTokenValid(token as string);
+        response.status(200).json(result);
     }
     catch(error){
         response.status(400).json(error);

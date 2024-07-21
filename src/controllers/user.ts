@@ -161,6 +161,35 @@ class UserController {
             }
         }
     } 
+    public isTokenValid = async (token: string) => {
+        try{
+            const user = await UserModal.findOne({
+                where: {
+                    accessToken: token
+                }
+            });
+            if(user){
+                return {
+                    message: "Token is valid",
+                    type: "success",
+                    valid: true
+                }
+            }
+            else{
+                return {
+                    message: "Token is invalid",
+                    type: "info",
+                    valid: false
+                }
+            }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while validating the token: " + error,
+                type: "error"
+            }
+        }
+    }
 }
 
 export default UserController;
