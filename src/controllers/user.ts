@@ -172,14 +172,14 @@ class UserController {
                 return {
                     message: "Token is valid",
                     type: "success",
-                    valid: true
+                    authenticated: true
                 }
             }
             else{
                 return {
                     message: "Token is invalid",
                     type: "info",
-                    valid: false
+                    authenticated: false
                 }
             }
         }

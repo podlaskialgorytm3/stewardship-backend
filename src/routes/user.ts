@@ -141,6 +141,7 @@ router.post('/user/logout', userAuthentication.authMiddleware , async (request: 
 router.get('/user/token/validate', async (request: Request, response: Response) => {
     try{
         const {token} = request.body;
+        console.log("Token: ", token)
         const result = await userController.isTokenValid(token as string);
         response.status(200).json(result);
     }
