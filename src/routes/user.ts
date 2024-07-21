@@ -66,12 +66,12 @@ router.post('/user/login', async (request: Request, response: Response) => {
     try{
         const {email, password} = request.body;
         const token = await userAuthentication.authonticateUser(email as string, password as string);
-        console.log({email,password})
         if(token){
             response.status(200).json({
                 message: 'User authenticated successfully!',
                 type: 'success',
-                token: token
+                token: token,
+                user: await userController.getUserByToken(String(token))
             });
         }
         else{
@@ -140,7 +140,7 @@ router.post('/user/logout', userAuthentication.authMiddleware , async (request: 
 })
 router.get('/user/token/validate', async (request: Request, response: Response) => {
     try{
-        const {token} = request.body;
+        const token = request.headers['authorization']?.split(' ')[1];
         console.log("Token: ", token)
         const result = await userController.isTokenValid(token as string);
         response.status(200).json(result);

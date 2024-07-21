@@ -87,10 +87,27 @@ class UserController {
                     accessToken: token
                 }
             });
-            return user;
+
+            if (user) {
+                return {
+                   
+                        id: user.id,
+                        name: user.name,
+                        img: user.img,
+                        email: user.email,
+                }
+            } else {
+                return {
+                    message: "User not found",
+                    type: "error"
+                }
+            }
         }
         catch(error){
-            return null;
+            return {
+                message: "An error occurred while fetching the user: " + error,
+                type: "error"
+            };
         }
     }
     public editUser = async (id: string, userInfo: {name: string, img: string}) => {
