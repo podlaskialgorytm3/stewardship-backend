@@ -37,10 +37,10 @@ router.get('/user', async (request: Request, response: Response)  => {
         response.status(400).json(error);
     }
 })
-router.get(`/user/:id`, userAuthentication.authMiddleware , async (request: Request, response: Response) => {
+router.get(`/user/:token`, userAuthentication.authMiddleware , async (request: Request, response: Response) => {
     try{
-        const id = request.params.id;
-        const result = await userController.getUser(id);
+        const token = request.params.token;
+        const result = await userController.getUserByToken(token);
         response.status(200).json(result);
     }
     catch(error){
