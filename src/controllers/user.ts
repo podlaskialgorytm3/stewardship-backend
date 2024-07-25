@@ -269,6 +269,50 @@ class UserController {
             }
         }
     }
+    public changePassword = async (oldPassword: string,newPassword: string, token: string) => {
+        try{
+            if(oldPassword === newPassword){
+                return {
+                    message: "Old and new passwords are the same",
+                    type: "info"
+                }
+            }
+            const user = await UserModal.findOne({
+                where: {
+                    accessToken: token
+                }
+            });
+            if(user){
+                const isPasswordValid = await this.userUtils.comparePassword(oldPassword, user.password);
+                if(isPasswordValid){
+                    user.password = await this.userUtils.hashPassword(newPassword);
+                    await user.save();
+                    return {
+                        message: "Password updated successfully!",
+                        type: "success"
+                    }
+                }
+                else{
+                    return {
+                        message: "Invalid password",
+                        type: "info"
+                    }
+                }
+            }
+            else{
+                return {
+                message: "User not found",
+                type: "error"
+            }
+        }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while updating the password: " + error,
+                type: "error"
+            }
+        }
+    }
 }
 
 export default UserController;

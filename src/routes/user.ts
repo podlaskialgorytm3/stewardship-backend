@@ -97,7 +97,8 @@ router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Re
 })
 router.put('/user/email/change', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
     try{
-        const { token, email, password } = request.body;
+        const { email, password } = request.body;
+        const token = request.headers['authorization']?.split(' ')[1];
         const result = await userController.changeEmail(token as string, email as string, password as string);
         resposne.status(200).json(result);
     }
@@ -166,6 +167,17 @@ router.put('/user/name/change', userAuthentication.authMiddleware, async (reques
         const token = request.headers['authorization']?.split(' ')[1];
         const {name} = request.body;
         const result = await userController.changeName(name as string, token as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
+router.put('/user/password/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const token = request.headers['authorization']?.split(' ')[1];
+        const {oldPassword, newPassword} = request.body;
+        const result = await userController.changePassword(oldPassword as string, newPassword as string, token as string);
         response.status(200).json(result);
     }
     catch(error){
