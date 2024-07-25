@@ -150,22 +150,22 @@ router.get('/user/token/validate', async (request: Request, response: Response) 
         response.status(400).json(error);
     }
 })
-router.put('user/img/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+router.put('/user/img/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const token = request.headers['authorization']?.split(' ')[1];
         const {img} = request.body;
-        const result = await userController.changeImg(token as string, img as string);
+        const result = await userController.changeImg(img as string, token as string);
         response.status(200).json(result);
     }
     catch(error){
         response.status(400).json(error);
     }
 })
-router.put('user/name/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+router.put('/user/name/change', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const token = request.headers['authorization']?.split(' ')[1];
         const {name} = request.body;
-        const result = await userController.changeName(token as string, name as string);
+        const result = await userController.changeName(name as string, token as string);
         response.status(200).json(result);
     }
     catch(error){
