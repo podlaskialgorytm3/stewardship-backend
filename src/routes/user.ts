@@ -97,8 +97,8 @@ router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Re
 })
 router.put('/user/email/change', userAuthentication.authMiddleware, async (request: Request, resposne: Response) => {
     try{
-        const { id, email, password } = request.query;
-        const result = await userController.changeEmail(id as string, email as string, password as string);
+        const { token, email, password } = request.body;
+        const result = await userController.changeEmail(token as string, email as string, password as string);
         resposne.status(200).json(result);
     }
     catch(error){

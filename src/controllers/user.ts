@@ -150,9 +150,13 @@ class UserController {
             }
         }
     }
-    public changeEmail = async (id: string, email: string, password: string) => {
+    public changeEmail = async (token: string, email: string, password: string) => {
         try{
-            const user = await UserModal.findByPk(id);
+            const user = await UserModal.findOne({
+                where: {
+                    accessToken: token
+                }
+            });
             if(user){
                 const isPasswordValid = this.userUtils.comparePassword(password, user.password);
                 if(await isPasswordValid){
