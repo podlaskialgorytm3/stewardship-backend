@@ -207,6 +207,64 @@ class UserController {
             }
         }
     }
+    public changeImg = async (img: string, token: string) => {
+        try{
+            const user = await UserModal.findOne({
+                where: {
+                    accessToken: token
+                }
+            });
+            if(user){
+                user.img = img;
+                await user.save();
+                return {
+                    message: "Image updated successfully!",
+                    type: "success"
+                }
+            }
+            else{
+                return {
+                    message: "User not found",
+                    type: "error"
+                }
+            }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while updating the image: " + error,
+                type: "error"
+            }
+        }
+    }
+    public changeName = async (name: string, token: string) => {
+        try{
+            const user = await UserModal.findOne({
+                where: {
+                    accessToken: token
+                }
+            });
+            if(user){
+                user.name = name;
+                await user.save();
+                return {
+                    message: "Name updated successfully!",
+                    type: "success"
+                }
+            }
+            else{
+                return {
+                    message: "User not found",
+                    type: "error"
+                }
+            }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while updating the name: " + error,
+                type: "error"
+            }
+        }
+    }
 }
 
 export default UserController;
