@@ -132,7 +132,9 @@ class GroupController {
     }
     public getGroupsByName = async (name: string) => {
         try {
-            const groups = await Group.findAll();
+            const groups = await Group.findAll({
+                limit: 10,
+            });
             return {
                 message: "Groups retrieved successfully",
                 data: groups.filter((group) => group.name.includes(name) && group),
