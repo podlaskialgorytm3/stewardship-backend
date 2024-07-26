@@ -130,6 +130,22 @@ class GroupController {
             }
         }
     }
+    public getGroupsByName = async (name: string) => {
+        try {
+            const groups = await Group.findAll();
+            return {
+                message: "Groups retrieved successfully",
+                data: groups.filter((group) => group.name.includes(name) && group),
+                type: "success"
+            }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while retrieving the groups: " + error,
+                type: "error"
+            };
+        }
+    }
 }
 
 export default GroupController;

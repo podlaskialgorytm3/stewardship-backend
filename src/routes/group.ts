@@ -64,5 +64,15 @@ router.delete('/group/:id',userAuthentication.authMiddleware, async (request: Re
         response.status(400).json(error);
     }
 })
+router.get('/group/:name',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const name = request.params.name;
+        const result = await groupController.getGroupsByName(name);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
 
 export default router; 
