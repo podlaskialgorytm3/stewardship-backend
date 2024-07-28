@@ -320,6 +320,25 @@ class GroupUserController {
             };
         }
     }
+    public isMemberOfGroup = async (groupId: string, userId: number) => {
+        try{
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    groupId,
+                    userId,
+                },
+            });
+            if(groupUser){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        catch(error){
+            return false;
+        }
+    }
 }
 
 export default GroupUserController;

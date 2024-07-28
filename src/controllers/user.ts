@@ -315,13 +315,13 @@ class UserController {
     }
     public getUserIdByToken = async (token: string) => {
         try{
-            const userId = await UserModal.findOne({
+            const user = await UserModal.findOne({
                 where: {
                     accessToken: token
                 },
                 attributes: ['id']
             })
-            return userId?.id;
+            return user?.id;
         }
         catch(error){
             return null
