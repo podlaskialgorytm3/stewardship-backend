@@ -67,7 +67,8 @@ router.delete('/group/:id',userAuthentication.authMiddleware, async (request: Re
 router.get('/group/search/:name',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const name = request.params.name;
-        const result = await groupController.getGroupsByName(name);
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const result = await groupController.getGroupsByName(name, token);
         response.status(200).json(result);
     }
     catch(error){

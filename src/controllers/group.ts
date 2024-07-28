@@ -1,11 +1,15 @@
 import Group from "../models/group";
+import GroupUser from "../models/group-user";
+import GroupUserRequest from "../models/group-user-request";
 import { v4 as uuidv4 } from 'uuid';
 
 import GroupUserController from "./group-user";
-import { group } from "console";
+import UserController from "./user";
+
 
 class GroupController {
     public groupUserController = new GroupUserController();
+    public userController = new UserController();
     public createTable = async () => {
         Group.sync({ alter: true })
             .then(() => {
@@ -131,7 +135,34 @@ class GroupController {
             }
         }
     }
-    public getGroupsByName = async (name: string) => {
+    public isMembership = async (groupId: string, token: string) => {
+        try{
+            const userId = await this.userController.getUserIdByToken(token);
+            const groupUsers = await GroupUser.findAll()
+            const groupUserRequests = await GroupUserRequest.findAll()
+
+            const membership = groupUsers.filter((groupUser) => {
+                if(groupUser.userId === userId && String(groupUser.groupId) === groupId){
+                    return "member";
+                }
+                else {
+                    groupUserRequests.filter((groupUserRequest) => {
+                        if(groupUserRequest.userId === userId && String(groupUserRequest.groupId) === groupId){
+                            return "pending";
+                        }
+                    })
+                    return "none";
+                }
+            })
+        }
+        catch(error){
+            return {
+                message: "An error occurred while checking the membership: " + error,
+                type: "error"
+            }
+        }
+    }
+    public getGroupsByName = async (name: string, token: string) => {
         try {
             const groups = await Group.findAll({
                 limit: 10,
@@ -142,12 +173,11 @@ class GroupController {
                     id: group.id,
                     name: group.name,
                     category: group.category,
+                    membership: this.isMembership(String(group.id), token)
                 }
             })
 
             const filteredGroups = groupsData.filter((group) => group.name.includes(name) && group);
-
-            console.log(filteredGroups)
 
             return {
                 message: "Groups retrieved successfully",
