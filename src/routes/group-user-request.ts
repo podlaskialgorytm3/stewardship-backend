@@ -14,7 +14,7 @@ const groupUserController = new GroupUserController();
 
 router.post('/group-user-request', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { groupId } = request.query;
+        const { groupId } = request.body;
         const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
         const result = await groupUserRequestController.addRequest(user?.id as number, groupId as string);
         response.status(201).json(result);
@@ -39,6 +39,17 @@ router.put('/group-user-request', userAuthentication.authMiddleware , async (req
         const { groupId, userId, status } = request.query;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await groupUserRequestController.changeStatus(groupId as string, userId as unknown as number,status as string, groupUser.role as string);
+        response.status(201).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
+router.delete('/group-user-request', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
+    try{
+        const { groupId } = request.body;
+        const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number};
+        const result = await groupUserRequestController.deleteRequest(groupId as string, user.id as number);
         response.status(201).json(result);
     }
     catch(error){

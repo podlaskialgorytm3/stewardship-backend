@@ -113,6 +113,26 @@ class GroupUserRequestController {
             };
         }
     }
+    public deleteRequest = (groupId: string, userId: number) => {
+        try{
+            GroupUserRequest.destroy({
+                where: {
+                    groupId,
+                    userId,
+                }
+            })
+            return {
+                message: "Request deleted successfully",
+                type: "success"
+            };
+        }
+        catch(error){
+            return {
+                message: "An error occurred while deleting the request: " + error,
+                type: "error"
+            };
+        }
+    }
 }
 
 export default GroupUserRequestController;
