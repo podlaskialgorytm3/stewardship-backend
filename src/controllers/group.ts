@@ -139,7 +139,11 @@ class GroupController {
         try{
             const userId = await this.userController.getUserIdByToken(token);
             const groupUsers = await GroupUser.findAll()
-            const groupUserRequests = await GroupUserRequest.findAll()
+            const groupUserRequests = await GroupUserRequest.findAll({
+                where: {
+                    status: "pending"
+                }
+            })
 
             const groupUserData = groupUsers.map((groupUser) => {
                 return {
