@@ -12,7 +12,8 @@ const userController = new UserController();
 
 router.post('/group',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { name, category } = request.query;
+        const { name, category } = request.body;
+        console.log({name, category});
         const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
         const result = await groupController.createGroup(name as string, category as string, user?.id as number);
         response.status(201).json(result); 
