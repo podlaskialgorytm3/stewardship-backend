@@ -67,9 +67,9 @@ router.post('/group-user', userAuthentication.authMiddleware, async (request: Re
         response.status(400).json(error);
     }
 })
-router.get('/group-user/is-member', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+router.get('/group-user/is-member/:groupId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { groupId } = request.body;
+        const  groupId  = request.params.groupId as string;
         const token = request.headers['authorization']?.split(' ')[1] as string;
         const userId = await userController.getUserIdByToken(token);
         const result = await groupUserController.isMemberOfGroup(groupId as string, userId as number);
