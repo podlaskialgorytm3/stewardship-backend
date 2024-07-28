@@ -141,25 +141,45 @@ class GroupController {
             const groupUsers = await GroupUser.findAll()
             const groupUserRequests = await GroupUserRequest.findAll()
 
-            const membership = groupUsers.filter((groupUser) => {
-                if(groupUser.userId === userId && String(groupUser.groupId) === groupId){
-                    return "member";
-                }
-                else {
-                    groupUserRequests.filter((groupUserRequest) => {
-                        if(groupUserRequest.userId === userId && String(groupUserRequest.groupId) === groupId){
-                            return "pending";
-                        }
-                    })
-                    return "none";
+            const groupUserData = groupUsers.map((groupUser) => {
+                return {
+                    userId: groupUser.userId,
+                    groupId: groupUser.groupId
                 }
             })
+
+            const groupUserRequestsData = groupUserRequests.map((groupUserRequest) => {
+                return {
+                    userId: groupUserRequest.userId,
+                    groupId: groupUserRequest.groupId
+                }
+            })
+
+           const isMember = groupUserData.map((groupUser) => {
+                if(groupUser.userId === userId && String(groupUser.groupId) === groupId){
+                    return true
+                }
+            })
+
+            const isPending = groupUserRequestsData.map((groupUser) => {
+                if(groupUser.userId === userId && String(groupUser.groupId) === groupId){
+                    return true
+                }
+            })
+
+            if(isMember.includes(true)){
+                return "member"
+            }
+            else if(isPending.includes(true)){
+                return "pending"
+            }
+            else{
+                return "none"
+            }
+            
         }
         catch(error){
-            return {
-                message: "An error occurred while checking the membership: " + error,
-                type: "error"
-            }
+            return "none";
         }
     }
     public getGroupsByName = async (name: string, token: string) => {
@@ -168,16 +188,18 @@ class GroupController {
                 limit: 10,
             });
 
-            const groupsData = groups.map((group) => {
+            const groupsData = await Promise.all(groups.map(async (group) => {
                 return {
                     id: group.id,
                     name: group.name,
                     category: group.category,
-                    membership: this.isMembership(String(group.id), token)
+                    membership: await this.isMembership(String(group.id), token)
                 }
-            })
+            }));
 
             const filteredGroups = groupsData.filter((group) => group.name.includes(name) && group);
+
+            console.log(filteredGroups);
 
             return {
                 message: "Groups retrieved successfully",
