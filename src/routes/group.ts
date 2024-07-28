@@ -64,7 +64,7 @@ router.delete('/group/:id',userAuthentication.authMiddleware, async (request: Re
         response.status(400).json(error);
     }
 })
-router.get('/group/:name',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+router.get('/group/search/:name',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const name = request.params.name;
         const result = await groupController.getGroupsByName(name);

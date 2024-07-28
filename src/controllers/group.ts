@@ -2,6 +2,7 @@ import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';
 
 import GroupUserController from "./group-user";
+import { group } from "console";
 
 class GroupController {
     public groupUserController = new GroupUserController();
@@ -135,9 +136,22 @@ class GroupController {
             const groups = await Group.findAll({
                 limit: 10,
             });
+
+            const groupsData = groups.map((group) => {
+                return {
+                    id: group.id,
+                    name: group.name,
+                    category: group.category,
+                }
+            })
+
+            const filteredGroups = groupsData.filter((group) => group.name.includes(name) && group);
+
+            console.log(filteredGroups)
+
             return {
                 message: "Groups retrieved successfully",
-                data: groups.filter((group) => group.name.includes(name) && group),
+                data: filteredGroups,
                 type: "success"
             }
         }
