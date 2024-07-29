@@ -49,7 +49,7 @@ router.delete('/group-user-request', userAuthentication.authMiddleware , async (
     try{
         const { groupId } = request.body;
         const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string) as {id: number};
-        const result = await groupUserRequestController.deleteRequest(groupId as string, user.id as number);
+        const result = groupUserRequestController.deleteRequest(groupId as string, user.id as number);
         response.status(201).json(result);
     }
     catch(error){

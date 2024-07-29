@@ -19,9 +19,10 @@ class GroupUserRequestController {
             });
     }
     public addRequest = async (userId: number, groupId: string) => {
+        const groupUserRequestId = uuidv4();
         try {
             await GroupUserRequest.create({
-                id: uuidv4(),
+                id: groupUserRequestId,
                 groupId,
                 userId,
                 status: "pending",
