@@ -101,7 +101,7 @@ class GroupUserController {
                 const user = await User.findOne({
                     where: {
                         id: groupUser.userId,
-                    },
+                    }
                 });
                 return {
                     name: user?.name as string,

@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.get('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { groupId, username } = request.body;
+        const { groupId, username } = request.query;
         const result = await groupUserController.getUsers(groupId as string, username as string);
         response.status(200).json(result);
     }
