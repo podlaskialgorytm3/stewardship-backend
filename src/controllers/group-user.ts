@@ -339,6 +339,25 @@ class GroupUserController {
             return false;
         }
     }
+    public isAdminOfGroup = async (groupId: string, token: string) => {
+        try{
+            const user = await User.findOne({
+                where: {
+                    accessToken: token,
+                },
+            });
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    userId: user?.id,
+                    groupId: groupId,
+                },
+            });
+            return groupUser?.role === 'admin';
+        }
+        catch(error){
+            return error;
+        }
+    }
 }
 
 export default GroupUserController;

@@ -79,6 +79,17 @@ router.get('/group-user/is-member/:groupId', userAuthentication.authMiddleware, 
         response.status(400).json(error);
     }
 })
+router.get('/group-user/is-admin/:groupId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const  groupId  = request.params.groupId as string;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const result = await groupUserController.isAdminOfGroup(groupId as string, token as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
 
 
 export default router;
