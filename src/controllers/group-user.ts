@@ -262,7 +262,7 @@ class GroupUserController {
             return error;
         }
     }
-    public deleteGroupUser = async (groupId: string, userId: number, role: string) => {
+    public deleteGroupUser = async (groupUserId: number, role: string) => {
         try {
             if(role !== "admin"){
                 return {
@@ -273,8 +273,7 @@ class GroupUserController {
             else{
                 await GroupUser.destroy({
                     where: {
-                        groupId,
-                        userId,
+                        id: groupUserId
                     },
                 });
                 return {
