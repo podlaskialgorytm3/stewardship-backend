@@ -104,6 +104,7 @@ class GroupUserController {
                     }
                 });
                 return {
+                    id: groupUser?.id as number,
                     name: user?.name as string,
                     group: group?.name as string,
                     email: user?.email as string,
