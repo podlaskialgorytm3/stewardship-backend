@@ -294,7 +294,7 @@ class GroupUserController {
         try{
             const groupUsers = await GroupUser.findAll({
                 where: {
-                    groupId,
+                    groupId: groupId,
                     role: "admin",
                 },
             });
@@ -309,6 +309,8 @@ class GroupUserController {
             const groupUser = await this.getUserByGroupUserId(userId) as {role: string};
             const quantityOfAdmins = await this.getQuantityOfAdmins(groupId);
             const role = groupUser?.role === "admin" ? "member" : "admin";
+            console.log("Ilość adminów w grupie: ",quantityOfAdmins)
+            console.log("Rola osoby zmieniającej: ",changingPersonRole)
             if(quantityOfAdmins === 1){
                 return {
                     message: "You cannot change the role of the last admin",

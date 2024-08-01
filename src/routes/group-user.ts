@@ -46,7 +46,7 @@ router.delete('/group-user', userAuthentication.authMiddleware, async (request: 
 })
 router.put('/group-user', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { groupId, userId } = request.query;
+        const { groupId, userId } = request.body;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await groupUserController.changeRole(groupId as string, userId as unknown as number, groupUser.role);
         response.status(200).json(result);
