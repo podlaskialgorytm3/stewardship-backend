@@ -105,6 +105,7 @@ class GroupUserController {
                 });
                 return {
                     id: groupUser?.id as number,
+                    userId: groupUser.userId as number,
                     name: user?.name as string,
                     group: group?.name as string,
                     email: user?.email as string,
@@ -289,8 +290,10 @@ class GroupUserController {
             };
         }
     }
-    public changeRole = async (groupId: string, userId: number, changingPersonRole: string, role: string) => {
+    public changeRole = async (groupId: string, userId: number, changingPersonRole: string) => {
         try {
+            const groupUser = await this.getUserByGroupUserId(userId) as {role: string};
+            const role = groupUser?.role === "admin" ? "member" : "admin";
             if(changingPersonRole !== "admin"){
                 return {
                     message: "You are not authorized to change the role",
