@@ -326,12 +326,10 @@ class GroupUserController {
     }
     public changeRole = async (groupId: string, userId: number, changingPersonRole: string) => {
         try {
-            const groupUser = await this.getUserByGroupUserId(userId) as {role: string};
+            const groupUser = await this.getUser(groupId, userId) as {role: string};
             const quantityOfAdmins = await this.getQuantityOfAdmins(groupId);
             const role = groupUser?.role === "admin" ? "member" : "admin";
-            console.log("Ilość adminów w grupie: ",quantityOfAdmins)
-            console.log("Rola osoby zmieniającej: ",changingPersonRole)
-            if(quantityOfAdmins === 1){
+            if(quantityOfAdmins === 1 && groupUser?.role === "admin"){
                 return {
                     message: "You cannot change the role of the last admin",
                     type: "error"
