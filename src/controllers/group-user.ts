@@ -263,8 +263,15 @@ class GroupUserController {
             return error;
         }
     }
-    public deleteGroupUser = async (groupUserId: number, role: string) => {
+    public deleteGroupUser = async (groupUserId: number, role: string, groupId: string) => {
         try {
+            const quantityOfUsers = await this.getQuantityOfUsers(groupId);
+            if(quantityOfUsers === 1){
+                return {
+                    message: "You cannot delete the last user",
+                    type: "error"
+                }
+            }
             if(role !== "admin"){
                 return {
                     message: "You are not authorized to delete the user",
@@ -296,6 +303,19 @@ class GroupUserController {
                 where: {
                     groupId: groupId,
                     role: "admin",
+                },
+            });
+            return groupUsers.length;
+        }
+        catch(error){
+            return error;
+        }
+    }
+    public getQuantityOfUsers = async (groupId: string) => {
+        try{
+            const groupUsers = await GroupUser.findAll({
+                where: {
+                    groupId: groupId,
                 },
             });
             return groupUsers.length;

@@ -37,7 +37,7 @@ router.delete('/group-user', userAuthentication.authMiddleware, async (request: 
     try{
         const { groupId, memberId } = request.query;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await groupUserController.deleteGroupUser(parseInt(memberId as string) as number, groupUser.role );
+        const result = await groupUserController.deleteGroupUser(parseInt(memberId as string) as number, groupUser.role, groupId as string);
         response.status(200).json(result);
     }
     catch(error){
