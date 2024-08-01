@@ -290,11 +290,32 @@ class GroupUserController {
             };
         }
     }
+    public getQuantityOfAdmins = async (groupId: string) => {
+        try{
+            const groupUsers = await GroupUser.findAll({
+                where: {
+                    groupId,
+                    role: "admin",
+                },
+            });
+            return groupUsers.length;
+        }
+        catch(error){
+            return error;
+        }
+    }
     public changeRole = async (groupId: string, userId: number, changingPersonRole: string) => {
         try {
             const groupUser = await this.getUserByGroupUserId(userId) as {role: string};
+            const quantityOfAdmins = await this.getQuantityOfAdmins(groupId);
             const role = groupUser?.role === "admin" ? "member" : "admin";
-            if(changingPersonRole !== "admin"){
+            if(quantityOfAdmins === 1){
+                return {
+                    message: "You cannot change the role of the last admin",
+                    type: "error"
+                }
+            }
+            else if(changingPersonRole !== "admin"){
                 return {
                     message: "You are not authorized to change the role",
                     type: "error",
