@@ -1,9 +1,11 @@
 import GroupUserRequest from '../models/group-user-request';
+import User from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 
 import GroupUserController from './group-user';
 import UserController from './user';
 import GroupController from './group';
+import { request } from 'http';
 
 class GroupUserRequestController {
     public groupUserController = new GroupUserController();
@@ -38,11 +40,12 @@ class GroupUserRequestController {
             }
         }
     }
-    public getRequests = async (groupId: string) => {
+    public getRequests = async (groupId: string, username: string) => {
         try {
             const requests = await GroupUserRequest.findAll({
                 where: {
                     groupId,
+                    status: "pending",  
                 }
             });
             return {
@@ -51,7 +54,7 @@ class GroupUserRequestController {
                 data: await Promise.all(requests.map(async (request) => {
                     return {
                         id: request.id,
-                        userId: await this.userController.getUser(String(request.userId)),
+                        user: await this.userController.getUser(String(request.userId)),
                         groupId: await this.groupController.getGroup(String(request.groupId)),
                         status: request.status,
                     }

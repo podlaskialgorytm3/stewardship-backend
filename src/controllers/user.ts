@@ -67,7 +67,7 @@ class UserController {
                 type: "success",
                 data: {
                     id: user?.id,
-                    name: user?.name,
+                    username: user?.name,
                     img: user?.img,
                     email: user?.email,
                 }
