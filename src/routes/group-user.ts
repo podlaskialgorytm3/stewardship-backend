@@ -66,6 +66,17 @@ router.post('/group-user', userAuthentication.authMiddleware, async (request: Re
         response.status(400).json(error);
     }
 })
+router.post('/group-user/invite', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { groupId, userId } = request.query;
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const result = await groupUserController.addUser(parseInt(userId as string) as number, "member" , groupId as string , groupUser.role as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
 router.get('/group-user/is-member/:groupId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const  groupId  = request.params.groupId as string;
