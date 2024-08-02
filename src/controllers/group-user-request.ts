@@ -5,7 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import GroupUserController from './group-user';
 import UserController from './user';
 import GroupController from './group';
-import { request } from 'http';
 
 class GroupUserRequestController {
     public groupUserController = new GroupUserController();
@@ -46,20 +45,24 @@ class GroupUserRequestController {
                 where: {
                     groupId,
                     status: "pending",  
-                }
+                },
             });
+            const users = await User.findAll()
+            const requestId = requests.map( (request) => request.userId)
+            const userData = users.map((user) => {
+                    return {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        username: user.name,
+                    }
+            })
+            const filterUser = userData.filter((user) => user.name.includes(username) && requestId.includes(user.id) && user)
             return {
                 message: "Requests fetched successfully",
                 type: "success",
-                data: await Promise.all(requests.map(async (request) => {
-                    return {
-                        id: request.id,
-                        user: await this.userController.getUser(String(request.userId)),
-                        groupId: await this.groupController.getGroup(String(request.groupId)),
-                        status: request.status,
-                    }
-                }))
-            };
+                data: filterUser
+            }
         }
         catch(error){
             return {

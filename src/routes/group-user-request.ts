@@ -26,8 +26,7 @@ router.post('/group-user-request', userAuthentication.authMiddleware, async (req
 
 router.get('/group-user-request', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
     try{
-        const { groupId } = request.query;
-        const username = ""
+        const { groupId, username } = request.query;
         const result = await groupUserRequestController.getRequests(groupId as string, username as string);
         response.status(200).json(result);
     }
