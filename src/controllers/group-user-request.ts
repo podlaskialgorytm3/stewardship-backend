@@ -63,8 +63,8 @@ class GroupUserRequestController {
                         groupId: groupId,
                         name: user.name,
                         email: user.email,
-                        username: user.name
-
+                        username: user.name,
+                        img: user.img
                     }
             })
 

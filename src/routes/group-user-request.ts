@@ -46,7 +46,7 @@ router.get('/group-user-request/not-added-users', userAuthentication.authMiddlew
 })
 router.put('/group-user-request', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
     try{
-        const { groupId, userId, status } = request.query;
+        const { groupId, userId, status } = request.body;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await groupUserRequestController.changeStatus(groupId as string, userId as unknown as number,status as string, groupUser.role as string);
         response.status(201).json(result);
