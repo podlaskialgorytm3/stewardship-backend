@@ -48,20 +48,28 @@ class GroupUserRequestController {
                 },
             });
             const users = await User.findAll()
-            const requestId = requests.map( (request) => request.userId)
+            const requestsData = requests.map( (request) => {
+                return {
+                    requestId: request.id,
+                    userId: request.userId
+                }
+            })
+            const usersId = requestsData.map((request) => request.userId)
             const userData = users.map((user) => {
                     return {
                         id: user.id,
+                        requestId: requestsData.find((request) => request.userId === user.id)?.requestId,
                         name: user.name,
                         email: user.email,
-                        username: user.name,
+                        username: user.name
+
                     }
             })
-            const filterUser = userData.filter((user) => user.name.includes(username) && requestId.includes(user.id) && user)
+
             return {
                 message: "Requests fetched successfully",
                 type: "success",
-                data: filterUser
+                data: userData.filter((user) => user.name.includes(username) && usersId.includes(user.id) && user)
             }
         }
         catch(error){
