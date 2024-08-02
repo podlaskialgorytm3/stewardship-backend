@@ -34,6 +34,16 @@ router.get('/group-user-request', userAuthentication.authMiddleware , async (req
         response.status(400).json(error);
     }
 })
+router.get('/group-user-request/not-added-users', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
+    try{
+        const { groupId, username } = request.query;
+        const result = await groupUserRequestController.getNotAddedUsers(groupId as string, username as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
 router.put('/group-user-request', userAuthentication.authMiddleware , async (request: Request, response: Response) => {
     try{
         const { groupId, userId, status } = request.query;

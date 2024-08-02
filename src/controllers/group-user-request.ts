@@ -1,4 +1,5 @@
 import GroupUserRequest from '../models/group-user-request';
+import GroupUser from '../models/group-user';
 import User from '../models/user';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -59,6 +60,7 @@ class GroupUserRequestController {
                     return {
                         id: user.id,
                         requestId: requestsData.find((request) => request.userId === user.id)?.requestId,
+                        groupId: groupId,
                         name: user.name,
                         email: user.email,
                         username: user.name
@@ -78,6 +80,33 @@ class GroupUserRequestController {
                 type: "error"
             };
         }
+    }
+    public getNotAddedUsers = async (groupId: string, username: string) => {
+        try{
+            const users = await User.findAll();
+            const groupUsers = await GroupUser.findAll({
+                attributes: ['userId', 'groupId'],
+            })
+            const membersOfGroupIds = groupUsers.filter((groupUser) => String(groupUser.groupId) === groupId && groupUser.userId).map((groupUser) => groupUser.userId)
+            const userData = users.map((user) => {
+                return {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    username: user.name
+                }})
+            return {
+                message: "Users fetched successfully",
+                type: "success",
+                data: userData.filter((user) => user.name.includes(username) && !membersOfGroupIds.includes(user.id) && user)
+            }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while fetching the users: " + error,
+                type: "error"
+        }
+    }
     }
     public changeStatus = async (groupId: string, userId: number, status: string, role: string) => {
         try{
