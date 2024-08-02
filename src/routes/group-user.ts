@@ -68,7 +68,7 @@ router.post('/group-user', userAuthentication.authMiddleware, async (request: Re
 })
 router.post('/group-user/invite', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { groupId, userId } = request.query;
+        const { groupId, userId } = request.body;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await groupUserController.addUser(parseInt(userId as string) as number, "member" , groupId as string , groupUser.role as string);
         response.status(200).json(result);

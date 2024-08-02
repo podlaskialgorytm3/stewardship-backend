@@ -93,7 +93,8 @@ class GroupUserRequestController {
                     id: user.id,
                     name: user.name,
                     email: user.email,
-                    username: user.name
+                    username: user.name,
+                    img: user.img
                 }})
             return {
                 message: "Users fetched successfully",

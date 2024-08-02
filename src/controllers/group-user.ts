@@ -1,4 +1,5 @@
 import GroupUser from "../models/group-user";
+import GroupUserRequest from "../models/group-user-request";
 import User from "../models/user";
 import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';
@@ -41,6 +42,12 @@ class GroupUserController {
                         groupId,
                         role,
                     });
+                    await GroupUserRequest.destroy({
+                        where: {
+                            userId,
+                            groupId,
+                        },
+                    })
                     return {
                         message: "User added successfully",
                         type: "success"
