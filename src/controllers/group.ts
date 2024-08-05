@@ -77,8 +77,8 @@ class GroupController {
             };
         }
     }
-    public editGroup = async (id: string, name: string, category: string, userId: number) => {
-        const user = await this.groupUserController.getUser(id, userId) as { role: string };
+    public editGroup = async (id: string, name: string, category: string, token: string) => {
+        const user = await this.groupUserController.getUserByTokenGroup(token, id) as { role: string };
         const role = user?.role as string;
         if(role === 'admin'){
             try {

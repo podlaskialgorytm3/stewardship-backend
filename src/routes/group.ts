@@ -13,7 +13,6 @@ const userController = new UserController();
 router.post('/group',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { name, category } = request.body;
-        console.log({name, category});
         const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
         const result = await groupController.createGroup(name as string, category as string, user?.id as number);
         response.status(201).json(result); 
@@ -44,10 +43,10 @@ router.get('/group/:id',userAuthentication.authMiddleware, async (request: Reque
 })
 router.put('/group/:id',userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
+        const token = request.headers['authorization']?.split(' ')[1] as string;
         const id = request.params.id;
-        const { name, category } = request.query;
-        const result = await groupController.editGroup(id, name as string, category as string, user?.id as number);
+        const { name, category } = request.body;
+        const result = await groupController.editGroup(id, name as string, category as string, token as string);
         response.status(200).json(result);
     }
     catch(error){
