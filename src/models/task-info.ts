@@ -3,7 +3,7 @@ import { sequelize } from '../configs/connect';
 
 class TaskInfo extends Model {
     public id!: number;
-    public taskId!: number;
+    public name!: number;
     public startDate!: Date;
     public endDate!: Date;
     public status!: string;
@@ -19,8 +19,8 @@ TaskInfo.init(
             autoIncrement: false,
             primaryKey: true,
         },
-        taskId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+        name: {
+            type: DataTypes.STRING,
             allowNull: false,
         },
         startDate: {

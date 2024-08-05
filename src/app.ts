@@ -5,7 +5,6 @@ import userRouter from './routes/user';
 import groupRouter from './routes/group';
 import groupUserRequestRouter from './routes/group-user-request';
 import groupUserRouter from './routes/group-user';
-import taskRouter from './routes/task';
 import taskInfoRouter from './routes/task-info';
 import taskAffilationRouter from './routes/task-affilation';
 import subTaskRouter from './routes/sub-task';
@@ -17,7 +16,7 @@ const PORT = appConfig.port;
 
 app.use(cors());
 app.use(express.json());
-app.use('/stewardship', [userRouter, groupRouter, groupUserRequestRouter, groupUserRouter,taskRouter,taskInfoRouter, taskAffilationRouter,subTaskRouter, workingHoursRouter]);
+app.use('/stewardship', [userRouter, groupRouter, groupUserRequestRouter, groupUserRouter,taskInfoRouter, taskAffilationRouter,subTaskRouter, workingHoursRouter]);
 
 //createTables()
 
