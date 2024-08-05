@@ -31,7 +31,7 @@ class TaskInfoController {
             else{
                 await TaskInfo.create({
                     id: id,
-                    taskId: taskInfo.taskId,
+                    name: taskInfo.name,
                     startDate: taskInfo.startDate,
                     endDate: taskInfo.endDate,
                     status: taskInfo.status,
@@ -111,7 +111,7 @@ class TaskInfoController {
             }
             else{
                 await TaskInfo.update({
-                    taskId: taskInfo.taskId,
+                    name: taskInfo.name,
                     startDate: taskInfo.startDate,
                     endDate: taskInfo.endDate,
                     status: taskInfo.status,

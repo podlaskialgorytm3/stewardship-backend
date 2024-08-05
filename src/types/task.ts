@@ -1,6 +1,6 @@
 export interface TaskInfo {
     id: number;
-    taskId: number;
+    name: string;
     startDate: Date;
     endDate: Date;
     status: string;
@@ -8,7 +8,7 @@ export interface TaskInfo {
     comments: string;
 }
 export interface TaskInfoCreation {
-    taskId: number;
+    name: string;
     startDate: Date;
     endDate: Date;
     status: string;
