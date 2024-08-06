@@ -17,7 +17,7 @@ This is a web application for managing stewardship tasks. Software that helps ke
 - RESTful API
 
 ## Getting Started
-
+ 
 To get started with the Stewardship Backend application, follow these steps:
 
 1. Clone the repository.
