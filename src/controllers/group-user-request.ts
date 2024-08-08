@@ -96,6 +96,7 @@ class GroupUserRequestController {
                     username: user.name,
                     img: user.img
                 }})
+            console.log(userData)
             return {
                 message: "Users fetched successfully",
                 type: "success",

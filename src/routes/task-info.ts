@@ -14,8 +14,8 @@ const groupUserController = new GroupUserController();
 
 router.post("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskId, startDate, endDate, status, priority, comments, groupId } = request.query;
-        const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
+        const { name, startDate, endDate, status, priority, comments, groupId } = request.query;
+        const taskInfo = { name, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await taskInfoController.createTaskInfo(
             taskInfo,
@@ -57,8 +57,8 @@ router.get("/task-info", userAuthentication.authMiddleware, async (request: Requ
 
 router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const {taskId, startDate, endDate, status, priority, comments, groupId } = request.query;
-        const taskInfo = { taskId, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
+        const {name, startDate, endDate, status, priority, comments, groupId } = request.query;
+        const taskInfo = { name, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
         const taskInfoId = parseInt(request.params.id);
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await taskInfoController.editTaskInfo(
