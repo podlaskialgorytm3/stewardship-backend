@@ -15,6 +15,8 @@ class TaskAffilationController {
     }
     public addTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
         try{
+            const taskAffilationId = uuidv4();
+            console.log(taskAffilationId)
             if(role !== "admin"){
                 return {
                     message: "You are not authorized to create task affilation",
@@ -33,7 +35,7 @@ class TaskAffilationController {
                     type: "info"
                 }
                 await TaskAffilation.create({
-                    id: uuidv4(),
+                    id: taskAffilationId,
                     taskInfoId: taskInfoId,
                     groupUserId: groupUserId
                 });

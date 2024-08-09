@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class TaskAffilation extends Model {
-    public id!: number;
+    public id!: string;
     public groupUserId!: number;
     public taskInfoId!: number;
 }
@@ -10,7 +10,7 @@ class TaskAffilation extends Model {
 TaskAffilation.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             autoIncrement: false,
             primaryKey: true,
         },
