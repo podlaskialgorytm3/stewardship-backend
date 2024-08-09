@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 import TaskInfoController from "../controllers/task-info";
 import UserAuthentication from "../middlewares/auth";
 import GroupUserController from "../controllers/group-user";
-import { TaskInfoCreation } from "../types/task";
+import { TaskInfoCreation, SubtaskCreation, TaskAffilationsCreation } from "../types/task";
 
 const router = express.Router();
 
@@ -14,15 +14,26 @@ const groupUserController = new GroupUserController();
 
 router.post("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { name, startDate, endDate, status, priority, comments, groupId } = request.query;
-        const taskInfo = { name, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const {
+            taskInfo,
+            subTasks,
+            taskAffilations,
+            groupId
+        } : {
+            taskInfo: TaskInfoCreation,
+            subTasks: SubtaskCreation[],
+            taskAffilations: TaskAffilationsCreation[],
+            groupId: string
+        } = request.body;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
         const result = await taskInfoController.createTaskInfo(
             taskInfo,
-            groupUser?.id as number,
-            groupUser?.role as string
+            subTasks,
+            taskAffilations,
+            groupId,
+            token
         );
-        response.status(201).json(result);
+        response.status(200).json(result);
     }
     catch(error){
         response.status(400).json(error)
