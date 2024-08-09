@@ -23,29 +23,40 @@ class TaskInfoController {
         try{
             const id = uuidv4();
             const user = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: number, role: string};
-            await TaskInfo.create({
-                id: id,
-                name: taskInfo['task-name'],
-                startDate: taskInfo['start-date'],
-                endDate: taskInfo['end-date'],
-                status: taskInfo.status,
-                priority: taskInfo.priority,
-                comments: taskInfo.comments,
-                assignedBy: user?.id
-            });
-            if(subtasks.length > 0){
-                await Promise.all(subtasks.map(async (subtask) => {
-                    await this.subTaskController.createSubTask(subtask, user?.id as number, id as unknown as number);
-                }));
+            if(user.role !== "admin"){
+                return {
+                    message: "You are not authorized to create task info",
+                    type: "info"
+                }
             }
-            if(taskAffilations.length > 0){
-                await Promise.all(taskAffilations.map(async (taskAffilation) => {
-                    await this.taskAffilationController.addTaskAffilation(id as unknown as number, taskAffilation.memberId, user?.role as string);
-                }));
-            }
-            return {
-                message: "Task info created successfully",
-                type: "success"
+            else{
+                await TaskInfo.create({
+                    id: id,
+                    name: taskInfo['task-name'],
+                    startDate: taskInfo['start-date'],
+                    endDate: taskInfo['end-date'],
+                    status: taskInfo.status,
+                    priority: taskInfo.priority,
+                    comments: taskInfo.comments,
+                    assignedBy: user?.id
+                });
+                if(subtasks.length > 0){
+                    await Promise.all(subtasks.map(async (subtask) => {
+                        console.log("Subtask: ", subtask);
+                        await this.subTaskController.createSubTask(subtask, user?.id as number, id as unknown as number);
+                    }));
+                }
+                await this.taskAffilationController.addTaskAffilation(id as unknown as number, user?.id, user?.role as string);
+                if(taskAffilations.length > 0){
+                    await Promise.all(taskAffilations.map(async (taskAffilation) => {
+                        console.log("Task affilation: ", taskAffilation);
+                        await this.taskAffilationController.addTaskAffilation(id as unknown as number, taskAffilation.memberId, user?.role as string);
+                    }));
+                }
+                return {
+                    message: "Task info created successfully",
+                    type: "success"
+                }
             }
         }
         catch(error){
