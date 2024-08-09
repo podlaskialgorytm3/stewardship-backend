@@ -15,3 +15,11 @@ export interface TaskInfoCreation {
     priority: string;
     comments: string;
 }
+export interface SubtaskCreation {
+    name: string;
+    status: string;
+    taskId: number;
+}[]
+export interface TaskAffilationsCreation {
+    groupUserId: number;
+}[]
