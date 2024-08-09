@@ -1,6 +1,6 @@
 import SubTask from '../models/sub-task';
 import GroupUserController from './group-user';
-import { SubTaskCreation } from '../types/sub-task';
+import { SubtaskCreation } from '../types/task';
 import { v4 as uuidv4 } from 'uuid';
 
 class SubTaskController {
@@ -14,15 +14,15 @@ class SubTaskController {
                 console.error('An error occurred while synchronizing the SubTask table:', error);
             });
     }
-    public createSubTask = async (subTaskData: SubTaskCreation, groupUserId: number) => {
+    public createSubTask = async (subtask: SubtaskCreation, groupUserId: number, taskInfoId: number) => {
         const subTaskId = uuidv4();
         try {
             await SubTask.create({
                 id: subTaskId,
-                taskInfoId: subTaskData.taskInfoId,
-                title: subTaskData.title,
-                description: subTaskData.description,
-                status: subTaskData.status,
+                taskInfoId: taskInfoId,
+                title: subtask.title,
+                description: subtask.description,
+                status: subtask.status,
                 assignedBy: groupUserId
             });
             return {
@@ -123,7 +123,7 @@ class SubTaskController {
             }
         }
     }
-    public updateSubTask = async (subTaskId: number, subTaskData: SubTaskCreation, groupUserId: number) => {
+    public updateSubTask = async (subTaskId: number, subTaskData: any, groupUserId: number) => {
         try{
             const subTask = await SubTask.findByPk(subTaskId);
             if(subTask?.assignedBy !== groupUserId){
