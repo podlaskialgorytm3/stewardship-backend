@@ -19,10 +19,10 @@ class TaskInfoController {
                 console.error('An error occurred while synchronizing the TaskInfo table:', error);
             });
     }
-    public createTaskInfo = async (taskInfo: TaskInfoInterface, subTasks: SubtaskCreation[], taskAffilations: TaskAffilationsCreation[], groupId: string, token: string) => {
+    public createTaskInfo = async (taskInfo: TaskInfoInterface, subtasks: SubtaskCreation[], taskAffilations: TaskAffilationsCreation[], groupId: string, token: string) => {
         try{
             const id = uuidv4();
-            const user = await this.groupUserController.getUserByTokenGroup(token, groupId);
+            const user = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: number, role: string};
             await TaskInfo.create({
                 id: id,
                 name: taskInfo['task-name'],
@@ -33,9 +33,9 @@ class TaskInfoController {
                 comments: taskInfo.comments,
                 assignedBy: user?.id
             });
-            if(subTasks.length > 0){
-                await Promise.all(subTasks.map(async (subTask) => {
-                    await this.subTaskController.createSubTask(subTask, user?.id as number, id as unknown as number);
+            if(subtasks.length > 0){
+                await Promise.all(subtasks.map(async (subtask) => {
+                    await this.subTaskController.createSubTask(subtask, user?.id as number, id as unknown as number);
                 }));
             }
             if(taskAffilations.length > 0){

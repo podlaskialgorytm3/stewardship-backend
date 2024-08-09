@@ -16,19 +16,19 @@ router.post("/task-info", userAuthentication.authMiddleware, async (request: Req
     try{
         const {
             taskInfo,
-            subTasks,
+            subtasks,
             taskAffilations,
             groupId
         } : {
             taskInfo: TaskInfoCreation,
-            subTasks: SubtaskCreation[],
+            subtasks: SubtaskCreation[],
             taskAffilations: TaskAffilationsCreation[],
             groupId: string
         } = request.body;
         const token = request.headers['authorization']?.split(' ')[1] as string;
         const result = await taskInfoController.createTaskInfo(
             taskInfo,
-            subTasks,
+            subtasks,
             taskAffilations,
             groupId,
             token
