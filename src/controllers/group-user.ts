@@ -135,7 +135,7 @@ class GroupUserController {
     }
     public getUsersWithoutCreator = async (groupId: string, name: string, token: string) => {
         try {
-            const creatorUser = await this.getUserByToken(token)
+            const creatorUser = await this.getUserByTokenGroup(token, groupId) as {id: number};
             const groupUsers = await GroupUser.findAll({
                 where: {
                     groupId,
@@ -164,7 +164,7 @@ class GroupUserController {
             }));
             return {
                 message: "Users retrieved successfully",
-                data: users.filter((user) => user.name.includes(name) && user.userId !== creatorUser?.userId),
+                data: users.filter((user) => user.name.includes(name) && user.id !== creatorUser.id),
                 type: "success"
             }
         }
@@ -224,7 +224,6 @@ class GroupUserController {
             });
             return {
                 id: groupUser?.id as number,
-                userId: user?.id as number,
                 name: user?.name as string,
                 email: user?.email as string,
                 group: group?.name as string,
