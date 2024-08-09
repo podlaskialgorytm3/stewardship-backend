@@ -8,18 +8,18 @@ export interface TaskInfo {
     comments: string;
 }
 export interface TaskInfoCreation {
-    name: string;
-    startDate: Date;
-    endDate: Date;
+    ['task-name']: string;
+    ['start-date']: Date;
+    ['end-date']: Date;
     status: string;
     priority: string;
     comments: string;
 }
 export interface SubtaskCreation {
-    name: string;
+    title: string;
+    description: number;
     status: string;
-    taskId: number;
-}[]
+}
 export interface TaskAffilationsCreation {
-    groupUserId: number;
-}[]
+    memberId: number;
+}
