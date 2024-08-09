@@ -20,7 +20,17 @@ router.get('/group-user', userAuthentication.authMiddleware, async (request: Req
         response.status(400).json(error);
     }
 })
-
+router.get('/group-user/without-creator', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { groupId, username } = request.query;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const result = await groupUserController.getUsersWithoutCreator(groupId as string, username as string, token as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error);
+    }
+})
 router.get('/group-user/:userId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { groupId } = request.query;

@@ -133,6 +133,48 @@ class GroupUserController {
             };
         }
     }
+    public getUsersWithoutCreator = async (groupId: string, name: string, token: string) => {
+        try {
+            const creatorUser = await this.getUserByToken(token)
+            const groupUsers = await GroupUser.findAll({
+                where: {
+                    groupId,
+                },
+            });
+            const group = await Group.findOne({
+                where: {
+                    id: groupId,
+                },
+            })
+            const users = await Promise.all(groupUsers.map(async (groupUser) => {
+                const user = await User.findOne({
+                    where: {
+                        id: groupUser.userId,
+                    }
+                });
+                return {
+                    id: groupUser?.id as number,
+                    userId: groupUser.userId as number,
+                    name: user?.name as string,
+                    group: group?.name as string,
+                    email: user?.email as string,
+                    img: user?.img as string,
+                    role: groupUser.role,
+                };
+            }));
+            return {
+                message: "Users retrieved successfully",
+                data: users.filter((user) => user.name.includes(name) && user.userId !== creatorUser?.userId),
+                type: "success"
+            }
+        }
+        catch(error){
+            return {
+                message: "An error occurred while getting the users: " + error,
+                type: "error"
+            };
+        }
+    }
     public getUserByGroupUserId = async (groupUserId: number) => {
         try {
             const groupUser = await GroupUser.findOne({
@@ -182,6 +224,7 @@ class GroupUserController {
             });
             return {
                 id: groupUser?.id as number,
+                userId: user?.id as number,
                 name: user?.name as string,
                 email: user?.email as string,
                 group: group?.name as string,
