@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import TaskInfo from '../models/task-info';
 import TaskAffilation from '../models/task-affilation';
-import { TaskInfoCreation as TaskInfoInterface } from '../types/task';
+import { TaskInfoCreation as TaskInfoInterface, SubtaskCreation, TaskAffilationsCreation } from '../types/task';
 import TaskAffilationController from './task-affilation';
 import GroupUserController from './group-user';
 import SubTaskController from './sub-task';
@@ -19,40 +19,42 @@ class TaskInfoController {
                 console.error('An error occurred while synchronizing the TaskInfo table:', error);
             });
     }
-    public createTaskInfo = async (taskInfo: TaskInfoInterface, groupUserId: number, role: string) => {
-        const id = uuidv4() as unknown as number;
+    public createTaskInfo = async (taskInfo: TaskInfoInterface, subTasks: SubtaskCreation[], taskAffilations: TaskAffilationsCreation[], groupId: string, token: string) => {
         try{
-            if(role !== "admin"){
-                return {
-                    message: "You are not authorized to create task info",
-                    type: "info"
-                }
+            const id = uuidv4();
+            const user = await this.groupUserController.getUserByTokenGroup(token, groupId);
+            await TaskInfo.create({
+                id: id,
+                name: taskInfo['task-name'],
+                startDate: taskInfo['start-date'],
+                endDate: taskInfo['end-date'],
+                status: taskInfo.status,
+                priority: taskInfo.priority,
+                comments: taskInfo.comments,
+                assignedBy: user?.id
+            });
+            if(subTasks.length > 0){
+                await Promise.all(subTasks.map(async (subTask) => {
+                    await this.subTaskController.createSubTask(subTask, user?.id as number, id as unknown as number);
+                }));
             }
-            else{
-                await TaskInfo.create({
-                    id: id,
-                    name: taskInfo.name,
-                    startDate: taskInfo.startDate,
-                    endDate: taskInfo.endDate,
-                    status: taskInfo.status,
-                    priority: taskInfo.priority,
-                    assignedBy: groupUserId,
-                    comments: taskInfo.comments
-                });
-                await this.taskAffilationController.addTaskAffilation(id, groupUserId, role);
-                return {
-                    message: "Task info created successfully",
-                    type: "success"
-                }
+            if(taskAffilations.length > 0){
+                await Promise.all(taskAffilations.map(async (taskAffilation) => {
+                    await this.taskAffilationController.addTaskAffilation(id as unknown as number, taskAffilation.memberId, user?.role as string);
+                }));
+            }
+            return {
+                message: "Task info created successfully",
+                type: "success"
             }
         }
         catch(error){
-            return {
-                message: "An error occurred while creating task info: " + error,
-                type: "error"
+                return{
+                    message: "An error occurred while creating task info: " + error,
+                    type: "error"
+                }
             }
-        }
-    }
+    } 
     public getTaskInfo = async (taskInfoId: number) => {
         try{
             const taskInfo = await TaskInfo.findByPk(taskInfoId);
@@ -111,9 +113,9 @@ class TaskInfoController {
             }
             else{
                 await TaskInfo.update({
-                    name: taskInfo.name,
-                    startDate: taskInfo.startDate,
-                    endDate: taskInfo.endDate,
+                    name: taskInfo['task-name'],
+                    startDate: taskInfo['start-date'],
+                    endDate: taskInfo['end-date'],
                     status: taskInfo.status,
                     priority: taskInfo.priority,
                     comments: taskInfo.comments
