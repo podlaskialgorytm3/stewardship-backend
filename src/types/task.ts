@@ -1,5 +1,5 @@
 export interface TaskInfo {
-    id: number;
+    id: string;
     name: string;
     startDate: Date;
     endDate: Date;
@@ -17,9 +17,9 @@ export interface TaskInfoCreation {
 }
 export interface SubtaskCreation {
     title: string;
-    description: number;
+    description: string;
     status: string;
 }
 export interface TaskAffilationsCreation {
-    memberId: number;
+    memberId: string;
 }

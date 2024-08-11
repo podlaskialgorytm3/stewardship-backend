@@ -1,5 +1,5 @@
 export interface SubTaskCreation {
-    taskInfoId: number;
+    taskInfoId: string;
     title: string;
     description: string;
     status: string;
