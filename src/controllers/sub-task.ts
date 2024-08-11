@@ -14,7 +14,7 @@ class SubTaskController {
                 console.error('An error occurred while synchronizing the SubTask table:', error);
             });
     }
-    public createSubTask = async (subtask: SubtaskCreation, groupUserId: number, taskInfoId: number) => {
+    public createSubTask = async (subtask: SubtaskCreation, groupUserId: string, taskInfoId: string) => {
         const subTaskId = uuidv4();
         try {
             await SubTask.create({
@@ -36,7 +36,7 @@ class SubTaskController {
             };
         }
     }
-    public getSubTask = async (subTaskId: number) => {
+    public getSubTask = async (subTaskId: string) => {
         try {
             const subTask = await SubTask.findByPk(subTaskId);
             if (!subTask) {
@@ -54,7 +54,7 @@ class SubTaskController {
                     title: subTask?.title,
                     description: subTask?.description,
                     status: subTask?.status,
-                    assignedBy: await this.groupUserController.getUserByGroupUserId(subTask?.assignedBy as number) 
+                    assignedBy: await this.groupUserController.getUserByGroupUserId(subTask?.assignedBy as string) 
                 }
             }
         } catch (error) {
@@ -64,7 +64,7 @@ class SubTaskController {
             }
         }
     }
-    public getSubTasks = async (taskInfoId: number) => {
+    public getSubTasks = async (taskInfoId: string) => {
         try {
             const subTask = await SubTask.findAll({ where: { taskInfoId: taskInfoId } });
             return Promise.all(subTask.map(async (subTask) => {
@@ -74,7 +74,7 @@ class SubTaskController {
                     title: subTask.title,
                     description: subTask.description,
                     status: subTask.status,
-                    assignedBy: await this.groupUserController.getUserByGroupUserId(subTask.assignedBy as number)
+                    assignedBy: await this.groupUserController.getUserByGroupUserId(subTask.assignedBy as string)
                 }
             }))
         } catch (error) {
@@ -84,7 +84,7 @@ class SubTaskController {
             }
         }
     }
-    public deleteSubTaskByTaskInfoId = async (taskInfoId: number) => {
+    public deleteSubTaskByTaskInfoId = async (taskInfoId: string) => {
         try{
             await SubTask.destroy({ where: { taskInfoId: taskInfoId } });
             return {
@@ -99,7 +99,7 @@ class SubTaskController {
             }
         }
     }
-    public deleteSubTask = async (subTaskId: number,groupUserId: number) => {
+    public deleteSubTask = async (subTaskId: string,groupUserId: string) => {
         try{
             const subTask = await SubTask.findByPk(subTaskId);
             if(subTask?.assignedBy !== groupUserId){
@@ -123,7 +123,7 @@ class SubTaskController {
             }
         }
     }
-    public updateSubTask = async (subTaskId: number, subTaskData: any, groupUserId: number) => {
+    public updateSubTask = async (subTaskId: string, subTaskData: SubtaskCreation, groupUserId: string) => {
         try{
             const subTask = await SubTask.findByPk(subTaskId);
             if(subTask?.assignedBy !== groupUserId){
@@ -151,7 +151,7 @@ class SubTaskController {
             }
         }
     }
-    public changeStatus = async (subTaskId: number, status: string) => {
+    public changeStatus = async (subTaskId: string, status: string) => {
         try{
             await SubTask.update({
                 status: status

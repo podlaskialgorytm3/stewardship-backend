@@ -14,7 +14,7 @@ class GroupUserController {
                 console.error('An error occurred while synchronizing the GroupUser table:', error);
             });
     }
-    public addUser = async (userId: number, role: string, groupId: string, addingPersonRole: string) => {
+    public addUser = async (userId: string, role: string, groupId: string, addingPersonRole: string) => {
         try {
             if(addingPersonRole !== "admin"){
                 return {
@@ -61,7 +61,7 @@ class GroupUserController {
             }
         }
     }
-    public getUser = async (groupId: string, userId: number) => {
+    public getUser = async (groupId: string, userId: string) => {
         try {
             const groupUser = await GroupUser.findOne({
                 where: {
@@ -80,7 +80,7 @@ class GroupUserController {
                 },
             })
             return {
-                    id: groupUser?.id as number,
+                    id: groupUser?.id as string,
                     name: user?.name as string,
                     email: user?.email as string,
                     group: group?.name as string,
@@ -111,8 +111,8 @@ class GroupUserController {
                     }
                 });
                 return {
-                    id: groupUser?.id as number,
-                    userId: groupUser.userId as number,
+                    id: groupUser?.id as string,
+                    userId: groupUser.userId as string,
                     name: user?.name as string,
                     group: group?.name as string,
                     email: user?.email as string,
@@ -135,7 +135,7 @@ class GroupUserController {
     }
     public getUsersWithoutCreator = async (groupId: string, name: string, token: string) => {
         try {
-            const creatorUser = await this.getUserByTokenGroup(token, groupId) as {id: number};
+            const creatorUser = await this.getUserByTokenGroup(token, groupId) as {id: string};
             const groupUsers = await GroupUser.findAll({
                 where: {
                     groupId,
@@ -153,8 +153,8 @@ class GroupUserController {
                     }
                 });
                 return {
-                    id: groupUser?.id as number,
-                    userId: groupUser.userId as number,
+                    id: groupUser?.id as string,
+                    userId: groupUser.userId as string,
                     name: user?.name as string,
                     group: group?.name as string,
                     email: user?.email as string,
@@ -175,7 +175,7 @@ class GroupUserController {
             };
         }
     }
-    public getUserByGroupUserId = async (groupUserId: number) => {
+    public getUserByGroupUserId = async (groupUserId: string) => {
         try {
             const groupUser = await GroupUser.findOne({
                 where: {
@@ -193,7 +193,7 @@ class GroupUserController {
                 },
             });
             return {
-                id: groupUser?.id as number,
+                id: groupUser?.id as string,
                 name: user?.name as string,
                 email: user?.email as string,
                 group: group?.name as string,
@@ -223,7 +223,7 @@ class GroupUserController {
                 },
             });
             return {
-                id: groupUser?.id as number,
+                id: groupUser?.id as string,
                 name: user?.name as string,
                 email: user?.email as string,
                 group: group?.name as string,
@@ -254,7 +254,7 @@ class GroupUserController {
                 },
             });
             return {
-                id: groupUser?.id as number,
+                id: groupUser?.id as string,
                 name: user?.name as string,
                 email: user?.email as string,
                 group: group?.name as string,
@@ -285,7 +285,7 @@ class GroupUserController {
                     },
                 });
                 return {
-                    id: groupUser?.id as number,
+                    id: groupUser?.id as string,
                     name: user?.name as string,
                     group: group?.name as string,
                     email: user?.email as string,
@@ -373,7 +373,7 @@ class GroupUserController {
             return error;
         }
     }
-    public changeRole = async (groupId: string, userId: number, changingPersonRole: string) => {
+    public changeRole = async (groupId: string, userId: string, changingPersonRole: string) => {
         try {
             const groupUser = await this.getUser(groupId, userId) as {role: string};
             const quantityOfAdmins = await this.getQuantityOfAdmins(groupId);
@@ -413,7 +413,7 @@ class GroupUserController {
             };
         }
     }
-    public isMemberOfGroup = async (groupId: string, userId: number) => {
+    public isMemberOfGroup = async (groupId: string, userId: string) => {
         try{
             const groupUser = await GroupUser.findOne({
                 where: {

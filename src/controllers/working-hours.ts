@@ -16,7 +16,7 @@ class WorkingHoursController {
                 console.error('An error occurred while synchronizing the WorkingHours table:', error);
             });
     }
-    public addWorkingHours = async (workingHoursData: WorkingHoursInterface, groupUserId: number) => {
+    public addWorkingHours = async (workingHoursData: WorkingHoursInterface, groupUserId: string) => {
         try{
             const id = uuidv4();
             if (workingHoursData.start.getTime() > workingHoursData.end.getTime()) return {
@@ -46,7 +46,7 @@ class WorkingHoursController {
             }
         }
     }
-    private isNotOverlap = async (groupUserId: number, startToCheck: Date, endToCheck: Date) => {
+    private isNotOverlap = async (groupUserId: string, startToCheck: Date, endToCheck: Date) => {
         try{
             const workingHours = await WorkingHours.findAll({
                 where: {
@@ -70,7 +70,7 @@ class WorkingHoursController {
             }
         }
     }
-    public getWorkingHoursByGroupUserId = async (groupUserId: number, month: number = this.currentMonth as number, year: number = this.currentYear as number) => {
+    public getWorkingHoursByGroupUserId = async (groupUserId: string, month: number = this.currentMonth as number, year: number = this.currentYear as number) => {
         try{
             const workingHours = await WorkingHours.findAll({
                 where: {
@@ -102,7 +102,7 @@ class WorkingHoursController {
     public getWorkingHours = async (groupId: string, name: string, role: string) => {
         try{
             if(role !== "admin") return "You are not authorized to view working hours";
-            const groupUsers = await this.groupUserController.getUserByName(groupId, name) as {id: number}[];
+            const groupUsers = await this.groupUserController.getUserByName(groupId, name) as {id: string}[];
             return {
                 message: "Working hours retrieved successfully",
                 type: "success",

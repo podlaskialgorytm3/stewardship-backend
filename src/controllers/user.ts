@@ -130,7 +130,7 @@ class UserController {
             }
         }
     }
-    public deleteUser = async (id: number) => {
+    public deleteUser = async (id: string) => {
         try{
             const user = await UserModal.findByPk(id);
             if(user){

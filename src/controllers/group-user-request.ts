@@ -20,7 +20,7 @@ class GroupUserRequestController {
                 console.error('An error occurred while synchronizing the GroupUserRequest table:', error);
             });
     }
-    public addRequest = async (userId: number, groupId: string) => {
+    public addRequest = async (userId: string, groupId: string) => {
         const groupUserRequestId = uuidv4();
         try {
             await GroupUserRequest.create({
@@ -110,7 +110,7 @@ class GroupUserRequestController {
         }
     }
     }
-    public changeStatus = async (groupId: string, userId: number, status: string, role: string) => {
+    public changeStatus = async (groupId: string, userId: string, status: string, role: string) => {
         try{
             if(role != "admin"){
                 return {
@@ -159,7 +159,7 @@ class GroupUserRequestController {
             };
         }
     }
-    public deleteRequest = (groupId: string, userId: number) => {
+    public deleteRequest = (groupId: string, userId: string) => {
         try{
             GroupUserRequest.destroy({
                 where: {

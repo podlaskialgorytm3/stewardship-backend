@@ -22,7 +22,7 @@ class TaskInfoController {
     public createTaskInfo = async (taskInfo: TaskInfoInterface, subtasks: SubtaskCreation[], taskAffilations: TaskAffilationsCreation[], groupId: string, token: string) => {
         try{
             const id = uuidv4();
-            const user = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: number, role: string};
+            const user = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
             if(user.role !== "admin"){
                 return {
                     message: "You are not authorized to create task info",
@@ -43,14 +43,14 @@ class TaskInfoController {
                 if(subtasks.length > 0){
                     await Promise.all(subtasks.map(async (subtask) => {
                         console.log("Subtask: ", subtask);
-                        await this.subTaskController.createSubTask(subtask, user?.id as number, id as unknown as number);
+                        await this.subTaskController.createSubTask(subtask, user?.id as string, id as string);
                     }));
                 }
-                await this.taskAffilationController.addTaskAffilation(id as unknown as number, user?.id, user?.role as string);
+                await this.taskAffilationController.addTaskAffilation(id as string, user?.id, user?.role as string);
                 if(taskAffilations.length > 0){
                     await Promise.all(taskAffilations.map(async (taskAffilation) => {
                         console.log("Task affilation: ", taskAffilation);
-                        await this.taskAffilationController.addTaskAffilation(id as unknown as number, taskAffilation.memberId, user?.role as string);
+                        await this.taskAffilationController.addTaskAffilation(id as string, taskAffilation.memberId, user?.role as string);
                     }));
                 }
                 return {
@@ -66,7 +66,7 @@ class TaskInfoController {
                 }
             }
     } 
-    public getTaskInfo = async (taskInfoId: number) => {
+    public getTaskInfo = async (taskInfoId: string) => {
         try{
             const taskInfo = await TaskInfo.findByPk(taskInfoId);
             const taskAffilations = await this.taskAffilationController.getTaskAffilation(taskInfoId);
@@ -79,7 +79,7 @@ class TaskInfoController {
                     endDate: taskInfo?.endDate,
                     status: taskInfo?.status,
                     priority: taskInfo?.priority,
-                    assignedBy: await this.groupUserController.getUserByGroupUserId(taskInfo?.assignedBy as number),
+                    assignedBy: await this.groupUserController.getUserByGroupUserId(taskInfo?.assignedBy as string),
                     comments: taskInfo?.comments,
                 },
                 subTasks: subTasks,
@@ -93,7 +93,7 @@ class TaskInfoController {
             }
         }
     }
-    public getTasksInfo = async (groupUserId: number) => {
+    public getTasksInfo = async (groupUserId: string) => {
         try{
             const taskInfoIds = await TaskAffilation.findAll({
                 where: {
@@ -102,7 +102,7 @@ class TaskInfoController {
                 attributes: ['taskInfoId']
             });        
             return Promise.all(
-                taskInfoIds.map(async (taskInfoId: {taskInfoId: number}) => {
+                taskInfoIds.map(async (taskInfoId: {taskInfoId: string}) => {
                     return await this.getTaskInfo(taskInfoId.taskInfoId);
                 }))
         }
@@ -114,7 +114,7 @@ class TaskInfoController {
         }
     }
 
-    public editTaskInfo = async (taskInfoId: number, taskInfo: TaskInfoInterface, role: string) => {
+    public editTaskInfo = async (taskInfoId: string, taskInfo: TaskInfoInterface, role: string) => {
         try{
             if(role !== "admin"){
                 return {
@@ -149,7 +149,7 @@ class TaskInfoController {
             }
         }
     }
-    public deleteTaskInfo = async (taskInfoId: number, role: string) => {
+    public deleteTaskInfo = async (taskInfoId: string, role: string) => {
         try{
             if(role !== "admin"){
                 return {

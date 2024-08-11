@@ -7,7 +7,6 @@ class GroupUserUtils {
     public getRole = async (groupId: string, token: string) => {
         const user = await this.userController.getUserByToken(token);
         const groupUser = await this.groupUserController.getUser(groupId, user?.id as number) as {role: string};
-        console.log(groupUser)
         return groupUser.role;
 
     }

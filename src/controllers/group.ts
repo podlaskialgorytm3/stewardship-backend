@@ -19,7 +19,7 @@ class GroupController {
                 console.error('An error occurred while synchronizing the Group table:', error);
             });
     }
-    public createGroup = async (name: string, category: string, userId: number) => {
+    public createGroup = async (name: string, category: string, userId: string) => {
         const groupId = uuidv4() as string;
         try {
             await Group.create({
@@ -98,7 +98,7 @@ class GroupController {
                 return {
                     message: "An error occurred while updating the group: " + error,
                     type: "error",
-                }
+                } 
             }
         } else {
             return {
@@ -107,7 +107,7 @@ class GroupController {
             }
         }
     }
-    public deleteGroup = async (id: string, userId: number) => {
+    public deleteGroup = async (id: string, userId: string) => {
         const user = await this.groupUserController.getUser(id, userId) as { role: string };
         const role = user?.role as string;
         if(role === 'admin'){

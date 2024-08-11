@@ -13,10 +13,9 @@ class TaskAffilationController {
                 console.error('An error occurred while synchronizing the Task Affilation table:', error);
             });
     }
-    public addTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
+    public addTaskAffilation = async (taskInfoId: string, groupUserId: string, role: string) => {
         try{
             const taskAffilationId = uuidv4();
-            console.log(taskAffilationId)
             if(role !== "admin"){
                 return {
                     message: "You are not authorized to create task affilation",
@@ -52,7 +51,7 @@ class TaskAffilationController {
             }
         }
     }
-    public getTaskAffilation = async (taskInfoId: number) => {
+    public getTaskAffilation = async (taskInfoId: string) => {
         try{
             const taskAffilations = await TaskAffilation.findAll({
                 where: {
@@ -80,7 +79,7 @@ class TaskAffilationController {
             }
         }
     }
-    public deleteTaskAffilation = async (taskInfoId: number, groupUserId: number, role: string) => {
+    public deleteTaskAffilation = async (taskInfoId: string, groupUserId: string, role: string) => {
         try{
             if(role !== "admin"){
                 return {
@@ -108,7 +107,7 @@ class TaskAffilationController {
             }
         }
     }
-    public deleteTaskAffilationByTaskInfoId = async (taskInfoId: number, role: string) => {
+    public deleteTaskAffilationByTaskInfoId = async (taskInfoId: string, role: string) => {
         try{
             if(role !== "admin"){
                 return {
