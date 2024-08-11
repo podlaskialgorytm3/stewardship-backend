@@ -42,7 +42,7 @@ router.post("/task-info", userAuthentication.authMiddleware, async (request: Req
 
 router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const taskInfoId = parseInt(request.params.id);
+        const taskInfoId = request.params.id;
         const result = await taskInfoController.getTaskInfo(taskInfoId);
         response.status(200).json(result);
     }
@@ -54,7 +54,7 @@ router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: 
 router.get("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { groupUserId } = request.query;
-        const result = await taskInfoController.getTasksInfo(parseInt(groupUserId as string));
+        const result = await taskInfoController.getTasksInfo(groupUserId as string);
         response.status(200).json({
             message: "Tasks info fetched successfully",
             type: "success",
@@ -70,10 +70,10 @@ router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: 
     try{
         const {name, startDate, endDate, status, priority, comments, groupId } = request.query;
         const taskInfo = { name, startDate, endDate, status, priority, comments } as unknown as TaskInfoCreation;
-        const taskInfoId = parseInt(request.params.id);
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const taskInfoId = request.params.id;
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
         const result = await taskInfoController.editTaskInfo(
-            taskInfoId,
+            taskInfoId as string,
             taskInfo,
             groupUser?.role as string
         );
@@ -87,7 +87,7 @@ router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: 
 router.delete("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { groupId } = request.query
-        const taskInfoId = parseInt(request.params.id);
+        const taskInfoId = request.params.id;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
         const result = await taskInfoController.deleteTaskInfo(
             taskInfoId,

@@ -35,7 +35,7 @@ router.get('/group-user/:userId', userAuthentication.authMiddleware, async (requ
     try{
         const { groupId } = request.query;
         const { userId } = request.params;
-        const result = await groupUserController.getUser(groupId as string, parseInt(userId));
+        const result = await groupUserController.getUser(groupId as string, userId as string);
         response.status(200).json(result);
     }
     catch(error){
@@ -58,7 +58,7 @@ router.put('/group-user', userAuthentication.authMiddleware, async (request: Req
     try{
         const { groupId, userId } = request.body;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await groupUserController.changeRole(groupId as string, userId as unknown as number, groupUser.role);
+        const result = await groupUserController.changeRole(groupId as string, userId as string, groupUser.role);
         response.status(200).json(result);
     }
     catch(error){
@@ -69,7 +69,7 @@ router.post('/group-user', userAuthentication.authMiddleware, async (request: Re
     try{
         const { groupId, userId, role } = request.query;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await groupUserController.addUser(userId as unknown as number,role as string, groupId as string, groupUser.role as string);
+        const result = await groupUserController.addUser(userId as string,role as string, groupId as string, groupUser.role as string);
         response.status(200).json(result);
     }
     catch(error){
@@ -80,7 +80,7 @@ router.post('/group-user/invite', userAuthentication.authMiddleware, async (requ
     try{
         const { groupId, userId } = request.body;
         const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await groupUserController.addUser(parseInt(userId as string) as number, "member" , groupId as string , groupUser.role as string);
+        const result = await groupUserController.addUser(userId as string, "member" , groupId as string , groupUser.role as string);
         response.status(200).json(result);
     }
     catch(error){
@@ -92,7 +92,7 @@ router.get('/group-user/is-member/:groupId', userAuthentication.authMiddleware, 
         const  groupId  = request.params.groupId as string;
         const token = request.headers['authorization']?.split(' ')[1] as string;
         const userId = await userController.getUserIdByToken(token);
-        const result = await groupUserController.isMemberOfGroup(groupId as string, userId as number);
+        const result = await groupUserController.isMemberOfGroup(groupId as string, userId as string);
         response.status(200).json(result);
     }
     catch(error){

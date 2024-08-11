@@ -15,8 +15,8 @@ router.post('/sub-task', userAuthentication.authMiddleware, async (request: Requ
     try{
         const { taskInfoId, title, description, status, groupId } = request.query;
         const subTaskData = {  title, description, status } as unknown as SubtaskCreation;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await subTaskController.createSubTask(subTaskData, groupUser.id, taskInfoId as unknown as number);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
+        const result = await subTaskController.createSubTask(subTaskData, groupUser.id, taskInfoId as string);
         response.status(201).json(result);
     }
     catch(error){
@@ -27,7 +27,7 @@ router.post('/sub-task', userAuthentication.authMiddleware, async (request: Requ
 router.get('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const subTaskId = request.params.subTaskId;
-        const result = await subTaskController.getSubTask(Number(subTaskId));
+        const result = await subTaskController.getSubTask(subTaskId);
         response.status(200).json(result);
     }
     catch(error){
@@ -37,8 +37,8 @@ router.get('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (req
 
 router.get('/sub-task', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId } = request.query;
-        const result = await subTaskController.getSubTasks(Number(taskInfoId));
+        const { taskInfoId } = request.query as {taskInfoId: string};
+        const result = await subTaskController.getSubTasks(taskInfoId);
         response.status(200).json({
             message: "Sub-tasks found",
             type: "success",
@@ -54,8 +54,8 @@ router.delete('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (
     try{
         const { groupId } = request.query;
         const subTaskId = request.params.subTaskId;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await subTaskController.deleteSubTask(Number(subTaskId), groupUser.id);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
+        const result = await subTaskController.deleteSubTask(subTaskId, groupUser.id);
         response.status(200).json(result);
     }
     catch(error){
@@ -68,8 +68,8 @@ router.put('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (req
         const subTaskId = request.params.subTaskId;
         const { title, description, status, groupId } = request.query;
         const subTaskData = { title, description, status } as unknown as SubtaskCreation;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
-        const result = await subTaskController.updateSubTask(Number(subTaskId), subTaskData, groupUser.id);
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
+        const result = await subTaskController.updateSubTask(subTaskId, subTaskData, groupUser.id);
         response.status(200).json(result);
     }
     catch(error){
@@ -82,7 +82,7 @@ router.put('/sub-task/change-status/:subTaskId', userAuthentication.authMiddlewa
     try{
         const subTaskId = request.params.subTaskId;
         const { status } = request.query;
-        const result = await subTaskController.changeStatus(Number(subTaskId), status as string);
+        const result = await subTaskController.changeStatus(subTaskId as string, status as string);
         response.status(200).json(result);
     }
     catch(error){

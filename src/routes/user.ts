@@ -88,7 +88,7 @@ router.post('/user/login', async (request: Request, response: Response) => {
 router.delete(`/user/:id`, userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const id = request.params.id;
-        const result = userController.deleteUser(parseInt(id));
+        const result = userController.deleteUser(id);
         response.status(200).json(result);
     }
     catch(error){

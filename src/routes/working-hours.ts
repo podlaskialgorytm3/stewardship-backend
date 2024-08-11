@@ -12,12 +12,12 @@ const groupUserController = new GroupUserController();
 router.post("/working-hours", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try {
         const { start, end, groupId } = request.query
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number};
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string};
         const workingHoursData = {
             start: new Date(start as string),
             end: new Date(end as string)
         }
-        const result = await workingHoursController.addWorkingHours(workingHoursData, groupUser.id as number);
+        const result = await workingHoursController.addWorkingHours(workingHoursData, groupUser.id as string);
         response.status(200).send(result);
     } catch (error) {
         response.status(400).send(error);
@@ -27,7 +27,7 @@ router.post("/working-hours", userAuthentication.authMiddleware, async (request:
 router.get("/working-hours", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try {
         const { groupId, name } = request.query;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: number, role: string};
+        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
         const result = await workingHoursController.getWorkingHours(groupId as string, name as string, groupUser?.role as string);
         response.status(200).send(result);
     } catch (error) {
@@ -40,7 +40,7 @@ router.get("/working-hours/:id", userAuthentication.authMiddleware, async (reque
         const groupUserId = request.params.id;
         const year = request.query.year as string;
         const month = request.query.month as string;
-        const result = await workingHoursController.getWorkingHoursByGroupUserId(parseInt(groupUserId) as number, parseInt(month) as number, parseInt(year) as number);
+        const result = await workingHoursController.getWorkingHoursByGroupUserId(groupUserId as string, parseInt(month) as number, parseInt(year) as number);
         response.status(200).send({
             message: "Working hours retrieved successfully",
             type: "success",
