@@ -14,7 +14,7 @@ router.post('/group',userAuthentication.authMiddleware, async (request: Request,
     try{
         const { name, category } = request.body;
         const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
-        const result = await groupController.createGroup(name as string, category as string, user?.id as number);
+        const result = await groupController.createGroup(name as string, category as string, parseInt(user?.id as string) as number);
         response.status(201).json(result); 
     }
     catch(error){
@@ -57,7 +57,7 @@ router.delete('/group/:id',userAuthentication.authMiddleware, async (request: Re
     try{
         const user = await userController.getUserByToken(request.headers['authorization']?.split(' ')[1] as string);
         const id = request.params.id;
-        const result = await groupController.deleteGroup(id, user?.id as number);
+        const result = await groupController.deleteGroup(id, parseInt(user?.id as string) as number);
         response.status(200).json(result)
     }
     catch(error){
