@@ -2,24 +2,24 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class GroupUserRequest extends Model {
-    public id!: number;
-    public userId!: number;
-    public groupId!: number;
+    public id!: string;
+    public userId!: string;
+    public groupId!: string;
     public status!: string;
 }
 
 GroupUserRequest.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             primaryKey: true,
         },
         userId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         groupId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         status: {

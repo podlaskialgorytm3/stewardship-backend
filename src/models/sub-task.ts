@@ -2,23 +2,23 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class SubTask extends Model {
-    public id!: number;
-    public taskInfoId!: number;
+    public id!: string;
+    public taskInfoId!: string;
     public title!: string;
     public description!: string;
     public status!: string;
-    public assignedBy!: number;
+    public assignedBy!: string;
 }
 
 SubTask.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             autoIncrement: false,
             primaryKey: true,
         },
         taskInfoId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         title: {
@@ -34,7 +34,7 @@ SubTask.init(
             allowNull: false,
         },
         assignedBy: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         }
     },

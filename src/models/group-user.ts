@@ -2,17 +2,17 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class GroupUser extends Model {
-    public id!: number;
+    public id!: string;
     public role!: string;
-    public userId!: number;
-    public groupId!: number;
+    public userId!: string;
+    public groupId!: string;
 }
 
 GroupUser.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
+            type: DataTypes.STRING,
+            allowNull: false,
             primaryKey: true,
         },
         role: {
@@ -20,11 +20,11 @@ GroupUser.init(
             allowNull: false,
         },
         userId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         groupId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
     },

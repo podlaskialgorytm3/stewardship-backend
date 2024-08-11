@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class Group extends Model {
-    public id!: number;
+    public id!: string;
     public name!: string;
     public category!: string;
 }
@@ -10,8 +10,8 @@ class Group extends Model {
 Group.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: false,
+            type: DataTypes.STRING,
+            allowNull: false,
             primaryKey: true,
         },
         name: {

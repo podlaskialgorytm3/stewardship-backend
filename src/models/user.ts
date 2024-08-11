@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class User extends Model {
-    public id!: number;
+    public id!: string;
     public name!: string;
     public img!: string;
     public email!: string;
@@ -14,7 +14,7 @@ class User extends Model {
 User.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             autoIncrement: false,
             primaryKey: true,
         },

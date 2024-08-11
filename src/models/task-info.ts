@@ -2,20 +2,20 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class TaskInfo extends Model {
-    public id!: number;
+    public id!: string;
     public name!: number;
     public startDate!: Date;
     public endDate!: Date;
     public status!: string;
     public priority!: string;
-    public assignedBy!: number;
+    public assignedBy!: string;
     public comments!: string;
 }
 
 TaskInfo.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             autoIncrement: false,
             primaryKey: true,
         },
@@ -40,7 +40,7 @@ TaskInfo.init(
             allowNull: true,
         },
         assignedBy: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         comments: {

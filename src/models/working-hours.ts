@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../configs/connect';
 
 class WorkingHours extends Model {
-    public id!: number;
-    public groupUserId!: number;
+    public id!: string;
+    public groupUserId!: string;
     public start!: Date;
     public end!: Date;
     public totalHours!: number;
@@ -13,12 +13,12 @@ class WorkingHours extends Model {
 WorkingHours.init(
     {
         id: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             autoIncrement: false,
             primaryKey: true,
         },
         groupUserId: {
-            type: DataTypes.INTEGER.UNSIGNED,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         start: {
