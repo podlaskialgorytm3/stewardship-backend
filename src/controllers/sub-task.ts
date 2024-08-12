@@ -84,6 +84,25 @@ class SubTaskController {
             }
         }
     }
+    public precentOfDoneSubtask = async (taskInfoId: string) => {
+        try{
+            const doneSubtask = await SubTask.findAll({
+                where: {
+                    status: "done",
+                    taskInfoId: taskInfoId
+                }
+            })
+            const allSubtask = await SubTask.findAll({
+                where: {
+                    taskInfoId: taskInfoId
+                }
+            })
+            return Math.round((doneSubtask.length / allSubtask.length) * 100) + "%";
+        }
+        catch(error){
+            return null;
+        }
+    }
     public deleteSubTaskByTaskInfoId = async (taskInfoId: string) => {
         try{
             await SubTask.destroy({ where: { taskInfoId: taskInfoId } });
