@@ -66,11 +66,8 @@ class TaskAffilationController {
                 return userInfo;
             }))
 
-            return {
-                message: "Task affilation fetched successfully",
-                type: "success",
-                data: usersInfo
-            }
+            return usersInfo
+            
         }
         catch(error){
             return {
@@ -134,8 +131,20 @@ class TaskAffilationController {
             }
         }
     }
-    
-    
+    public getTaskInfoIds =  async (groupUserId: string) => {
+        try{
+            const taskAffilations = await TaskAffilation.findAll({
+                where: {
+                    groupUserId
+                }
+            });
+            const taskInfoIds = taskAffilations.map((taskAffilation) => taskAffilation.taskInfoId);
+            return taskInfoIds;
+        }
+        catch(error){
+            return null;
+        }
+    }
 }
 
 export default TaskAffilationController;
