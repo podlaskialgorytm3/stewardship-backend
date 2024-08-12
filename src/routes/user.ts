@@ -64,7 +64,7 @@ router.put(`/user/:id`, userAuthentication.authMiddleware, async (request: Reque
 })
 router.post('/user/login', async (request: Request, response: Response) => {
     try{
-        const {email, password} = request.body;
+        const { email, password } = request.body;
         const token = await userAuthentication.authonticateUser(email as string, password as string);
         if(token){
             response.status(200).json({

@@ -39,6 +39,18 @@ router.post("/task-info", userAuthentication.authMiddleware, async (request: Req
         response.status(400).json(error)
     }
 })
+router.get("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { groupId } = request.query;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const result = await taskInfoController.getTaskInfoToCard(groupId as string, token as string);
+        response.status(200).json(result);
+    }  
+    catch(error){
+        response.status(400).json(error)
+    }
+});
+
 
 router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
@@ -51,20 +63,6 @@ router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: 
     }
 })
 
-router.get("/task-info", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
-    try{
-        const { groupUserId } = request.query;
-        const result = await taskInfoController.getTasksInfo(groupUserId as string);
-        response.status(200).json({
-            message: "Tasks info fetched successfully",
-            type: "success",
-            data: result
-        });
-    }
-    catch(error){
-        response.status(400).json(error)
-    }
-})
 
 router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
