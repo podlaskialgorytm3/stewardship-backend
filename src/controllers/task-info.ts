@@ -65,7 +65,25 @@ class TaskInfoController {
                     type: "error"
                 }
             }
-    } 
+    }
+
+    public getTaskInfoToCard = async (groupId: string, token: string) => {
+        try{
+            const member = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string};
+            const taskInfoIds = await this.taskAffilationController.getTaskInfoIds(member.id) as string[];      
+            return Promise.all(
+                taskInfoIds.map(async (taskInfoId: string) => {
+                    return await this.getTaskInfo(taskInfoId);
+                }))     
+        }
+        catch(error){
+            return{
+                type: "error",
+                message: "An error occurred while getting task info to card: " + error
+            }
+        }
+    }
+
     public getTaskInfo = async (taskInfoId: string) => {
         try{
             const taskInfo = await TaskInfo.findByPk(taskInfoId);
@@ -81,9 +99,13 @@ class TaskInfoController {
                     priority: taskInfo?.priority,
                     assignedBy: await this.groupUserController.getUserByGroupUserId(taskInfo?.assignedBy as string),
                     comments: taskInfo?.comments,
+                    time: taskInfo?.endDate && taskInfo?.startDate ? 
+                        (new Date(taskInfo.endDate).getTime() - new Date(taskInfo.startDate).getTime()) / (1000 * 60 * 60) : 
+                        undefined,
                 },
                 subTasks: subTasks,
-                members: taskAffilations
+                precentOfDoneSubtasks: await this.subTaskController.precentOfDoneSubtask(taskInfoId),
+                members: taskAffilations,
             };
         }
         catch(error){
