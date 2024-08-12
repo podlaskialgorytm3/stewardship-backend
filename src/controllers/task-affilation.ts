@@ -131,6 +131,18 @@ class TaskAffilationController {
             }
         }
     }
+    public deleteTaskAffilationByGroupUserId = async (groupUserId: string) => {
+        try{
+            await TaskAffilation.destroy({
+                where: {
+                    groupUserId
+                }
+            });
+        }
+        catch(error){
+            return null;
+        }
+    }
     public getTaskInfoIds =  async (groupUserId: string) => {
         try{
             const taskAffilations = await TaskAffilation.findAll({

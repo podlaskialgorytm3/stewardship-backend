@@ -1,5 +1,6 @@
 import GroupUser from "../models/group-user";
 import GroupUserRequest from "../models/group-user-request";
+import TaskAffilation from "../models/task-affilation";
 import User from "../models/user";
 import Group from "../models/group";
 import { v4 as uuidv4 } from 'uuid';
@@ -312,7 +313,7 @@ class GroupUserController {
             return error;
         }
     }
-    public deleteGroupUser = async (groupUserId: number, role: string, groupId: string) => {
+    public deleteGroupUser = async (groupUserId: string, role: string, groupId: string) => {
         try {
             const quantityOfUsers = await this.getQuantityOfUsers(groupId);
             if(quantityOfUsers === 1){
@@ -328,6 +329,11 @@ class GroupUserController {
                 }
             }
             else{
+                await TaskAffilation.destroy({
+                    where: {
+                        groupUserId
+                    }
+                });
                 await GroupUser.destroy({
                     where: {
                         id: groupUserId
