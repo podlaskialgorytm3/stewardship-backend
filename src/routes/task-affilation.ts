@@ -16,7 +16,7 @@ router.post("/task-affilation", userAuthentication.authMiddleware, async (reques
     try{
         const { taskInfoId, groupUserId } = request.body;
         const token = request.headers['authorization']?.split(' ')[1] as string;
-        const groupId = taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
+        const groupId = await taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
         const user = await groupUserController.getUserByTokenGroup(token, groupId as unknown as string) as {id: string, role: string};
         const result = await taskAffilationController.addTaskAffilation(
             taskInfoId as string, 
