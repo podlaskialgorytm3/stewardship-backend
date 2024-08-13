@@ -1,9 +1,13 @@
 import TaskAffilation from "../models/task-affilation";
 import GroupUserController from "./group-user";
+import TaskInfoController from "./task-info";
 import { v4 as uuidv4 } from 'uuid';
+
+import { Member } from "../types/member";
 
 class TaskAffilationController {
     public groupUserController = new GroupUserController();
+    public taskInfoController = new TaskInfoController();
     public createTable = async () => {
         TaskAffilation.sync({ alter: true })
             .then(() => {
@@ -72,6 +76,18 @@ class TaskAffilationController {
         catch(error){
             return {
                 message: "An error occurred while fetching task affilation: " + error,
+                type: "error"
+            }
+        }
+    }
+    public searchMembersAddedToTask = async ({taskInfoId, username} : {taskInfoId: string, username: string}) => {
+        try{
+            const members = await this.getTaskAffilation(taskInfoId) as Member[];
+            return members.filter((member) => username.includes(member.name));
+        }
+        catch(error){
+            return {
+                message: "An error occurred while searching task affilation: " + error,
                 type: "error"
             }
         }
