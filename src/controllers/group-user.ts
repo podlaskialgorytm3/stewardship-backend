@@ -134,6 +134,39 @@ class GroupUserController {
             };
         }
     }
+    public getUsersByGroupId = async ({groupId} : {groupId: string}) => {
+        try{
+            const groupUsers = await GroupUser.findAll({
+                where: {
+                    groupId,
+                },
+            });
+            const group = await Group.findOne({
+                where: {
+                    id: groupId,
+                },
+            })
+            const users = await Promise.all(groupUsers.map(async (groupUser) => {
+                const user = await User.findOne({
+                    where: {
+                        id: groupUser.userId,
+                    }
+                });
+                return {
+                    id: groupUser?.id as string,
+                    name: user?.name as string,
+                    group: group?.name as string,
+                    email: user?.email as string,
+                    img: user?.img as string,
+                    role: groupUser.role,
+                };
+            }));
+            return users;
+        }
+        catch(error){
+            return null;
+        }
+    }
     public getUsersWithoutCreator = async (groupId: string, name: string, token: string) => {
         try {
             const creatorUser = await this.getUserByTokenGroup(token, groupId) as {id: string};
