@@ -14,7 +14,7 @@ const taskInfoController = new TaskInfoController();
 
 router.post("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId, groupUserId } = request.query;
+        const { taskInfoId, groupUserId } = request.body;
         const token = request.headers['authorization']?.split(' ')[1] as string;
         const groupId = taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
         const user = await groupUserController.getUserByTokenGroup(token, groupId as unknown as string) as {id: string, role: string};
