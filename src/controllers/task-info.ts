@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import TaskInfo from '../models/task-info';
 import TaskAffilation from '../models/task-affilation';
+import GroupUser from '../models/group-user';
 import { TaskInfoCreation as TaskInfoInterface, SubtaskCreation, TaskAffilationsCreation } from '../types/task';
 import TaskAffilationController from './task-affilation';
 import GroupUserController from './group-user';
@@ -196,6 +197,39 @@ class TaskInfoController {
         catch(error){
             return {
                 message: "An error occurred while deleting task info: " + error,
+                type: "error"
+            }
+        }
+    }
+    private getGroupUserIdByTaskInfoId = async ({taskInfoId}: {taskInfoId: string}) => {
+        try{
+            const taskAffilation = await TaskAffilation.findOne({
+                where: {
+                    taskInfoId: taskInfoId
+                }
+            });
+            return taskAffilation?.groupUserId;
+        }
+        catch(error){
+            return {
+                message: "An error occurred while getting group id by task info id: " + error,
+                type: "error"
+            }
+        }
+    }
+    public getGroupIdByTaskInfoId= async ({taskInfoId}: {taskInfoId: string}) => {
+        try{
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    id: await this.getGroupUserIdByTaskInfoId({taskInfoId: taskInfoId} as {taskInfoId: string})
+                },
+                attributes: ['groupId']
+            });
+            return groupUser?.groupId;
+        }
+        catch(error){
+            return{
+                message: "An error occurred while getting group id by group user id: " + error,
                 type: "error"
             }
         }
