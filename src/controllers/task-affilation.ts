@@ -1,13 +1,12 @@
 import TaskAffilation from "../models/task-affilation";
+import GroupUser from "../models/group-user";
 import GroupUserController from "./group-user";
-import TaskInfoController from "./task-info";
 import { v4 as uuidv4 } from 'uuid';
 
 import { Member } from "../types/member";
 
 class TaskAffilationController {
     public groupUserController = new GroupUserController();
-    public taskInfoController = new TaskInfoController();
     public createTable = async () => {
         TaskAffilation.sync({ alter: true })
             .then(() => {
@@ -82,7 +81,7 @@ class TaskAffilationController {
     }
     private getMembersOffTask = async ({taskInfoId} : {taskInfoId: string}) => {
         try{
-            const groupId = await this.taskInfoController.getGroupIdByTaskInfoId({taskInfoId}) as string;
+            const groupId = await this.getGroupIdByTaskInfoId({taskInfoId}) as string;
             const groupUsers = await this.groupUserController.getUsersByGroupId({groupId}) as Member[];
             const membersOfTasks = await this.getTaskAffilation(taskInfoId) as Member[];
             return groupUsers.filter((groupUser) => !membersOfTasks.includes(groupUser));
@@ -195,6 +194,39 @@ class TaskAffilationController {
         }
         catch(error){
             return null;
+        }
+    }
+    private getGroupUserIdByTaskInfoId = async ({taskInfoId}: {taskInfoId: string}) => {
+        try{
+            const taskAffilation = await TaskAffilation.findOne({
+                where: {
+                    taskInfoId: taskInfoId
+                }
+            });
+            return taskAffilation?.groupUserId;
+        }
+        catch(error){
+            return {
+                message: "An error occurred while getting group id by task info id: " + error,
+                type: "error"
+            }
+        }
+    }
+    public getGroupIdByTaskInfoId= async ({taskInfoId}: {taskInfoId: string}) => {
+        try{
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    id: await this.getGroupUserIdByTaskInfoId({taskInfoId: taskInfoId} as {taskInfoId: string})
+                },
+                attributes: ['groupId']
+            });
+            return groupUser?.groupId;
+        }
+        catch(error){
+            return{
+                message: "An error occurred while getting group id by group user id: " + error,
+                type: "error"
+            }
         }
     }
 }
