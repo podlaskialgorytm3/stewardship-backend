@@ -84,7 +84,7 @@ class TaskAffilationController {
             const groupId = await this.getGroupIdByTaskInfoId({taskInfoId}) as string;
             const groupUsers = await this.groupUserController.getUsersByGroupId({groupId}) as Member[];
             const membersOfTasks = await this.getTaskAffilation(taskInfoId) as Member[];
-            return groupUsers.filter((groupUser) => !membersOfTasks.includes(groupUser));
+            return groupUsers.filter((groupUser) => !membersOfTasks.includes(groupUser) && groupUser);
         }   
         catch(error){
             return null;
@@ -93,7 +93,7 @@ class TaskAffilationController {
     public searchMembersAddedToTask = async ({taskInfoId, username} : {taskInfoId: string, username: string}) => {
         try{
             const members = await this.getTaskAffilation(taskInfoId) as Member[];
-            return members.filter((member) => username.includes(member.name));
+            return members.filter((member) => username.includes(member.name) || member.name.includes(username));
         }
         catch(error){
             return {
@@ -105,7 +105,7 @@ class TaskAffilationController {
     public searchMembersOffTask = async ({taskInfoId, username} : {taskInfoId: string, username: string}) => {
         try{
             const members = await this.getMembersOffTask({taskInfoId}) as Member[];
-            return members.filter((member) => username.includes(member.name));
+            return members.filter((member) => username.includes(member.name) || member.name.includes(username));
         }
         catch(error){
             return {
