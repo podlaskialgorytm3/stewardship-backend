@@ -25,16 +25,28 @@ router.post("/task-affilation", userAuthentication.authMiddleware, async (reques
         response.status(400).json(error)
     }
 })
+
 router.get("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId } = request.query;
-        const result = await taskAffilationController.getTaskAffilation(taskInfoId as string);
+        const { taskInfoId, username } = request.query as {taskInfoId: string, username: string};
+        const result = await taskAffilationController.searchMembersAddedToTask({taskInfoId, username});
         response.status(200).json(result);
     }
     catch(error){
         response.status(400).json(error)
     }
 })
+router.get("/task-affilation/off-task", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { taskInfoId, username } = request.query as {taskInfoId: string, username: string};
+        const result = await taskAffilationController.searchMembersOffTask({taskInfoId, username});
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
+});
+
 router.delete("/task-affilation", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const { taskInfoId, groupUserId, groupId } = request.query;
