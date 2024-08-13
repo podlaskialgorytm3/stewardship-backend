@@ -63,6 +63,18 @@ router.get("/task-info/:id", userAuthentication.authMiddleware, async (request: 
     }
 })
 
+router.get("/task-info/is-admin/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { taskInfoId } = request.query;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const groupId = await taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
+        const result = await groupUserController.isAdminOfGroup(token, groupId as string);
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
+})
 
 router.put("/task-info/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
