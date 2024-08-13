@@ -80,6 +80,17 @@ class TaskAffilationController {
             }
         }
     }
+    private getMembersOffTask = async ({taskInfoId} : {taskInfoId: string}) => {
+        try{
+            const groupId = await this.taskInfoController.getGroupIdByTaskInfoId({taskInfoId}) as string;
+            const groupUsers = await this.groupUserController.getUsersByGroupId({groupId}) as Member[];
+            const membersOfTasks = await this.getTaskAffilation(taskInfoId) as Member[];
+            return groupUsers.filter((groupUser) => !membersOfTasks.includes(groupUser));
+        }   
+        catch(error){
+            return null;
+        }
+    }
     public searchMembersAddedToTask = async ({taskInfoId, username} : {taskInfoId: string, username: string}) => {
         try{
             const members = await this.getTaskAffilation(taskInfoId) as Member[];
@@ -92,6 +103,19 @@ class TaskAffilationController {
             }
         }
     }
+    public searchMembersOffTask = async ({taskInfoId, username} : {taskInfoId: string, username: string}) => {
+        try{
+            const members = await this.getMembersOffTask({taskInfoId}) as Member[];
+            return members.filter((member) => username.includes(member.name));
+        }
+        catch(error){
+            return {
+                message: "An error occurred while searching task affilation: " + error,
+                type: "error"
+            }
+        }
+    }
+
     public deleteTaskAffilation = async (taskInfoId: string, groupUserId: string, role: string) => {
         try{
             if(role !== "admin"){
