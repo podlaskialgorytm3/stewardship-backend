@@ -228,7 +228,10 @@ class TaskInfoController {
             return groupUser?.groupId;
         }
         catch(error){
-            return null;
+            return {
+                message: "An error occurred while getting group id by task info id: " + error,
+                type: "error"
+            };
         }
     }
 }

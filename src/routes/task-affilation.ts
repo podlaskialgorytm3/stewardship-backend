@@ -55,8 +55,8 @@ router.delete("/task-affilation", userAuthentication.authMiddleware, async (requ
     try{
         const { taskInfoId, groupUserId } = request.query;
         const token = request.headers['authorization']?.split(' ')[1] as string;
-        const groupId = taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
-        const user = await groupUserController.getUserByTokenGroup(token, groupId as unknown as string) as {id: string, role: string};
+        const groupId = await taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
+        const user = await groupUserController.getUserByTokenGroup(token, groupId as string) as {id: string, role: string};
         const result = await taskAffilationController.deleteTaskAffilation(
             taskInfoId as string, 
             groupUserId as string, 
