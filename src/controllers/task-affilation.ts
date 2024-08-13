@@ -83,8 +83,8 @@ class TaskAffilationController {
         try{
             const groupId = await this.getGroupIdByTaskInfoId({taskInfoId}) as string;
             const groupUsers = await this.groupUserController.getUsersByGroupId({groupId}) as Member[];
-            const membersOfTasks = await this.getTaskAffilation(taskInfoId) as Member[];
-            return groupUsers.filter((groupUser) => !membersOfTasks.includes(groupUser) && groupUser);
+            const taskMembers = await this.getTaskAffilation(taskInfoId) as Member[];
+            return groupUsers.filter((groupUser) => !taskMembers.some((memberOfTask) => memberOfTask.id === groupUser.id));
         }   
         catch(error){
             return null;
