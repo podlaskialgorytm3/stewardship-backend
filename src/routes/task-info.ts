@@ -109,5 +109,18 @@ router.delete("/task-info/:id", userAuthentication.authMiddleware, async (reques
         response.status(400).json(error)
     }
 })
+router.get("/task-info/is-belong-to-task/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const { taskInfoId } = request.params;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const groupId = await taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
+        const user = await groupUserController.getUserByTokenGroup(token, groupId as string) as {id: string, role: string};
+        const result = await taskInfoController.isUserBelongToTask({memberId: user?.id, taskInfoId} as {memberId: string, taskInfoId: string});
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
+})
 
 export default router;

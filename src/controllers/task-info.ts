@@ -234,6 +234,23 @@ class TaskInfoController {
             };
         }
     }
+    public isUserBelongToTask = async ({memberId, taskInfoId}: {memberId: string, taskInfoId: string}) => {
+        try{
+            const taskAffilation = await TaskAffilation.findOne({
+                where: {
+                    groupUserId: memberId,
+                    taskInfoId: taskInfoId
+                }
+            });
+            return taskAffilation ? true : false;
+        }
+        catch(error){
+            return {
+                message: "An error occurred while checking if user belong to task: " + error,
+                type: "error"
+            }
+        }
+    }
 }
 
 export default TaskInfoController;
