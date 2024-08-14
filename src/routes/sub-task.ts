@@ -66,10 +66,10 @@ router.delete('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (
 router.put('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
         const subTaskId = request.params.subTaskId;
-        const { title, description, status, groupId } = request.query;
+        const { title, description, status, groupId } = request.query as {title: string, description: string, status: string, groupId: string};
         const subTaskData = { title, description, status } as unknown as SubtaskCreation;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
-        const result = await subTaskController.updateSubTask(subTaskId, subTaskData, groupUser.id);
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const result = await subTaskController.updateSubTask(subTaskId, subTaskData, token, groupId);
         response.status(200).json(result);
     }
     catch(error){

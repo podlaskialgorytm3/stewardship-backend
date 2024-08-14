@@ -142,10 +142,12 @@ class SubTaskController {
             }
         }
     }
-    public updateSubTask = async (subTaskId: string, subTaskData: SubtaskCreation, groupUserId: string) => {
+    public updateSubTask = async (subTaskId: string, subTaskData: SubtaskCreation, token: string, groupId: string) => {
         try{
             const subTask = await SubTask.findByPk(subTaskId);
-            if(subTask?.assignedBy !== groupUserId){
+            const isAdmin = await this.groupUserController.isAdminOfGroup(token, groupId);
+            const groupUser = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
+            if(subTask?.assignedBy !== groupUser.id && isAdmin){
                 return {
                     message: "You are not authorized to update this sub-task",
                     type: "error"
