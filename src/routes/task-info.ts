@@ -111,7 +111,7 @@ router.delete("/task-info/:id", userAuthentication.authMiddleware, async (reques
 })
 router.get("/task-info/is-belong-to-task/:id", userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId } = request.params;
+        const { id: taskInfoId } = request.params;
         const token = request.headers['authorization']?.split(' ')[1] as string;
         const groupId = await taskInfoController.getGroupIdByTaskInfoId({taskInfoId} as {taskInfoId: string});
         const user = await groupUserController.getUserByTokenGroup(token, groupId as string) as {id: string, role: string};
