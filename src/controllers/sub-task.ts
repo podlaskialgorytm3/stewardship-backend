@@ -18,28 +18,68 @@ class SubTaskController {
                 console.error('An error occurred while synchronizing the SubTask table:', error);
             });
     }
-    public createSubTask = async (subtask: SubtaskCreation, groupUserId: string, taskInfoId: string) => {
-        const subTaskId = uuidv4();
-        try {
-            await SubTask.create({
-                id: subTaskId,
-                taskInfoId: taskInfoId,
-                title: subtask.title,
-                description: subtask.description,
-                status: subtask.status,
-                assignedBy: groupUserId
-            });
-            return {
-                message: "Sub-task created successfully",
-                type: "success"
+    public createSubTask = async ({subtask, taskInfoId, token} : {subtask: SubtaskCreation, taskInfoId: string, token: string}) => {
+        try{
+            const id = uuidv4();
+            const groupId = await this.getGroupIdByTaskInfoId({taskInfoId: taskInfoId} as {taskInfoId: string}) as string;
+            const user = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
+            
+            if(user.role === "member" || user.role === "admin"){
+                return {
+                    message: "You are not authorized to create sub-task",
+                    type: "info"
+                }
             }
-        } catch (error) {
-            return {
-                message: "An error occurred while creating a new sub-task: " + error,
+            else{
+                await SubTask.create({
+                    id: id,
+                    taskInfoId: taskInfoId,
+                    title: subtask.title,
+                    description: subtask.description,
+                    status: subtask.status,
+                    assignedBy: user.id
+                });
+                return {
+                    message: "Sub-task created successfully",
+                    type: "success"
+                }
+            }
+        }
+        catch(error){
+            return{
+                message: "An error occurred while creating the sub-task: " + error,
                 type: "error"
-            };
+            }
         }
     }
+    public getGroupIdByTaskInfoId= async ({taskInfoId}: {taskInfoId: string}) => {
+        try{
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    id: await this.getGroupUserIdByTaskInfoId({taskInfoId: taskInfoId} as {taskInfoId: string})
+                },
+                attributes: ['groupId']
+            });
+            return groupUser?.groupId;
+        }
+        catch(error){
+            return null;
+        }
+    }
+    private getGroupUserIdByTaskInfoId = async ({taskInfoId}: {taskInfoId: string}) => {
+        try{
+            const taskAffilation = await TaskAffilation.findOne({
+                where: {
+                    taskInfoId: taskInfoId
+                }
+            });
+            return taskAffilation?.groupUserId;
+        }
+        catch(error){
+            return null;
+        }
+    }
+
     public getSubTask = async (subTaskId: string) => {
         try {
             const subTask = await SubTask.findByPk(subTaskId);

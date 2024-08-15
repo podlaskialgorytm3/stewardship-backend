@@ -43,8 +43,7 @@ class TaskInfoController {
                 });
                 if(subtasks.length > 0){
                     await Promise.all(subtasks.map(async (subtask) => {
-                        console.log("Subtask: ", subtask);
-                        await this.subTaskController.createSubTask(subtask, user?.id as string, id as string);
+                        await this.subTaskController.createSubTask({subtask, taskInfoId: id, token} as {subtask: SubtaskCreation, taskInfoId: string, token: string});
                     }));
                 }
                 await this.taskAffilationController.addTaskAffilation(id as string, user?.id, user?.role as string);

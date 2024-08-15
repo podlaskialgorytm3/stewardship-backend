@@ -14,14 +14,10 @@ const groupUserController = new GroupUserController();
 
 router.post('/sub-task', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const { taskInfoId, title, description, status, groupId } = request.query;
-        const subTaskData = {  title, description, status } as unknown as SubtaskCreation;
-        const groupUser = await groupUserController.getUserByTokenGroup(request.headers['authorization']?.split(' ')[1] as string, groupId as string) as {id: string, role: string};
-        const result = await subTaskController.createSubTask(subTaskData, groupUser.id, taskInfoId as string);
-        response.status(201).json(result);
+        
     }
     catch(error){
-        response.status(400).json(error)
+       
     }
 })
 
