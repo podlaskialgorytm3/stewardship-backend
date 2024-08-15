@@ -211,10 +211,7 @@ class TaskInfoController {
             return taskAffilation?.groupUserId;
         }
         catch(error){
-            return {
-                message: "An error occurred while getting group id by task info id: " + error,
-                type: "error"
-            }
+            return null;
         }
     }
     public getGroupIdByTaskInfoId= async ({taskInfoId}: {taskInfoId: string}) => {
@@ -228,10 +225,7 @@ class TaskInfoController {
             return groupUser?.groupId;
         }
         catch(error){
-            return {
-                message: "An error occurred while getting group id by task info id: " + error,
-                type: "error"
-            };
+            return null;
         }
     }
     public isUserBelongToTask = async ({memberId, taskInfoId}: {memberId: string, taskInfoId: string}) => {

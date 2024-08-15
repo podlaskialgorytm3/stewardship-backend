@@ -4,3 +4,7 @@ export interface SubTaskCreation {
     description: string;
     status: string;
 }
+export interface SubtaskUpdate {
+    title: string;
+    description: string;
+}

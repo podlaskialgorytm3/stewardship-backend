@@ -4,6 +4,7 @@ import SubTaskController from '../controllers/sub-task';
 import GroupUserController from '../controllers/group-user';
 import UserAuthentication from '../middlewares/auth';
 import { SubtaskCreation } from '../types/task';
+import { SubtaskUpdate } from '../types/sub-task'
 
 const router = express.Router();
 
@@ -65,11 +66,10 @@ router.delete('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (
 
 router.put('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const subTaskId = request.params.subTaskId;
-        const { title, description, status, groupId } = request.query as {title: string, description: string, status: string, groupId: string};
-        const subTaskData = { title, description, status } as unknown as SubtaskCreation;
-        const token = request.headers['authorization']?.split(' ')[1] as string;
-        const result = await subTaskController.updateSubTask(subTaskId, subTaskData, token, groupId);
+        const subtaskId = request.params.subTaskId as string;
+        const { title, description } = request.body as SubtaskUpdate;
+        const token = request.headers['authorization']?.split(' ')[1] as string; 
+        const result = await subTaskController.updateSubtask({subtask: {title, description}, subtaskId, token});
         response.status(200).json(result);
     }
     catch(error){

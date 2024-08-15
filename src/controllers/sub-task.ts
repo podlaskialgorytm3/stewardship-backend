@@ -149,7 +149,7 @@ class SubTaskController {
 
 
 
-    public updateSubTask = async ({subtask, subtaskId, token} : {subtask: SubtaskUpdate, subtaskId: string, token: string}) => {
+    public updateSubtask = async ({subtask, subtaskId, token} : {subtask: SubtaskUpdate, subtaskId: string, token: string}) => {
         try{
             const creatorOfSubtask = await this.getCreatorOfSubtask({subTaskId: subtaskId} as {subTaskId: string});
             const groupId = await this.getGroupIdBySubtaskId({subTaskId: subtaskId}) as string; 
