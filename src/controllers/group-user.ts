@@ -471,7 +471,7 @@ class GroupUserController {
             return false;
         }
     }
-    public isAdminOfGroup = async (groupId: string, token: string) => {
+    public isAdminOfGroup = async (token: string, groupId: string) => {
         try{
             const user = await User.findOne({
                 where: {
@@ -484,10 +484,13 @@ class GroupUserController {
                     groupId: groupId,
                 },
             });
-            return groupUser?.role === 'admin';
+            return groupUser?.role === "admin";
         }
         catch(error){
-            return error;
+            return {
+                message: "An error occurred while checking if user is admin of group: " + error,
+                type: "error",
+            };
         }
     }
 }

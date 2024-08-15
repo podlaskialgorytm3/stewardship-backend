@@ -298,6 +298,8 @@ class SubTaskController {
             const isAdmin = await this.groupUserController.isAdminOfGroup(token, groupId);
             const member = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
 
+            console.log(isAdmin)
+
             return creatorOfSubtask === member.id || isAdmin;
         }
         catch(error){
