@@ -5,6 +5,7 @@ import GroupUser from '../models/group-user';
 import GroupUserController from './group-user';
 import { SubtaskCreation } from '../types/task';
 import { v4 as uuidv4 } from 'uuid';
+import { SubtaskUpdate } from '../types/sub-task';
 
 class SubTaskController {
     public groupUserController = new GroupUserController();
@@ -145,12 +146,17 @@ class SubTaskController {
             }
         }
     }
-    public updateSubTask = async (subTaskId: string, subTaskData: SubtaskCreation, token: string, groupId: string) => {
+
+
+
+    public updateSubTask = async ({subtask, subtaskId, token} : {subtask: SubtaskUpdate, subtaskId: string, token: string}) => {
         try{
-            const subTask = await SubTask.findByPk(subTaskId);
+            const creatorOfSubtask = await this.getCreatorOfSubtask({subTaskId: subtaskId} as {subTaskId: string});
+            const groupId = await this.getGroupIdBySubtaskId({subTaskId: subtaskId}) as string; 
             const isAdmin = await this.groupUserController.isAdminOfGroup(token, groupId);
-            const groupUser = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
-            if(subTask?.assignedBy !== groupUser.id && isAdmin){
+            const member = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
+
+            if(creatorOfSubtask !== member.id || !isAdmin){
                 return {
                     message: "You are not authorized to update this sub-task",
                     type: "error"
@@ -158,10 +164,9 @@ class SubTaskController {
             }
             else{
                 await SubTask.update({
-                    title: subTaskData.title,
-                    description: subTaskData.description,
-                    status: subTaskData.status
-                }, { where: { id: subTaskId } });
+                    title: subtask.title,
+                    description: subtask.description,
+                }, { where: { id: subtaskId } });
                 return {
                     message: "Sub-task updated successfully",
                     type: "success"
@@ -175,8 +180,6 @@ class SubTaskController {
             }
         }
     }
-    
-
     
     public getGroupIdBySubtaskId= async ({subTaskId}: {subTaskId: string}) => {
         try{
@@ -214,8 +217,15 @@ class SubTaskController {
             return null;
         }
     }
-
-
+    private getCreatorOfSubtask = async ({subTaskId}: {subTaskId: string}) => {
+        try{
+            const subTask = await SubTask.findByPk(subTaskId);
+            return subTask?.assignedBy as string;
+        }
+        catch(error){
+            return null;
+        }
+    }
 
 
     public changeStatus = async (subTaskId: string, status: string) => {
