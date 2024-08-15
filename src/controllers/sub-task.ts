@@ -1,4 +1,7 @@
 import SubTask from '../models/sub-task';
+import TaskAffilation from '../models/task-affilation';
+import GroupUser from '../models/group-user';
+
 import GroupUserController from './group-user';
 import { SubtaskCreation } from '../types/task';
 import { v4 as uuidv4 } from 'uuid';
@@ -172,6 +175,49 @@ class SubTaskController {
             }
         }
     }
+    
+
+    
+    public getGroupIdBySubtaskId= async ({subTaskId}: {subTaskId: string}) => {
+        try{
+            const groupUser = await GroupUser.findOne({
+                where: {
+                    id: await this.getGroupUserIdBySubtaskId({subTaskId: subTaskId} as {subTaskId: string})
+                },
+                attributes: ['groupId']
+            });
+            return groupUser?.groupId;
+        }
+        catch(error){
+            return null;
+        }
+    }
+    private getTaskIdBySubtaskId = async ({subTaskId}: {subTaskId: string}) => {
+        try{
+            const subTask = await SubTask.findByPk(subTaskId);
+            return subTask?.taskInfoId as string;
+        }
+        catch(error){
+            return null;
+        }
+    }
+    private getGroupUserIdBySubtaskId = async ({subTaskId}: {subTaskId: string}) => {
+        try{
+            const taskAffilation = await TaskAffilation.findOne({
+                where: {
+                    taskInfoId: await this.getTaskIdBySubtaskId({subTaskId: subTaskId} as {subTaskId: string})
+                }
+            });
+            return taskAffilation?.groupUserId;
+        }
+        catch(error){
+            return null;
+        }
+    }
+
+
+
+
     public changeStatus = async (subTaskId: string, status: string) => {
         try{
             await SubTask.update({
