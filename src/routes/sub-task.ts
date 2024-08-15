@@ -80,9 +80,9 @@ router.put('/sub-task/:subTaskId', userAuthentication.authMiddleware, async (req
 
 router.put('/sub-task/change-status/:subTaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
     try{
-        const subTaskId = request.params.subTaskId;
-        const { status } = request.query;
-        const result = await subTaskController.changeStatus(subTaskId as string, status as string);
+        const subtaskId = request.params.subTaskId;
+        const { status } = request.body;
+        const result = await subTaskController.changeStatus({subtaskId, status});
         response.status(200).json(result);
     }
     catch(error){

@@ -228,11 +228,11 @@ class SubTaskController {
     }
 
 
-    public changeStatus = async (subTaskId: string, status: string) => {
+    public changeStatus = async ({subtaskId, status} : {subtaskId: string, status: string}) => {
         try{
             await SubTask.update({
                 status: status
-            }, { where: { id: subTaskId } });
+            }, { where: { id: subtaskId } });
             return {
                 message: "Sub-task status updated successfully",
                 type: "success"
