@@ -23,7 +23,7 @@ class SubTaskController {
             const id = uuidv4();
             const groupId = await this.getGroupIdByTaskInfoId({taskInfoId: taskInfoId} as {taskInfoId: string}) as string;
             const user = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
-            
+
             if(user.role === "member" || user.role === "admin"){
                 return {
                     message: "You are not authorized to create sub-task",
@@ -285,6 +285,24 @@ class SubTaskController {
         catch(error){
             return {
                 message: "An error occurred while updating the sub-task status: " + error,
+                type: "error"
+            }
+        }
+    }
+
+
+    public hasRightToHandleSubtask = async ({subtaskId, token}: {subtaskId: string, token: string}) => {
+        try{
+            const creatorOfSubtask = await this.getCreatorOfSubtask({subTaskId: subtaskId} as {subTaskId: string});
+            const groupId = await this.getGroupIdBySubtaskId({subTaskId: subtaskId}) as string; 
+            const isAdmin = await this.groupUserController.isAdminOfGroup(token, groupId);
+            const member = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
+
+            return creatorOfSubtask === member.id || isAdmin;
+        }
+        catch(error){
+            return {
+                message: "An error occurred while checking the right to handle the sub-task: " + error,
                 type: "error"
             }
         }

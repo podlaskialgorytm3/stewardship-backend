@@ -89,4 +89,16 @@ router.put('/sub-task/change-status/:subTaskId', userAuthentication.authMiddlewa
     }
 })
 
+router.get('/sub-task/has-right/:subtaskId', userAuthentication.authMiddleware, async (request: Request, response: Response) => {
+    try{
+        const subtaskId = request.params.subtaskId;
+        const token = request.headers['authorization']?.split(' ')[1] as string;
+        const result = await subTaskController.hasRightToHandleSubtask({subtaskId, token});
+        response.status(200).json(result);
+    }
+    catch(error){
+        response.status(400).json(error)
+    }
+});
+
 export default router;
