@@ -122,27 +122,31 @@ class SubTaskController {
             }
         }
     }
-    public deleteSubTask = async (subTaskId: string,groupUserId: string) => {
+    public deleteSubTask = async ({subtaskId, token} : {subtaskId: string, token: string}) => {
         try{
-            const subTask = await SubTask.findByPk(subTaskId);
-            if(subTask?.assignedBy !== groupUserId){
+            const creatorOfSubtask = await this.getCreatorOfSubtask({subTaskId: subtaskId} as {subTaskId: string});
+            const groupId = await this.getGroupIdBySubtaskId({subTaskId: subtaskId}) as string; 
+            const isAdmin = await this.groupUserController.isAdminOfGroup(token, groupId);
+            const member = await this.groupUserController.getUserByTokenGroup(token, groupId) as {id: string, role: string};
+
+            if(creatorOfSubtask !== member.id || !isAdmin){
                 return {
-                    message: "You are not authorized to delete this sub-task",
-                    type: "error"
+                    type: "error",
+                    message: "You are not authorized to delete this sub-task"
                 }
             }
             else{
-                await SubTask.destroy({ where: { id: subTaskId } });
+                await SubTask.destroy({ where: { id: subtaskId } });
                 return {
-                    message: "Sub-task deleted successfully",
-                    type: "success"
+                    type: "success",
+                    message: "Sub-task deleted successfully"
                 }
             }
         }
         catch(error){
-            return {
-                message: "An error occurred while deleting the sub-task: " + error,
-                type: "error"
+            return  {
+                type: "error",
+                message: "An error occurred while deleting the sub-task: " + error
             }
         }
     }
