@@ -195,10 +195,10 @@ class TaskInfoController {
       const groupId = (await this.getGroupIdByTaskInfoId({
         taskInfoId,
       })) as string;
-      const user = await this.groupUserController.getUserByTokenGroup(
+      const user = (await this.groupUserController.getUserByTokenGroup(
         token,
         groupId
-      );
+      )) as { role: string };
       if (user.role !== "admin") {
         return {
           message: "You are not authorized to edit this task info",
