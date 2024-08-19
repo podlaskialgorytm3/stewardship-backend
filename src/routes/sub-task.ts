@@ -1,7 +1,6 @@
 import express from "express";
 import { Request, Response } from "express";
 import SubTaskController from "../controllers/sub-task";
-import GroupUserController from "../controllers/group-user";
 import UserAuthentication from "../middlewares/auth";
 import { SubtaskCreation } from "../types/task";
 import { SubtaskUpdate } from "../types/sub-task";
@@ -10,7 +9,6 @@ const router = express.Router();
 
 const subTaskController = new SubTaskController();
 const userAuthentication = new UserAuthentication();
-const groupUserController = new GroupUserController();
 
 router.post(
   "/sub-task",
@@ -63,11 +61,11 @@ router.get(
 );
 
 router.delete(
-  "/sub-task/:subTaskId",
+  "/sub-task/:subtaskId",
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const subtaskId = request.params.subTaskId as string;
+      const subtaskId = request.params.subtaskId as string;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await subTaskController.deleteSubTask({
         subtaskId,
