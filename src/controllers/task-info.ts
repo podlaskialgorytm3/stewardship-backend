@@ -12,6 +12,8 @@ import TaskAffilationController from "./task-affilation";
 import GroupUserController from "./group-user";
 import SubTaskController from "./sub-task";
 
+import { convertDate } from "../utils/task-info";
+
 class TaskInfoController {
   public taskAffilationController = new TaskAffilationController();
   public groupUserController = new GroupUserController();
@@ -208,8 +210,8 @@ class TaskInfoController {
         await TaskInfo.update(
           {
             name: taskInfo.name,
-            startDate: taskInfo.startDate,
-            endDate: taskInfo.endDate,
+            startDate: convertDate(taskInfo.startDate),
+            endDate: convertDate(taskInfo.endDate),
             status: taskInfo.status,
             priority: taskInfo.priority,
             comments: taskInfo.comments,
