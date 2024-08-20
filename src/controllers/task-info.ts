@@ -234,34 +234,42 @@ class TaskInfoController {
       };
     }
   };
-  public deleteTaskInfo = async (taskInfoId: string, role: string) => {
-    try {
-      if (role !== "admin") {
-        return {
-          message: "You are not authorized to delete this task info",
-          type: "info",
-        };
-      } else {
+  public deleteTaskInfo = async ({
+    taskInfoId,
+    token,
+  }: {
+    taskInfoId: string;
+    token: string;
+  }) => {
+    const groupId = (await this.getGroupIdByTaskInfoId({
+      taskInfoId,
+    })) as string;
+    const user = (await this.groupUserController.getUserByTokenGroup(
+      token,
+      groupId
+    )) as { role: string };
+    if (user.role !== "admin") {
+      return {
+        message: "You are not authorized to delete this task info",
+        type: "info",
+      };
+    } else {
+      try {
         await TaskInfo.destroy({
           where: {
             id: taskInfoId,
           },
         });
-        await this.taskAffilationController.deleteTaskAffilationByTaskInfoId(
-          taskInfoId,
-          role
-        );
-        await this.subTaskController.deleteSubTaskByTaskInfoId(taskInfoId);
         return {
           message: "Task info deleted successfully",
           type: "success",
         };
+      } catch (error) {
+        return {
+          message: "An error occurred while deleting task info: " + error,
+          type: "error",
+        };
       }
-    } catch (error) {
-      return {
-        message: "An error occurred while deleting task info: " + error,
-        type: "error",
-      };
     }
   };
   private getGroupUserIdByTaskInfoId = async ({
