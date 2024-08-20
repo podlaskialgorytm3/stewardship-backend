@@ -121,20 +121,16 @@ router.put(
 );
 
 router.delete(
-  "/task-info/:id",
+  "/task-info/:taskInfoId",
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const { groupId } = request.query;
-      const taskInfoId = request.params.id;
-      const groupUser = (await groupUserController.getUserByTokenGroup(
-        request.headers["authorization"]?.split(" ")[1] as string,
-        groupId as string
-      )) as { id: number; role: string };
-      const result = await taskInfoController.deleteTaskInfo(
+      const { taskInfoId } = request.params;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await taskInfoController.deleteTaskInfo({
         taskInfoId,
-        groupUser?.role as string
-      );
+        token,
+      });
       response.status(200).json(result);
     } catch (error) {
       response.status(400).json(error);
