@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import TaskInfo from "../models/task-info";
 import TaskAffilation from "../models/task-affilation";
+import SubTask from "../models/sub-task";
 import GroupUser from "../models/group-user";
 import {
   TaskInfoCreation as TaskInfoInterface,
@@ -258,6 +259,16 @@ class TaskInfoController {
         await TaskInfo.destroy({
           where: {
             id: taskInfoId,
+          },
+        });
+        await TaskAffilation.destroy({
+          where: {
+            taskInfoId: taskInfoId,
+          },
+        });
+        await SubTask.destroy({
+          where: {
+            taskInfoId: taskInfoId,
           },
         });
         return {
