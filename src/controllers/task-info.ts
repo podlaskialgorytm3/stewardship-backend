@@ -104,7 +104,15 @@ class TaskInfoController {
     }
   };
 
-  public getTaskInfoToCard = async (groupId: string, token: string) => {
+  public getTaskInfoToCard = async ({
+    groupId,
+    token,
+    taskStatus,
+  }: {
+    groupId: string;
+    token: string;
+    taskStatus: string;
+  }) => {
     try {
       const member = (await this.groupUserController.getUserByTokenGroup(
         token,
@@ -113,11 +121,19 @@ class TaskInfoController {
       const taskInfoIds = (await this.taskAffilationController.getTaskInfoIds(
         member.id
       )) as string[];
-      return Promise.all(
+      const tasks = await Promise.all(
         taskInfoIds.map(async (taskInfoId: string) => {
-          return await this.getTaskInfo(taskInfoId);
+          const task = await this.getTaskInfo({
+            taskInfoId,
+          });
+          if (task.taskInfo && task.taskInfo.status === taskStatus) {
+            return task;
+          }
+          return undefined;
         })
       );
+      const filteredTasks = tasks.filter((task) => task !== undefined);
+      return filteredTasks;
     } catch (error) {
       return {
         type: "error",
@@ -126,9 +142,13 @@ class TaskInfoController {
     }
   };
 
-  public getTaskInfo = async (taskInfoId: string) => {
+  public getTaskInfo = async ({ taskInfoId }: { taskInfoId: string }) => {
     try {
-      const taskInfo = await TaskInfo.findByPk(taskInfoId);
+      const taskInfo = await TaskInfo.findOne({
+        where: {
+          id: taskInfoId,
+        },
+      });
       const taskAffilations =
         await this.taskAffilationController.getTaskAffilation(taskInfoId);
       const subTasks = await this.subTaskController.getSubTasks(taskInfoId);
@@ -159,26 +179,6 @@ class TaskInfoController {
     } catch (error) {
       return {
         message: "An error occurred while getting task info: " + error,
-        type: "error",
-      };
-    }
-  };
-  public getTasksInfo = async (groupUserId: string) => {
-    try {
-      const taskInfoIds = await TaskAffilation.findAll({
-        where: {
-          groupUserId: groupUserId,
-        },
-        attributes: ["taskInfoId"],
-      });
-      return Promise.all(
-        taskInfoIds.map(async (taskInfoId: { taskInfoId: string }) => {
-          return await this.getTaskInfo(taskInfoId.taskInfoId);
-        })
-      );
-    } catch (error) {
-      return {
-        message: "An error occurred while getting tasks info: " + error,
         type: "error",
       };
     }

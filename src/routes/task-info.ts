@@ -51,12 +51,13 @@ router.get(
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const { groupId } = request.query;
-      const token = request.headers["authorization"]?.split(" ")[1] as string;
-      const result = await taskInfoController.getTaskInfoToCard(
-        groupId as string,
-        token as string
-      );
+      const { groupId, taskStatus } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const result = await taskInfoController.getTaskInfoToCard({
+        groupId: groupId as string,
+        token: token as string,
+        taskStatus: taskStatus as string,
+      });
       response.status(200).json(result);
     } catch (error) {
       response.status(400).json(error);
@@ -69,9 +70,9 @@ router.get(
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const taskInfoId = request.params.id;
-      const result = await taskInfoController.getTaskInfo(taskInfoId);
-      response.status(200).json(result);
+      //const taskInfoId = request.params.id;
+      //const result = await taskInfoController.getTaskInfo({ taskInfoId });
+      //response.status(200).json(result);
     } catch (error) {
       response.status(400).json(error);
     }
