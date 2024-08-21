@@ -123,16 +123,14 @@ class TaskInfoController {
       )) as string[];
       const tasks = await Promise.all(
         taskInfoIds.map(async (taskInfoId: string) => {
-          const task = await this.getTaskInfo({
+          return await this.getTaskInfo({
             taskInfoId,
           });
-          if (task.taskInfo && task.taskInfo.status === taskStatus) {
-            return task;
-          }
-          return undefined;
         })
       );
-      const filteredTasks = tasks.filter((task) => task !== undefined);
+      const filteredTasks = tasks.filter((task) =>
+        task.taskInfo?.status?.includes(taskStatus)
+      );
       return filteredTasks;
     } catch (error) {
       return {
