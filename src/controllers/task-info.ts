@@ -154,10 +154,12 @@ class TaskInfoController {
       return {
         taskInfo: taskInfo.taskInfo,
         subTasks:
-          taskInfo.subTasks &&
-          taskInfo.subTasks.filter(
-            (subtask) => subtask.status === subtaskStatus
-          ),
+          subtaskStatus === ""
+            ? taskInfo.subTasks
+            : taskInfo.subTasks &&
+              taskInfo.subTasks.filter(
+                (subtask) => subtask.status === subtaskStatus
+              ),
         precentOfDoneSubtasks: taskInfo.precentOfDoneSubtasks,
         members: taskInfo.members,
       };
