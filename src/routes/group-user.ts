@@ -173,10 +173,10 @@ router.get(
     try {
       const groupId = request.params.groupId as string;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
-      const result = await groupUserController.isAdminOfGroup(
-        token as string,
-        groupId as string
-      );
+      const result = await groupUserController.isAdminOfGroup({
+        groupId,
+        token,
+      });
       response.status(200).json(result);
     } catch (error) {
       response.status(400).json(error);

@@ -204,10 +204,10 @@ class SubTaskController {
       const groupId = (await this.getGroupIdBySubtaskId({
         subTaskId: subtaskId,
       })) as string;
-      const isAdmin = await this.groupUserController.isAdminOfGroup(
+      const isAdmin = await this.groupUserController.isAdminOfGroup({
+        groupId,
         token,
-        groupId
-      );
+      });
       const member = (await this.groupUserController.getUserByTokenGroup(
         token,
         groupId
@@ -249,10 +249,10 @@ class SubTaskController {
       const groupId = (await this.getGroupIdBySubtaskId({
         subTaskId: subtaskId,
       })) as string;
-      const isAdmin = await this.groupUserController.isAdminOfGroup(
+      const isAdmin = await this.groupUserController.isAdminOfGroup({
+        groupId,
         token,
-        groupId
-      );
+      });
       const member = (await this.groupUserController.getUserByTokenGroup(
         token,
         groupId
@@ -387,10 +387,10 @@ class SubTaskController {
       const groupId = (await this.getGroupIdBySubtaskId({
         subTaskId: subtaskId,
       })) as string;
-      const isAdmin = await this.groupUserController.isAdminOfGroup(
+      const isAdmin = await this.groupUserController.isAdminOfGroup({
+        groupId,
         token,
-        groupId
-      );
+      });
       const member = (await this.groupUserController.getUserByTokenGroup(
         token,
         groupId

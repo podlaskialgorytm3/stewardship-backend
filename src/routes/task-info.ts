@@ -85,13 +85,13 @@ router.get(
     try {
       const { taskInfoId } = request.params;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
-      const groupId = await taskInfoController.getGroupIdByTaskInfoId({
+      const groupId = (await taskInfoController.getGroupIdByTaskInfoId({
         taskInfoId,
-      } as { taskInfoId: string });
-      const result = await groupUserController.isAdminOfGroup(
+      } as { taskInfoId: string })) as string;
+      const result = await groupUserController.isAdminOfGroup({
+        groupId,
         token,
-        groupId as string
-      );
+      });
       response.status(200).json(result);
     } catch (error) {
       response.status(400).json(error);

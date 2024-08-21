@@ -489,7 +489,13 @@ class GroupUserController {
       return false;
     }
   };
-  public isAdminOfGroup = async (token: string, groupId: string) => {
+  public isAdminOfGroup = async ({
+    groupId,
+    token,
+  }: {
+    groupId: string;
+    token: string;
+  }) => {
     try {
       const user = await User.findOne({
         where: {
