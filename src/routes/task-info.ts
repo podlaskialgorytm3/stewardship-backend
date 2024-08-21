@@ -70,9 +70,13 @@ router.get(
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      //const taskInfoId = request.params.id;
-      //const result = await taskInfoController.getTaskInfo({ taskInfoId });
-      //response.status(200).json(result);
+      const { id: taskInfoId } = request.params as { id: string };
+      const subtaskStatus = request.query.subtaskStatus as string;
+      const result = await taskInfoController.getTaskInfoToTaskPage({
+        taskInfoId,
+        subtaskStatus,
+      });
+      response.status(200).json(result);
     } catch (error) {
       response.status(400).json(error);
     }
