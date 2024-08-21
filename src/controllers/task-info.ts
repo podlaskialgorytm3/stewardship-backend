@@ -340,25 +340,5 @@ class TaskInfoController {
       };
     }
   };
-
-  private isDateOverlap = ({
-    startDate,
-    endDate,
-  }: {
-    startDate: string;
-    endDate: string;
-  }) => {
-    try {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      return start.getTime() > end.getTime();
-    } catch (error) {
-      return {
-        message: "An error occurred while checking if date overlap: " + error,
-        type: "error",
-      };
-    }
-  };
 }
-
 export default TaskInfoController;

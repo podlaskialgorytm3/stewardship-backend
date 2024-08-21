@@ -164,6 +164,7 @@ class SubTaskController {
     try {
       const subTask = await SubTask.findAll({
         where: { taskInfoId: taskInfoId },
+        order: [["createdAt", "ASC"]],
       });
       return Promise.all(
         subTask.map(async (subTask) => {
