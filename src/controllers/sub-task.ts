@@ -181,10 +181,7 @@ class SubTaskController {
         })
       );
     } catch (error) {
-      return {
-        message: "An error occurred while getting the sub-tasks: " + error,
-        type: "error",
-      };
+      return [];
     }
   };
   public precentOfDoneSubtask = async (taskInfoId: string) => {

@@ -142,6 +142,34 @@ class TaskInfoController {
     }
   };
 
+  public getTaskInfoToTaskPage = async ({
+    taskInfoId,
+    subtaskStatus,
+  }: {
+    taskInfoId: string;
+    subtaskStatus: string;
+  }) => {
+    try {
+      const taskInfo = await this.getTaskInfo({ taskInfoId });
+      return {
+        taskInfo: taskInfo.taskInfo,
+        subTasks:
+          taskInfo.subTasks &&
+          taskInfo.subTasks.filter(
+            (subtask) => subtask.status === subtaskStatus
+          ),
+        precentOfDoneSubtasks: taskInfo.precentOfDoneSubtasks,
+        members: taskInfo.members,
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while getting task info to task page: " + error,
+      };
+    }
+  };
+
   public getTaskInfo = async ({ taskInfoId }: { taskInfoId: string }) => {
     try {
       const taskInfo = await TaskInfo.findOne({
