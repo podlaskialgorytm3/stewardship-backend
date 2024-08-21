@@ -39,8 +39,7 @@ class SubTaskController {
         token,
         groupId
       )) as { id: string; role: string };
-
-      if (!(user.role === "member" || user.role === "admin")) {
+      if (user.role !== "member" && user.role !== "admin") {
         return {
           message: "You are not authorized to create sub-task",
           type: "info",
@@ -395,8 +394,6 @@ class SubTaskController {
         token,
         groupId
       )) as { id: string; role: string };
-
-      console.log(isAdmin);
 
       return creatorOfSubtask === member.id || isAdmin;
     } catch (error) {

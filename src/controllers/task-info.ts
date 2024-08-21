@@ -83,7 +83,6 @@ class TaskInfoController {
         if (taskAffilations.length > 0) {
           await Promise.all(
             taskAffilations.map(async (taskAffilation) => {
-              console.log("Task affilation: ", taskAffilation);
               await this.taskAffilationController.addTaskAffilation(
                 id as string,
                 taskAffilation.memberId,
