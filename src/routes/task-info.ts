@@ -79,11 +79,11 @@ router.get(
 );
 
 router.get(
-  "/task-info/is-admin/:id",
+  "/task-info/is-admin/:taskInfoId",
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const { taskInfoId } = request.query;
+      const { taskInfoId } = request.params;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const groupId = await taskInfoController.getGroupIdByTaskInfoId({
         taskInfoId,
