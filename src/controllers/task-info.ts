@@ -63,14 +63,14 @@ class TaskInfoController {
         if (subtasks.length > 0) {
           await Promise.all(
             subtasks.map(async (subtask) => {
-              await this.subTaskController.createSubTask({
+              await this.subTaskController.createSubtaskWithCreatingTaskInfo({
                 subtask,
                 taskInfoId: id,
-                token,
+                memberId: user?.id,
               } as {
                 subtask: SubtaskCreation;
                 taskInfoId: string;
-                token: string;
+                memberId: string;
               });
             })
           );

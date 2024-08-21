@@ -65,6 +65,35 @@ class SubTaskController {
       };
     }
   };
+
+  public createSubtaskWithCreatingTaskInfo = async ({
+    subtask,
+    taskInfoId,
+    memberId,
+  }: {
+    subtask: SubtaskCreation;
+    taskInfoId: string;
+    memberId: string;
+  }) => {
+    try {
+      const id = uuidv4();
+      await SubTask.create({
+        id: id,
+        taskInfoId: taskInfoId,
+        title: subtask.title,
+        description: subtask.description,
+        status: subtask.status,
+        assignedBy: memberId,
+      });
+      return {
+        message: "Sub-task created successfully",
+        type: "success",
+      };
+    } catch (error) {
+      return null;
+    }
+  };
+
   public getGroupIdByTaskInfoId = async ({
     taskInfoId,
   }: {
