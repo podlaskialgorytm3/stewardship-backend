@@ -155,8 +155,8 @@ router.post(
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const { email } = request.query;
-      userAuthentication.saveAccessToken(email as string, "");
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      userAuthentication.logout({ token });
       response.status(200).json({
         message: "User logged out successfully",
         type: "success",
