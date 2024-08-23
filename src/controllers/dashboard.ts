@@ -78,7 +78,7 @@ class DashboardController {
   };
   private getTaskInfoIds = async (): Promise<string[] | null> => {
     try {
-      const groupUserIds = await this.getGroupIds();
+      const groupUserIds = await this.getGroupUsersIds();
       if (!groupUserIds) {
         return null;
       }
@@ -93,6 +93,18 @@ class DashboardController {
       );
       const taskInfoIds = taskInfoIdsArrays.flat();
       return taskInfoIds;
+    } catch (error) {
+      return null;
+    }
+  };
+  private getGroupUsersIds = async () => {
+    try {
+      const userId = await this.userController.getUserIdByToken(this.token);
+      const groupUserIds = await GroupUser.findAll({
+        where: { userId },
+        attributes: ["id"],
+      });
+      return groupUserIds.map((groupUserId) => groupUserId.id);
     } catch (error) {
       return null;
     }
