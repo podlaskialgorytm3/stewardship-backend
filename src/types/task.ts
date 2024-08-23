@@ -1,3 +1,6 @@
+import { Member } from "./member";
+import { SubTaskCreation } from "./sub-task";
+
 export interface TaskInfo {
   id: string;
   name: string;
@@ -6,6 +9,8 @@ export interface TaskInfo {
   status: string;
   priority: string;
   comments: string;
+  assignedBy: Member;
+  time: number | undefined;
 }
 export interface TaskInfoCreation {
   ["task-name"]: string;
