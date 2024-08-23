@@ -26,15 +26,6 @@ router.post("/user", async (request: Request, response: Response) => {
     response.status(400).json(error);
   }
 });
-router.get("/user", async (request: Request, response: Response) => {
-  try {
-    const name = request.query.name as string;
-    const result = await userController.getUsers(name);
-    response.status(200).json(result);
-  } catch (error) {
-    response.status(400).json(error);
-  }
-});
 router.get(
   `/user`,
   userAuthentication.authMiddleware,
