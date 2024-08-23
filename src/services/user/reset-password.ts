@@ -48,11 +48,14 @@ class ResetPassword {
       };
     }
   };
-  public resetPassword = async (newPassword: string, token: string) => {
+  public resetPassword = async (
+    newPassword: string,
+    resetPasswordToken: string
+  ) => {
     try {
       const user = await UserModal.findOne({
         where: {
-          resetToken: token,
+          resetToken: resetPasswordToken,
         },
       });
       if (user) {

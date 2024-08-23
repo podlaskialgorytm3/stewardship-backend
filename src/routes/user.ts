@@ -139,10 +139,10 @@ router.put(
   "/user/password/reset",
   async (request: Request, response: Response) => {
     try {
-      const { newPassword, token } = request.body;
+      const { newPassword, resetPasswordToken } = request.body;
       const result = await resetPassword.resetPassword(
         newPassword as string,
-        token as string
+        resetPasswordToken as string
       );
       response.status(200).json(result);
     } catch (error) {
