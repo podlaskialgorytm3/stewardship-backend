@@ -36,11 +36,11 @@ router.get("/user", async (request: Request, response: Response) => {
   }
 });
 router.get(
-  `/user/:token`,
+  `/user`,
   userAuthentication.authMiddleware,
   async (request: Request, response: Response) => {
     try {
-      const token = request.params.token;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await userController.getUserByToken(token);
       response.status(200).json(result);
     } catch (error) {
