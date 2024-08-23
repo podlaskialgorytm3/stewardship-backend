@@ -51,6 +51,33 @@ class UserAuthentication {
       };
     }
   };
+  public logout = async ({ token }: { token: string }) => {
+    try {
+      const user = await UserModal.findOne({
+        where: {
+          accessToken: token,
+        },
+      });
+      if (user) {
+        user.accessToken = null;
+        await user.save();
+        return {
+          message: "Logged out successfully",
+          type: "success",
+        };
+      } else {
+        return {
+          message: "User not found",
+          type: "error",
+        };
+      }
+    } catch (error) {
+      return {
+        message: "An error occurred while logging out: " + error,
+        type: "error",
+      };
+    }
+  };
   public authMiddleware = (
     request: Request,
     resposne: Response,
