@@ -22,4 +22,19 @@ router.get(
   }
 );
 
+router.get(
+  "/dashboard/tasks",
+  userAuthentication.authMiddleware,
+  async (request: Request, response: Response) => {
+    try {
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const dashboardController = new DashboardController({ token });
+      const result = await dashboardController.getTasksToUserDashboard();
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  }
+);
+
 export default router;
