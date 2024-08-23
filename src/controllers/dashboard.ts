@@ -5,6 +5,7 @@ import GroupUserController from "./group-user";
 
 import GroupUser from "../models/group-user";
 import TaskInfo from "../models/task-info";
+import TaskAffilation from "../models/task-affilation";
 
 class DashboardController {
   token: string;
@@ -82,17 +83,13 @@ class DashboardController {
       if (!groupUserIds) {
         return null;
       }
-      const taskInfoIdsArrays = await Promise.all(
-        groupUserIds.map(async (groupUserId) => {
-          const taskInfoIds = await TaskInfo.findAll({
-            where: { groupUserId },
-            attributes: ["id"],
-          });
-          return taskInfoIds.map((taskInfo) => taskInfo.id);
-        })
+      const taskAffilationIds = await TaskAffilation.findAll({
+        where: { groupUserId: groupUserIds },
+        attributes: ["taskInfoId"],
+      });
+      return taskAffilationIds.map(
+        (taskAffilationId) => taskAffilationId.taskInfoId
       );
-      const taskInfoIds = taskInfoIdsArrays.flat();
-      return taskInfoIds;
     } catch (error) {
       return null;
     }
