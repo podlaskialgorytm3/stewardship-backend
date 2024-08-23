@@ -81,6 +81,19 @@ class GroupController {
       };
     }
   };
+  public getGroupByGroupUserId = async ({
+    groupUserId,
+  }: {
+    groupUserId: string;
+  }) => {
+    try {
+      const group = await Group.findOne({
+        where: {},
+      });
+    } catch (error) {
+      return null;
+    }
+  };
   public editGroup = async (
     id: string,
     name: string,

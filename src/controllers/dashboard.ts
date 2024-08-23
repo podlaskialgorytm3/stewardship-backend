@@ -12,7 +12,7 @@ class DashboardController {
   groupController: GroupController;
   taskInfoController: TaskInfoController;
   groupUserController: GroupUserController;
-  constructor({ token }) {
+  constructor({ token }: { token: string }) {
     this.token = token;
     this.userController = new UserController();
     this.groupController = new GroupController();
@@ -22,14 +22,16 @@ class DashboardController {
 
   public getGroupsToUserDashboard = async () => {
     try {
-      const groupUserIds = await this.getGroupUserIds();
-      if (!groupUserIds) {
+      const groupIds = await this.getGroupIds();
+      if (!groupIds) {
         return null;
       } else {
-        const groups = groupUserIds.map(async (groupUserId) => {
-          const group = await this.groupController.getGroup(groupUserId);
-          return group.data;
-        });
+        const groups = Promise.all(
+          groupIds.map(async (groupId) => {
+            const group = await this.groupController.getGroup(groupId);
+            return group.data;
+          })
+        );
         return groups;
       }
     } catch (error) {
@@ -62,21 +64,21 @@ class DashboardController {
       return null;
     }
   };
-  private getGroupUserIds = async () => {
+  private getGroupIds = async () => {
     try {
-      const userId = this.userController.getUserIdByToken(this.token);
+      const userId = await this.userController.getUserIdByToken(this.token);
       const groupUserIds = await GroupUser.findAll({
         where: { userId },
-        attributes: ["id"],
+        attributes: ["groupId"],
       });
-      return groupUserIds.map((groupUserId) => groupUserId.id);
+      return groupUserIds.map((groupUserId) => groupUserId.groupId);
     } catch (error) {
       return null;
     }
   };
   private getTaskInfoIds = async (): Promise<string[] | null> => {
     try {
-      const groupUserIds = await this.getGroupUserIds();
+      const groupUserIds = await this.getGroupIds();
       if (!groupUserIds) {
         return null;
       }
