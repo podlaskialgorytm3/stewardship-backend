@@ -4,7 +4,6 @@ import TaskInfoController from "./task-info";
 import GroupUserController from "./group-user";
 
 import GroupUser from "../models/group-user";
-import TaskInfo from "../models/task-info";
 import TaskAffilation from "../models/task-affilation";
 
 class DashboardController {

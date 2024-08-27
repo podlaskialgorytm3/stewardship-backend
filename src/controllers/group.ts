@@ -81,19 +81,6 @@ class GroupController {
       };
     }
   };
-  public getGroupByGroupUserId = async ({
-    groupUserId,
-  }: {
-    groupUserId: string;
-  }) => {
-    try {
-      const group = await Group.findOne({
-        where: {},
-      });
-    } catch (error) {
-      return null;
-    }
-  };
   public editGroup = async (
     id: string,
     name: string,
@@ -165,7 +152,7 @@ class GroupController {
       };
     }
   };
-  public isMembership = async (groupId: string, token: string) => {
+  private isMembership = async (groupId: string, token: string) => {
     try {
       const userId = await this.userController.getUserIdByToken(token);
       const groupUsers = await GroupUser.findAll();

@@ -129,37 +129,6 @@ class SubTaskController {
       return null;
     }
   };
-
-  public getSubTask = async (subTaskId: string) => {
-    try {
-      const subTask = await SubTask.findByPk(subTaskId);
-      if (!subTask) {
-        return {
-          message: "Sub-task not found",
-          type: "info",
-        };
-      }
-      return {
-        message: "Sub-task found",
-        type: "success",
-        data: {
-          id: subTask?.id,
-          taskInfoId: subTask?.taskInfoId,
-          title: subTask?.title,
-          description: subTask?.description,
-          status: subTask?.status,
-          assignedBy: await this.groupUserController.getUserByGroupUserId(
-            subTask?.assignedBy as string
-          ),
-        },
-      };
-    } catch (error) {
-      return {
-        message: "An error occurred while getting the sub-task ID: " + error,
-        type: "error",
-      };
-    }
-  };
   public getSubTasks = async (taskInfoId: string) => {
     try {
       const subTask = await SubTask.findAll({
@@ -200,20 +169,6 @@ class SubTaskController {
       return Math.round((doneSubtask.length / allSubtask.length) * 100) + "%";
     } catch (error) {
       return null;
-    }
-  };
-  public deleteSubTaskByTaskInfoId = async (taskInfoId: string) => {
-    try {
-      await SubTask.destroy({ where: { taskInfoId: taskInfoId } });
-      return {
-        message: "Sub-task deleted successfully",
-        type: "success",
-      };
-    } catch (error) {
-      return {
-        message: "An error occurred while deleting the sub-task: " + error,
-        type: "error",
-      };
     }
   };
   public deleteSubTask = async ({
@@ -310,7 +265,7 @@ class SubTaskController {
     }
   };
 
-  public getGroupIdBySubtaskId = async ({
+  private getGroupIdBySubtaskId = async ({
     subTaskId,
   }: {
     subTaskId: string;
