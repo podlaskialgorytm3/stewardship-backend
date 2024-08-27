@@ -28,38 +28,6 @@ router.post(
   }
 );
 
-router.get(
-  "/sub-task/:subTaskId",
-  userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const subTaskId = request.params.subTaskId;
-      const result = await subTaskController.getSubTask(subTaskId);
-      response.status(200).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
-);
-
-router.get(
-  "/sub-task",
-  userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { taskInfoId } = request.query as { taskInfoId: string };
-      const result = await subTaskController.getSubTasks(taskInfoId);
-      response.status(200).json({
-        message: "Sub-tasks found",
-        type: "success",
-        data: result,
-      });
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
-);
-
 router.delete(
   "/sub-task/:subtaskId",
   userAuthentication.authMiddleware,

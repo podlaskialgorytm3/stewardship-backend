@@ -39,24 +39,6 @@ router.get(
     }
   }
 );
-router.put(
-  `/user/:id`,
-  userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const id = request.params.id;
-      const { name, img } = request.query;
-      const userData = {
-        name: name as string,
-        img: img as string,
-      };
-      const result = await userController.editUser(id, userData);
-      response.status(200).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
-);
 router.post("/user/login", async (request: Request, response: Response) => {
   try {
     const { email, password } = request.body;

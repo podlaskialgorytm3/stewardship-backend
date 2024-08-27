@@ -44,23 +44,6 @@ router.get(
     }
   }
 );
-router.get(
-  "/group-user/:userId",
-  userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId } = request.query;
-      const { userId } = request.params;
-      const result = await groupUserController.getUser(
-        groupId as string,
-        userId as string
-      );
-      response.status(200).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
-);
 
 router.delete(
   "/group-user",
@@ -97,28 +80,6 @@ router.put(
         groupId as string,
         userId as string,
         groupUser.role
-      );
-      response.status(200).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
-);
-router.post(
-  "/group-user",
-  userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId, userId, role } = request.query;
-      const groupUser = (await groupUserController.getUserByTokenGroup(
-        request.headers["authorization"]?.split(" ")[1] as string,
-        groupId as string
-      )) as { id: number; role: string };
-      const result = await groupUserController.addUser(
-        userId as string,
-        role as string,
-        groupId as string,
-        groupUser.role as string
       );
       response.status(200).json(result);
     } catch (error) {
