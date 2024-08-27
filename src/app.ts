@@ -8,7 +8,6 @@ import groupUserRouter from "./routes/group-user";
 import taskInfoRouter from "./routes/task-info";
 import taskAffilationRouter from "./routes/task-affilation";
 import subTaskRouter from "./routes/sub-task";
-import workingHoursRouter from "./routes/working-hours";
 import dahboardRouter from "./routes/dashboard";
 import createTables from "./configs/create-tables";
 
@@ -25,11 +24,10 @@ app.use("/stewardship", [
   taskInfoRouter,
   taskAffilationRouter,
   subTaskRouter,
-  workingHoursRouter,
   dahboardRouter,
 ]);
 
-//createTables()
+createTables();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
