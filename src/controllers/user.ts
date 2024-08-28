@@ -1,330 +1,171 @@
-import UserModal from "../models/user";
-import UserInterface from "../types/user";
-import UserUtils from "../utils/user";
+import { Request, Response } from "express";
+
+import ResetPassword from "../services/user/reset-password";
+
+import UserInterFace from "../types/user";
+
+import UserService from "../services/user";
+
 import UserAuthentication from "../middlewares/auth";
-import SendMail from "../services/user/send-mail";
-import { v4 as uuidv4 } from "uuid";
+
+const resetPassword = new ResetPassword();
+const userService = new UserService();
+const userAuthentication = new UserAuthentication();
 
 class UserController {
-  public userUtils = new UserUtils();
-  public userAuthentication = new UserAuthentication();
-  public sendMail = new SendMail();
-  public createTable = async () => {
-    UserModal.sync({ alter: true })
-      .then(() => {
-        console.log("User table has been synchronized");
-      })
-      .catch((error) => {
-        console.error(
-          "An error occurred while synchronizing the User table:",
-          error
-        );
-      });
-  };
-  public createUser = async (userInfo: UserInterface) => {
-    const id = uuidv4();
-    const hashedPassword = this.userUtils.hashPassword(userInfo.password);
+  public postUser = async (request: Request, response: Response) => {
     try {
-      await UserModal.create({
-        id: id,
-        name: userInfo.name,
-        img: userInfo.img,
-        email: userInfo.email,
-        password: await hashedPassword,
-      });
-      return {
-        message: "User created successfully!",
-        type: "success",
+      const { name, img, email, password } = request.body;
+      const userInfo: UserInterFace = {
+        name: name as string,
+        img: img as string,
+        email: email as string,
+        password: password as string,
       };
+      const result = await userService.createUser(userInfo);
+      response.status(201).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while creating the user: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  public getUsers = async (name: string) => {
+  public getUser = async (request: Request, response: Response) => {
     try {
-      const users = await UserModal.findAll({
-        attributes: ["id", "name", "img", "email"],
-      });
-      return {
-        message: "Users fetched successfully!",
-        type: "success",
-        data: users.filter((user) => user.name.includes(name) && user),
-      };
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await userService.getUserByToken(token);
+      response.status(200).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while fetching the users: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  public getUser = async (id: string) => {
+  public getUserLogin = async (request: Request, response: Response) => {
     try {
-      const user = await UserModal.findByPk(id);
-      return {
-        message: "User fetched successfully!",
-        type: "success",
-        data: {
-          id: user?.id,
-          username: user?.name,
-          img: user?.img,
-          email: user?.email,
-        },
-      };
-    } catch (error) {
-      return {
-        message: "An error occurred while fetching the user: " + error,
-        type: "error",
-      };
-    }
-  };
-  public getUserByToken = async (token: string) => {
-    try {
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-
-      if (user) {
-        return {
-          id: user.id,
-          name: user.name,
-          img: user.img,
-          email: user.email,
-        };
-      } else {
-        return {
-          message: "User not found",
-          type: "error",
-        };
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while fetching the user: " + error,
-        type: "error",
-      };
-    }
-  };
-  public editUser = async (
-    id: string,
-    userInfo: { name: string; img: string }
-  ) => {
-    try {
-      const user = await UserModal.findByPk(id);
-      if (user) {
-        user.name = userInfo.name;
-        user.img = userInfo.img;
-        await user.save();
-      }
-      return {
-        message: "User updated",
-        type: "success",
-      };
-    } catch (error) {
-      return {
-        message: "An error occurred while updating the user: " + error,
-        type: "error",
-      };
-    }
-  };
-  public deleteUser = async (id: string) => {
-    try {
-      const user = await UserModal.findByPk(id);
-      if (user) {
-        this.userAuthentication.saveAccessToken(user.email as string, "");
-        await user.destroy();
-        return {
-          message: "User deleted successfully!",
+      const { email, password } = request.body;
+      const token = await userAuthentication.authonticateUser(
+        email as string,
+        password as string
+      );
+      if (token) {
+        response.status(200).json({
+          message: "User authenticated successfully!",
           type: "success",
-        };
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while deleting the user: " + error,
-        type: "error",
-      };
-    }
-  };
-  public changeEmail = async (
-    token: string,
-    email: string,
-    password: string
-  ) => {
-    try {
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      if (user) {
-        const isPasswordValid = this.userUtils.comparePassword(
-          password,
-          user.password
-        );
-        if (await isPasswordValid) {
-          user.email = email;
-          await user.save();
-          return {
-            message: "Email updated successfully!",
-            type: "success",
-          };
-        } else {
-          return {
-            message: "Invalid password",
-            type: "info",
-          };
-        }
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while updating the email: " + error,
-        type: "error",
-      };
-    }
-  };
-  public isTokenValid = async (token: string) => {
-    try {
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      if (user) {
-        return {
-          message: "Token is valid",
-          type: "success",
-          authenticated: true,
-        };
+          token: token,
+          user: await userService.getUserByToken(String(token)),
+        });
       } else {
-        return {
-          message: "Token is invalid",
-          type: "info",
-          authenticated: false,
-        };
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while validating the token: " + error,
-        type: "error",
-      };
-    }
-  };
-  public changeImg = async (img: string, token: string) => {
-    try {
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      if (user) {
-        user.img = img;
-        await user.save();
-        return {
-          message: "Image updated successfully!",
-          type: "success",
-        };
-      } else {
-        return {
-          message: "User not found",
+        response.status(401).json({
+          message: "User not authenticated",
           type: "error",
-        };
+        });
       }
     } catch (error) {
-      return {
-        message: "An error occurred while updating the image: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  public changeName = async (name: string, token: string) => {
+  public getUserById = async (request: Request, response: Response) => {
     try {
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      if (user) {
-        user.name = name;
-        await user.save();
-        return {
-          message: "Name updated successfully!",
-          type: "success",
-        };
-      } else {
-        return {
-          message: "User not found",
-          type: "error",
-        };
-      }
+      const id = request.params.id;
+      const result = userService.deleteUser(id);
+      response.status(200).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while updating the name: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  public changePassword = async (
-    oldPassword: string,
-    newPassword: string,
-    token: string
-  ) => {
+  public putEmailChange = async (request: Request, resposne: Response) => {
     try {
-      if (oldPassword === newPassword) {
-        return {
-          message: "Old and new passwords are the same",
-          type: "info",
-        };
-      }
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      if (user) {
-        const isPasswordValid = await this.userUtils.comparePassword(
-          oldPassword,
-          user.password
-        );
-        if (isPasswordValid) {
-          user.password = await this.userUtils.hashPassword(newPassword);
-          await user.save();
-          return {
-            message: "Password updated successfully!",
-            type: "success",
-          };
-        } else {
-          return {
-            message: "Invalid password",
-            type: "info",
-          };
-        }
-      } else {
-        return {
-          message: "User not found",
-          type: "error",
-        };
-      }
+      const { email, password } = request.body;
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const result = await userService.changeEmail(
+        token as string,
+        email as string,
+        password as string
+      );
+      resposne.status(200).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while updating the password: " + error,
-        type: "error",
-      };
+      resposne.status(400).json(error);
     }
   };
-  public getUserIdByToken = async (token: string) => {
+  public postPasswordReset = async (request: Request, response: Response) => {
     try {
-      const user = await UserModal.findOne({
-        where: {
-          accessToken: token,
-        },
-        attributes: ["id"],
-      });
-      return user?.id;
+      const { email } = request.body;
+      const result = await resetPassword.sendLinkToResetPassword(
+        email as string
+      );
+      response.status(200).json(result);
+    } catch (erorr) {
+      response.status(400).json(erorr);
+    }
+  };
+  public putPasswordReset = async (request: Request, response: Response) => {
+    try {
+      const { newPassword, resetPasswordToken } = request.body;
+      const result = await resetPassword.resetPassword(
+        newPassword as string,
+        resetPasswordToken as string
+      );
+      response.status(200).json(result);
     } catch (error) {
-      return null;
+      response.status(400).json(error);
+    }
+  };
+  public postUserLogout = async (request: Request, response: Response) => {
+    try {
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      userAuthentication.logout({ token });
+      response.status(200).json({
+        message: "User logged out successfully",
+        type: "success",
+      });
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public getIfTokenIsValid = async (request: Request, response: Response) => {
+    try {
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const result = await userService.isTokenValid(token as string);
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public putImgChange = async (request: Request, response: Response) => {
+    try {
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const { img } = request.body;
+      const result = await userService.changeImg(
+        img as string,
+        token as string
+      );
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public putNameChange = async (request: Request, response: Response) => {
+    try {
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const { name } = request.body;
+      const result = await userService.changeName(
+        name as string,
+        token as string
+      );
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public putPasswordChange = async (request: Request, response: Response) => {
+    try {
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const { oldPassword, newPassword } = request.body;
+      const result = await userService.changePassword(
+        oldPassword as string,
+        newPassword as string,
+        token as string
+      );
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
     }
   };
 }

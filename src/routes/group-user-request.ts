@@ -1,109 +1,35 @@
 import express from "express";
-import { Request, Response } from "express";
-import GroupUserRequestController from "../controllers/group-user-request";
 import UserAuthentication from "../middlewares/auth";
-import UserController from "../controllers/user";
-import GroupUserController from "../controllers/group-user";
+import GroupUserRequestController from "../controllers/group-user-request";
 
 const router = express.Router();
-
-const groupUserRequestController = new GroupUserRequestController();
 const userAuthentication = new UserAuthentication();
-const userController = new UserController();
-const groupUserController = new GroupUserController();
+const groupUserRequestController = new GroupUserRequestController();
 
 router.post(
   "/group-user-request",
   userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId } = request.body;
-      const user = await userController.getUserByToken(
-        request.headers["authorization"]?.split(" ")[1] as string
-      );
-      const result = await groupUserRequestController.addRequest(
-        user?.id as string,
-        groupId as string
-      );
-      response.status(201).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
+  groupUserRequestController.postGroupUserRequest
 );
-
 router.get(
   "/group-user-request",
   userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId, username } = request.query;
-      const result = await groupUserRequestController.getRequests(
-        groupId as string,
-        username as string
-      );
-      response.status(200).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
+  groupUserRequestController.getGroupUserRequest
 );
 router.get(
   "/group-user-request/not-added-users",
   userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId, username } = request.query;
-      const result = await groupUserRequestController.getNotAddedUsers(
-        groupId as string,
-        username as string
-      );
-      response.status(200).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
+  groupUserRequestController.getNotAddedUsers
 );
 router.put(
   "/group-user-request",
   userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId, userId, status } = request.body;
-      const groupUser = (await groupUserController.getUserByTokenGroup(
-        request.headers["authorization"]?.split(" ")[1] as string,
-        groupId as string
-      )) as { id: number; role: string };
-      const result = await groupUserRequestController.changeStatus(
-        groupId as string,
-        userId as string,
-        status as string,
-        groupUser.role as string
-      );
-      response.status(201).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
+  groupUserRequestController.putGroupUserRequest
 );
 router.delete(
   "/group-user-request/:groupId",
   userAuthentication.authMiddleware,
-  async (request: Request, response: Response) => {
-    try {
-      const { groupId } = request.params;
-      const user = (await userController.getUserByToken(
-        request.headers["authorization"]?.split(" ")[1] as string
-      )) as { id: string };
-      const result = groupUserRequestController.deleteRequest(
-        groupId as string,
-        user.id as string
-      );
-      response.status(201).json(result);
-    } catch (error) {
-      response.status(400).json(error);
-    }
-  }
+  groupUserRequestController.deleteGroupUserRequest
 );
 
 export default router;

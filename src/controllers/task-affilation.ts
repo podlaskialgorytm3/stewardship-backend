@@ -1,247 +1,90 @@
-import TaskAffilation from "../models/task-affilation";
-import GroupUser from "../models/group-user";
-import GroupUserController from "./group-user";
-import { v4 as uuidv4 } from "uuid";
+import { Request, Response } from "express";
 
-import { Member } from "../types/member";
+import TaskAffilationService from "../services/task-affilation";
+import GroupUserService from "../services/group-user";
+import TaskInfoService from "../services/task-info";
+
+const groupUserService = new GroupUserService();
+const taskInfoService = new TaskInfoService();
+const taskAffilationService = new TaskAffilationService();
 
 class TaskAffilationController {
-  public groupUserController = new GroupUserController();
-  public createTable = async () => {
-    TaskAffilation.sync({ alter: true })
-      .then(() => {
-        console.log("Task Affilation table has been synchronized");
-      })
-      .catch((error) => {
-        console.error(
-          "An error occurred while synchronizing the Task Affilation table:",
-          error
-        );
-      });
+  public postTaskAffilation = async (request: Request, response: Response) => {
+    try {
+      const { taskInfoId, groupUserId } = request.body;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const groupId = await taskInfoService.getGroupIdByTaskInfoId({
+        taskInfoId,
+      } as { taskInfoId: string });
+      const user = (await groupUserService.getUserByTokenGroup(
+        token,
+        groupId as unknown as string
+      )) as { id: string; role: string };
+      const result = await taskAffilationService.addTaskAffilation(
+        taskInfoId as string,
+        groupUserId as string,
+        user?.role as string
+      );
+      response.status(201).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
   };
-  public addTaskAffilation = async (
-    taskInfoId: string,
-    groupUserId: string,
-    role: string
+  public getTaskAffilation = async (request: Request, response: Response) => {
+    try {
+      const { taskInfoId, username } = request.query as {
+        taskInfoId: string;
+        username: string;
+      };
+      const result = await taskAffilationService.searchMembersAddedToTask({
+        taskInfoId,
+        username,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public getTaskAffilationOffTask = async (
+    request: Request,
+    response: Response
   ) => {
     try {
-      const taskAffilationId = uuidv4();
-      if (role !== "admin") {
-        return {
-          message: "You are not authorized to create task affilation",
-          type: "info",
-        };
-      } else {
-        const isTaskAffilation = await TaskAffilation.findOne({
-          where: {
-            taskInfoId,
-            groupUserId,
-          },
-        });
-        if (isTaskAffilation)
-          return {
-            message: "Task affilation already exists",
-            type: "info",
-          };
-        await TaskAffilation.create({
-          id: taskAffilationId,
-          taskInfoId: taskInfoId,
-          groupUserId: groupUserId,
-        });
-        return {
-          message: "New task affilation created!",
-          type: "success",
-        };
-      }
-    } catch (error) {
-      return {
-        message:
-          "An error occurred while creating a new task affilation: " + error,
-        type: "error",
+      const { taskInfoId, username } = request.query as {
+        taskInfoId: string;
+        username: string;
       };
-    }
-  };
-  public getTaskAffilation = async (taskInfoId: string) => {
-    try {
-      const taskAffilations = await TaskAffilation.findAll({
-        where: {
-          taskInfoId,
-        },
+      const result = await taskAffilationService.searchMembersOffTask({
+        taskInfoId,
+        username,
       });
-
-      const groupUsersId = taskAffilations.map(
-        (taskAffilation) => taskAffilation.groupUserId
-      );
-
-      const usersInfo = await Promise.all(
-        groupUsersId.map(async (groupUserId) => {
-          const userInfo = await this.groupUserController.getUserByGroupUserId(
-            groupUserId
-          );
-          return userInfo;
-        })
-      );
-
-      return usersInfo;
+      response.status(200).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while fetching task affilation: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  private getMembersOffTask = async ({
-    taskInfoId,
-  }: {
-    taskInfoId: string;
-  }) => {
-    try {
-      const groupId = (await this.getGroupIdByTaskInfoId({
-        taskInfoId,
-      })) as string;
-      const groupUsers = (await this.groupUserController.getUsersByGroupId({
-        groupId,
-      })) as Member[];
-      const taskMembers = (await this.getTaskAffilation(
-        taskInfoId
-      )) as Member[];
-      return groupUsers.filter(
-        (groupUser) =>
-          !taskMembers.some((memberOfTask) => memberOfTask.id === groupUser.id)
-      );
-    } catch (error) {
-      return null;
-    }
-  };
-  public searchMembersAddedToTask = async ({
-    taskInfoId,
-    username,
-  }: {
-    taskInfoId: string;
-    username: string;
-  }) => {
-    try {
-      const members = (await this.getTaskAffilation(taskInfoId)) as Member[];
-      return members.filter(
-        (member) =>
-          username.includes(member.name) || member.name.includes(username)
-      );
-    } catch (error) {
-      return {
-        message: "An error occurred while searching task affilation: " + error,
-        type: "error",
-      };
-    }
-  };
-  public searchMembersOffTask = async ({
-    taskInfoId,
-    username,
-  }: {
-    taskInfoId: string;
-    username: string;
-  }) => {
-    try {
-      const members = (await this.getMembersOffTask({
-        taskInfoId,
-      })) as Member[];
-      return members.filter(
-        (member) =>
-          username.includes(member.name) || member.name.includes(username)
-      );
-    } catch (error) {
-      return {
-        message: "An error occurred while searching task affilation: " + error,
-        type: "error",
-      };
-    }
-  };
-
   public deleteTaskAffilation = async (
-    taskInfoId: string,
-    groupUserId: string,
-    role: string
+    request: Request,
+    response: Response
   ) => {
     try {
-      if (role !== "admin") {
-        return {
-          message: "You are not authorized to delete task affilation",
-          type: "info",
-        };
-      } else {
-        await TaskAffilation.destroy({
-          where: {
-            taskInfoId,
-            groupUserId,
-          },
-        });
-        return {
-          message: "Task affilation deleted successfully!",
-          type: "success",
-        };
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while deleting task affilation: " + error,
-        type: "error",
-      };
-    }
-  };
-  public getTaskInfoIds = async (groupUserId: string) => {
-    try {
-      const taskAffilations = await TaskAffilation.findAll({
-        where: {
-          groupUserId,
-        },
-      });
-      const taskInfoIds = taskAffilations.map(
-        (taskAffilation) => taskAffilation.taskInfoId
+      const { taskInfoId, groupUserId } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const groupId = await taskInfoService.getGroupIdByTaskInfoId({
+        taskInfoId,
+      } as { taskInfoId: string });
+      const user = (await groupUserService.getUserByTokenGroup(
+        token,
+        groupId as string
+      )) as { id: string; role: string };
+      const result = await taskAffilationService.deleteTaskAffilation(
+        taskInfoId as string,
+        groupUserId as string,
+        user?.role as string
       );
-      return taskInfoIds;
+      response.status(200).json(result);
     } catch (error) {
-      return null;
-    }
-  };
-  private getGroupUserIdByTaskInfoId = async ({
-    taskInfoId,
-  }: {
-    taskInfoId: string;
-  }) => {
-    try {
-      const taskAffilation = await TaskAffilation.findOne({
-        where: {
-          taskInfoId: taskInfoId,
-        },
-      });
-      return taskAffilation?.groupUserId;
-    } catch (error) {
-      return {
-        message:
-          "An error occurred while getting group id by task info id: " + error,
-        type: "error",
-      };
-    }
-  };
-  public getGroupIdByTaskInfoId = async ({
-    taskInfoId,
-  }: {
-    taskInfoId: string;
-  }) => {
-    try {
-      const groupUser = await GroupUser.findOne({
-        where: {
-          id: await this.getGroupUserIdByTaskInfoId({
-            taskInfoId: taskInfoId,
-          } as { taskInfoId: string }),
-        },
-        attributes: ["groupId"],
-      });
-      return groupUser?.groupId;
-    } catch (error) {
-      return {
-        message:
-          "An error occurred while getting group id by group user id: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
 }

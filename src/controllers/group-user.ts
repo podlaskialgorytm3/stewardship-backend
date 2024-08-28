@@ -1,487 +1,118 @@
-import GroupUser from "../models/group-user";
-import GroupUserRequest from "../models/group-user-request";
-import TaskAffilation from "../models/task-affilation";
-import User from "../models/user";
-import Group from "../models/group";
-import { v4 as uuidv4 } from "uuid";
+import { Request, Response } from "express";
+
+import GroupUserService from "../services/group-user";
+import UserService from "../services/user";
+
+const groupUserService = new GroupUserService();
+const userService = new UserService();
 
 class GroupUserController {
-  public createTable = async () => {
-    GroupUser.sync({ alter: true })
-      .then(() => {
-        console.log("GroupUser table has been synchronized");
-      })
-      .catch((error) => {
-        console.error(
-          "An error occurred while synchronizing the GroupUser table:",
-          error
-        );
-      });
+  public getGroupUser = async (request: Request, response: Response) => {
+    try {
+      const { groupId, username } = request.query;
+      const result = await groupUserService.getUsers(
+        groupId as string,
+        username as string
+      );
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
   };
-  public addUser = async (
-    userId: string,
-    role: string,
-    groupId: string,
-    addingPersonRole: string
+  public getGroupUserWithoutCreator = async (
+    request: Request,
+    response: Response
   ) => {
     try {
-      if (addingPersonRole !== "admin") {
-        return {
-          message: "You are not authorized to add the user",
-          type: "error",
-        };
-      } else {
-        const groupUser = await GroupUser.findOne({
-          where: {
-            groupId,
-            userId,
-          },
-        });
-        if (groupUser) {
-          return {
-            message: "User already exists in the group",
-            type: "error",
-          };
-        } else {
-          await GroupUser.create({
-            id: uuidv4(),
-            userId,
-            groupId,
-            role,
-          });
-          await GroupUserRequest.destroy({
-            where: {
-              userId,
-              groupId,
-            },
-          });
-          return {
-            message: "User added successfully",
-            type: "success",
-          };
-        }
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while adding the user: " + error,
-        type: "error",
-      };
-    }
-  };
-  public getUser = async (groupId: string, userId: string) => {
-    try {
-      const groupUser = await GroupUser.findOne({
-        where: {
-          groupId,
-          userId,
-        },
-      });
-      const user = await User.findOne({
-        where: {
-          id: userId,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupId,
-        },
-      });
-      return {
-        id: groupUser?.id as string,
-        name: user?.name as string,
-        email: user?.email as string,
-        group: group?.name as string,
-        img: user?.img as string,
-        role: groupUser?.role as string,
-      };
-    } catch (error) {
-      return error;
-    }
-  };
-  public getUsers = async (groupId: string, name: string) => {
-    try {
-      const groupUsers = await GroupUser.findAll({
-        where: {
-          groupId,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupId,
-        },
-      });
-      const users = await Promise.all(
-        groupUsers.map(async (groupUser) => {
-          const user = await User.findOne({
-            where: {
-              id: groupUser.userId,
-            },
-          });
-          return {
-            id: groupUser?.id as string,
-            userId: groupUser.userId as string,
-            name: user?.name as string,
-            group: group?.name as string,
-            email: user?.email as string,
-            img: user?.img as string,
-            role: groupUser.role,
-          };
-        })
+      const { groupId, username } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await groupUserService.getUsersWithoutCreator(
+        groupId as string,
+        username as string,
+        token as string
       );
-      return {
-        message: "Users retrieved successfully",
-        data: users.filter((user) => user.name.includes(name)),
-        type: "success",
-      };
+      response.status(200).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while getting the users: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  public getUsersByGroupId = async ({ groupId }: { groupId: string }) => {
+  public deleteGroupUser = async (request: Request, response: Response) => {
     try {
-      const groupUsers = await GroupUser.findAll({
-        where: {
-          groupId,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupId,
-        },
-      });
-      const users = await Promise.all(
-        groupUsers.map(async (groupUser) => {
-          const user = await User.findOne({
-            where: {
-              id: groupUser.userId,
-            },
-          });
-          return {
-            id: groupUser?.id as string,
-            name: user?.name as string,
-            group: group?.name as string,
-            email: user?.email as string,
-            img: user?.img as string,
-            role: groupUser.role,
-          };
-        })
+      const { groupId, memberId } = request.query;
+      const groupUser = (await groupUserService.getUserByTokenGroup(
+        request.headers["authorization"]?.split(" ")[1] as string,
+        groupId as string
+      )) as { id: number; role: string };
+      const result = await groupUserService.deleteGroupUser(
+        memberId as string,
+        groupUser.role,
+        groupId as string
       );
-      return users;
+      response.status(200).json(result);
     } catch (error) {
-      return null;
+      response.status(400).json(error);
     }
   };
-  public getUsersWithoutCreator = async (
-    groupId: string,
-    name: string,
-    token: string
-  ) => {
+  public putGroupUser = async (request: Request, response: Response) => {
     try {
-      const creatorUser = (await this.getUserByTokenGroup(token, groupId)) as {
-        id: string;
-      };
-      const groupUsers = await GroupUser.findAll({
-        where: {
-          groupId,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupId,
-        },
-      });
-      const users = await Promise.all(
-        groupUsers.map(async (groupUser) => {
-          const user = await User.findOne({
-            where: {
-              id: groupUser.userId,
-            },
-          });
-          return {
-            id: groupUser?.id as string,
-            userId: groupUser.userId as string,
-            name: user?.name as string,
-            group: group?.name as string,
-            email: user?.email as string,
-            img: user?.img as string,
-            role: groupUser.role,
-          };
-        })
+      const { groupId, userId } = request.body;
+      const groupUser = (await groupUserService.getUserByTokenGroup(
+        request.headers["authorization"]?.split(" ")[1] as string,
+        groupId as string
+      )) as { id: number; role: string };
+      const result = await groupUserService.changeRole(
+        groupId as string,
+        userId as string,
+        groupUser.role
       );
-      return {
-        message: "Users retrieved successfully",
-        data: users.filter(
-          (user) => user.name.includes(name) && user.id !== creatorUser.id
-        ),
-        type: "success",
-      };
+      response.status(200).json(result);
     } catch (error) {
-      return {
-        message: "An error occurred while getting the users: " + error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
-  public getUserByGroupUserId = async (groupUserId: string) => {
+  public postGroupUserInvite = async (request: Request, response: Response) => {
     try {
-      const groupUser = await GroupUser.findOne({
-        where: {
-          id: groupUserId,
-        },
-      });
-      const user = await User.findOne({
-        where: {
-          id: groupUser?.userId,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupUser?.groupId,
-        },
-      });
-      return {
-        id: groupUser?.id as string,
-        name: user?.name as string,
-        email: user?.email as string,
-        group: group?.name as string,
-        img: user?.img as string,
-        role: groupUser?.role as string,
-      };
-    } catch (error) {
-      return (
-        "An error occurred while getting the user by group user id: " + error
+      const { groupId, userId } = request.body;
+      const groupUser = (await groupUserService.getUserByTokenGroup(
+        request.headers["authorization"]?.split(" ")[1] as string,
+        groupId as string
+      )) as { id: number; role: string };
+      const result = await groupUserService.addUser(
+        userId as string,
+        "member",
+        groupId as string,
+        groupUser.role as string
       );
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
     }
   };
-  public getUserByToken = async (token: string) => {
+  public getIsMember = async (request: Request, response: Response) => {
     try {
-      const user = await User.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      const groupUser = await GroupUser.findOne({
-        where: {
-          userId: user?.id,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupUser?.groupId,
-        },
-      });
-      return {
-        id: groupUser?.id as string,
-        name: user?.name as string,
-        email: user?.email as string,
-        group: group?.name as string,
-        img: user?.img as string,
-        role: groupUser?.role as string,
-      };
+      const groupId = request.params.groupId as string;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const userId = await userService.getUserIdByToken(token);
+      const result = await groupUserService.isMemberOfGroup(
+        groupId as string,
+        userId as string
+      );
+      response.status(200).json(result);
     } catch (error) {
-      return error;
+      response.status(400).json(error);
     }
   };
-  public getUserByTokenGroup = async (token: string, groupId: string) => {
+  public getIsAdmin = async (request: Request, response: Response) => {
     try {
-      const user = await User.findOne({
-        where: {
-          accessToken: token,
-        },
+      const groupId = request.params.groupId as string;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await groupUserService.isAdminOfGroup({
+        groupId,
+        token,
       });
-      const groupUser = await GroupUser.findOne({
-        where: {
-          userId: user?.id,
-          groupId: groupId,
-        },
-      });
-      const group = await Group.findOne({
-        where: {
-          id: groupUser?.groupId,
-        },
-      });
-      return {
-        id: groupUser?.id as string,
-        name: user?.name as string,
-        email: user?.email as string,
-        group: group?.name as string,
-        img: user?.img as string,
-        role: groupUser?.role as string,
-      };
+      response.status(200).json(result);
     } catch (error) {
-      return error;
-    }
-  };
-  public deleteGroupUsers = async (groupId: string) => {
-    try {
-      await GroupUser.destroy({
-        where: {
-          groupId,
-        },
-      });
-      return "Group users deleted successfully";
-    } catch (error) {
-      return error;
-    }
-  };
-  public deleteGroupUser = async (
-    groupUserId: string,
-    role: string,
-    groupId: string
-  ) => {
-    try {
-      const quantityOfUsers = await this.getQuantityOfUsers(groupId);
-      if (quantityOfUsers === 1) {
-        return {
-          message: "You cannot delete the last user",
-          type: "error",
-        };
-      }
-      if (role !== "admin") {
-        return {
-          message: "You are not authorized to delete the user",
-          type: "error",
-        };
-      } else {
-        await TaskAffilation.destroy({
-          where: {
-            groupUserId,
-          },
-        });
-        await GroupUser.destroy({
-          where: {
-            id: groupUserId,
-          },
-        });
-        return {
-          message: "User deleted successfully",
-          type: "success",
-        };
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while deleting the user: " + error,
-        type: "error",
-      };
-    }
-  };
-  private getQuantityOfAdmins = async (groupId: string) => {
-    try {
-      const groupUsers = await GroupUser.findAll({
-        where: {
-          groupId: groupId,
-          role: "admin",
-        },
-      });
-      return groupUsers.length;
-    } catch (error) {
-      return error;
-    }
-  };
-  private getQuantityOfUsers = async (groupId: string) => {
-    try {
-      const groupUsers = await GroupUser.findAll({
-        where: {
-          groupId: groupId,
-        },
-      });
-      return groupUsers.length;
-    } catch (error) {
-      return error;
-    }
-  };
-  public changeRole = async (
-    groupId: string,
-    userId: string,
-    changingPersonRole: string
-  ) => {
-    try {
-      const groupUser = (await this.getUser(groupId, userId)) as {
-        role: string;
-      };
-      const quantityOfAdmins = await this.getQuantityOfAdmins(groupId);
-      const role = groupUser?.role === "admin" ? "member" : "admin";
-      if (quantityOfAdmins === 1 && groupUser?.role === "admin") {
-        return {
-          message: "You cannot change the role of the last admin",
-          type: "error",
-        };
-      } else if (changingPersonRole !== "admin") {
-        return {
-          message: "You are not authorized to change the role",
-          type: "error",
-        };
-      } else {
-        await GroupUser.update(
-          {
-            role,
-          },
-          {
-            where: {
-              groupId,
-              userId,
-            },
-          }
-        );
-        return {
-          message: "Role changed successfully",
-          type: "success",
-        };
-      }
-    } catch (error) {
-      return {
-        message: "An error occurred while changing the role: " + error,
-        type: "error",
-      };
-    }
-  };
-  public isMemberOfGroup = async (groupId: string, userId: string) => {
-    try {
-      const groupUser = await GroupUser.findOne({
-        where: {
-          groupId,
-          userId,
-        },
-      });
-      if (groupUser) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (error) {
-      return false;
-    }
-  };
-  public isAdminOfGroup = async ({
-    groupId,
-    token,
-  }: {
-    groupId: string;
-    token: string;
-  }) => {
-    try {
-      const user = await User.findOne({
-        where: {
-          accessToken: token,
-        },
-      });
-      const groupUser = await GroupUser.findOne({
-        where: {
-          userId: user?.id,
-          groupId: groupId,
-        },
-      });
-      return groupUser?.role === "admin";
-    } catch (error) {
-      return {
-        message:
-          "An error occurred while checking if user is admin of group: " +
-          error,
-        type: "error",
-      };
+      response.status(400).json(error);
     }
   };
 }
