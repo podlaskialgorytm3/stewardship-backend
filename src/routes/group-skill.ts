@@ -22,5 +22,10 @@ router.get(
   userAuthentication.authMiddleware,
   groupSkillController.getNotBelongingSkills
 );
+router.delete(
+  "/group-skill",
+  userAuthentication.authMiddleware,
+  groupSkillController.deleteGroupSkill
+);
 
 export default router;

@@ -49,6 +49,20 @@ class GroupSkillController {
       return response.status(400).json(error);
     }
   };
+  public deleteGroupSkill = async (request: Request, response: Response) => {
+    try {
+      const { groupUserId, skillId } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.groupSkillService.deleteSkillFromUser({
+        skillId: skillId as string,
+        groupUserId: groupUserId as string,
+        token: token as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      return response.status(400).json(error);
+    }
+  };
 }
 
 export { GroupSkillController };

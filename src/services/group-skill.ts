@@ -174,6 +174,47 @@ class GroupSkillService {
       };
     }
   };
+  public deleteSkillFromUser = async ({
+    skillId,
+    groupUserId,
+    token,
+  }: {
+    skillId: string;
+    groupUserId: string;
+    token: string;
+  }) => {
+    try {
+      const groupId = (await this.groupUserService.getGroupIdByGroupUserId({
+        groupUserId,
+      } as { groupUserId: string })) as string;
+      const role = (await this.groupUserService.getRole({
+        groupId,
+        token,
+      })) as string;
+      if (role !== "admin") {
+        return {
+          type: "error",
+          message: "You are not authorized to delete skill from user",
+        };
+      } else {
+        await GroupSkillModal.destroy({
+          where: {
+            skillId,
+            groupUserId,
+          },
+        });
+        return {
+          type: "success",
+          message: "Skill deleted from user successfully",
+        };
+      }
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while deleting skill from user",
+      };
+    }
+  };
 }
 
 export { GroupSkillService };
