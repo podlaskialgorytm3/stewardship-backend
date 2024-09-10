@@ -10,6 +10,7 @@ import { GroupSkillService } from "../services/group-skill";
 import { ScheduleRuleService } from "../services/schedule-rule";
 import { ShiftService } from "../services/shift";
 import { DayRestrictionService } from "../services/day-restriction";
+import { PreferenceService } from "../services/preference";
 
 const groupUser = new GroupUserService();
 const group = new GroupService();
@@ -23,6 +24,7 @@ const groupSkill = new GroupSkillService();
 const scheduleRule = new ScheduleRuleService();
 const shift = new ShiftService();
 const dayRestriction = new DayRestrictionService();
+const preference = new PreferenceService();
 
 const createTables = async () => {
   groupUser.createTable();
@@ -37,6 +39,7 @@ const createTables = async () => {
   scheduleRule.createTable();
   shift.createTable();
   dayRestriction.createTable();
+  preference.createTable();
 };
 
 export default createTables;
