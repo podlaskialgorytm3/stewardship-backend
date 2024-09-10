@@ -1,4 +1,5 @@
 import { SkillModal } from "../models/skill";
+import { GroupSkillModal } from "../models/group-skill";
 
 import GroupUserService from "./group-user";
 
@@ -123,6 +124,11 @@ class SkillService {
           where: {
             id: skillId,
             groupId,
+          },
+        });
+        await GroupSkillModal.destroy({
+          where: {
+            skillId,
           },
         });
         if (!skill) {
