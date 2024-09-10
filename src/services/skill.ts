@@ -4,6 +4,8 @@ import GroupUserService from "./group-user";
 
 import { v4 as uuidv4 } from "uuid";
 
+import { SkillInterface } from "../types/work-schedule";
+
 class SkillService {
   groupUserService: GroupUserService;
   constructor() {
@@ -141,6 +143,23 @@ class SkillService {
           message: "An error occurred while deleting the skill: " + error,
         };
       }
+    }
+  };
+  public getSkillById = async ({ skillId }: { skillId: string }) => {
+    try {
+      const skill = (await SkillModal.findOne({
+        where: {
+          id: skillId,
+        },
+      })) as SkillInterface;
+      return {
+        id: skill.id,
+        groupId: skill.groupId,
+        skillName: skill.skillName,
+        isRemote: skill.isRemote,
+      };
+    } catch (error) {
+      return null;
     }
   };
 }

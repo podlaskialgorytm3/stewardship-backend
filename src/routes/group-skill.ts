@@ -12,4 +12,10 @@ router.post(
   groupSkillController.postGroupSkill
 );
 
+router.get(
+  "/group-skill/belonging",
+  userAuthentication.authMiddleware,
+  groupSkillController.getBelongingSkills
+);
+
 export default router;

@@ -1,13 +1,17 @@
 import { GroupSkillModal } from "../models/group-skill";
 import { SkillModal } from "../models/skill";
+
 import GroupUserService from "./group-user";
+import { SkillService } from "./skill";
 
 import { v4 as uuidv4 } from "uuid";
 
 class GroupSkillService {
   private groupUserService: GroupUserService;
+  private skillService: SkillService;
   constructor() {
     this.groupUserService = new GroupUserService();
+    this.skillService = new SkillService();
   }
   public createTable = async () => {
     GroupSkillModal.sync({ alter: true })
@@ -89,6 +93,40 @@ class GroupSkillService {
       return skill ? true : false;
     } catch (error) {
       return false;
+    }
+  };
+  public getBelongingSkills = async ({
+    groupId,
+    token,
+  }: {
+    groupId: string;
+    token: string;
+  }) => {
+    try {
+      const groupUser = (await this.groupUserService.getUserByTokenGroup(
+        token,
+        groupId
+      )) as { id: string };
+      const groupUserId = groupUser.id;
+      const groupSkills = await GroupSkillModal.findAll({
+        where: {
+          groupUserId,
+        },
+        attributes: ["skillId"],
+      });
+      const skills = await Promise.all(
+        groupSkills.map(async (groupSkill) => {
+          return await this.skillService.getSkillById({
+            skillId: groupSkill.skillId,
+          });
+        })
+      );
+      return skills;
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while getting skills",
+      };
     }
   };
 }

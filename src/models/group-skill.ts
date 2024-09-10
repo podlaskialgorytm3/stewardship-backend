@@ -3,9 +3,8 @@ import { sequelize } from "../configs/connect";
 
 class GroupSkillModal extends Model {
   public id!: string;
-  public groupId!: string;
-  public skillName!: string;
-  public isRemote!: boolean;
+  public groupUserId!: string;
+  public skillId!: string;
 }
 
 GroupSkillModal.init(
