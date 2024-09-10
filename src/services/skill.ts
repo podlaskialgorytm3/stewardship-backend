@@ -82,18 +82,14 @@ class SkillService {
           message: "No skills found",
         };
       }
-      return {
-        type: "success",
-        message: "Skills retrieved successfully",
-        data: skills.map((skill) => {
-          return {
-            id: skill.id,
-            groupId: skill.groupId,
-            skillName: skill.skillName,
-            isRemote: skill.isRemote,
-          };
-        }),
-      };
+      return skills.map((skill) => {
+        return {
+          id: skill.id,
+          groupId: skill.groupId,
+          skillName: skill.skillName,
+          isRemote: skill.isRemote,
+        };
+      });
     } catch (error) {
       return {
         type: "error",

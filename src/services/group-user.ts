@@ -544,7 +544,7 @@ class GroupUserService {
       };
     }
   };
-  private getGroupIdByGroupUserId = async ({
+  public getGroupIdByGroupUserId = async ({
     groupUserId,
   }: {
     groupUserId: string;
