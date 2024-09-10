@@ -27,7 +27,7 @@ app.use("/stewardship", [
   dahboardRouter,
 ]);
 
-createTables();
+//createTables();
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

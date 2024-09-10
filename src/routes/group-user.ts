@@ -37,5 +37,10 @@ router.get(
   userAuthentication.authMiddleware,
   groupUserController.getIsAdmin
 );
+router.put(
+  "/group-user/position",
+  userAuthentication.authMiddleware,
+  groupUserController.putPosition
+);
 
 export default router;

@@ -485,6 +485,70 @@ class GroupUserService {
       };
     }
   };
+  public updatePosition = async ({
+    position,
+    groupUserId,
+    token,
+  }: {
+    position: string;
+    groupUserId: string;
+    token: string;
+  }) => {
+    try {
+      const groupId = await this.getGroupIdByGroupUserId({ groupUserId });
+      const changer = (await this.getUserByTokenGroup(
+        token,
+        groupId as string
+      )) as { role: string };
+      if (changer.role !== "admin") {
+        return {
+          message: "You are not authorized to update the position",
+          type: "error",
+        };
+      } else {
+        await GroupUser.update(
+          {
+            position,
+          },
+          {
+            where: {
+              id: groupUserId,
+            },
+          }
+        );
+        return {
+          message: "Position updated successfully",
+          type: "success",
+        };
+      }
+    } catch (error) {
+      return {
+        message: "An error occurred while updating the position: " + error,
+        type: "error",
+      };
+    }
+  };
+  private getGroupIdByGroupUserId = async ({
+    groupUserId,
+  }: {
+    groupUserId: string;
+  }) => {
+    try {
+      const group = await GroupUser.findOne({
+        where: {
+          id: groupUserId,
+        },
+      });
+      return group?.groupId;
+    } catch (error) {
+      return {
+        message:
+          "An error occurred while getting the group id by group user id: " +
+          error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export default GroupUserService;
