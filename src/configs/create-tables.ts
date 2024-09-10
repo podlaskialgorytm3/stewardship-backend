@@ -8,6 +8,7 @@ import SubTaskService from "../services/sub-task";
 import { SkillService } from "../services/skill";
 import { GroupSkillService } from "../services/group-skill";
 import { ScheduleRuleService } from "../services/schedule-rule";
+import { ShiftService } from "../services/shift";
 
 const groupUser = new GroupUserService();
 const group = new GroupService();
@@ -19,6 +20,7 @@ const subTask = new SubTaskService();
 const skill = new SkillService();
 const groupSkill = new GroupSkillService();
 const scheduleRule = new ScheduleRuleService();
+const shift = new ShiftService();
 
 const createTables = async () => {
   groupUser.createTable();
@@ -31,6 +33,7 @@ const createTables = async () => {
   skill.createTable();
   groupSkill.createTable();
   scheduleRule.createTable();
+  shift.createTable();
 };
 
 export default createTables;
