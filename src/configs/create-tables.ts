@@ -7,6 +7,7 @@ import TaskInfoService from "../services/task-info";
 import SubTaskService from "../services/sub-task";
 import { SkillService } from "../services/skill";
 import { GroupSkillService } from "../services/group-skill";
+import { ScheduleRuleService } from "../services/schedule-rule";
 
 const groupUser = new GroupUserService();
 const group = new GroupService();
@@ -17,6 +18,7 @@ const taskInfo = new TaskInfoService();
 const subTask = new SubTaskService();
 const skill = new SkillService();
 const groupSkill = new GroupSkillService();
+const scheduleRule = new ScheduleRuleService();
 
 const createTables = async () => {
   groupUser.createTable();
@@ -28,6 +30,7 @@ const createTables = async () => {
   subTask.createTable();
   skill.createTable();
   groupSkill.createTable();
+  scheduleRule.createTable();
 };
 
 export default createTables;
