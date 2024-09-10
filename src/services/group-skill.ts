@@ -129,6 +129,51 @@ class GroupSkillService {
       };
     }
   };
+  public getNotBelongingSkills = async ({
+    groupId,
+    token,
+  }: {
+    groupId: string;
+    token: string;
+  }) => {
+    try {
+      const groupUser = (await this.groupUserService.getUserByTokenGroup(
+        token,
+        groupId
+      )) as { id: string };
+      const groupUserId = groupUser.id;
+      const groupUserSkills = await GroupSkillModal.findAll({
+        where: {
+          groupUserId,
+        },
+        attributes: ["skillId"],
+      });
+      const groupUserSkillsId = groupUserSkills.map((skill) => skill.skillId);
+      const groupSkills = await SkillModal.findAll({
+        where: {
+          groupId,
+        },
+        attributes: ["id"],
+      });
+      const groupSkillsId = groupSkills.map((skill) => skill.id);
+      const notBelongingSkillsId = groupSkillsId.filter(
+        (skillId) => !groupUserSkillsId.includes(skillId)
+      );
+      const notBelongingSkills = await Promise.all(
+        notBelongingSkillsId.map(async (skillId) => {
+          return await this.skillService.getSkillById({
+            skillId,
+          });
+        })
+      );
+      return notBelongingSkills;
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while getting not belonging skills",
+      };
+    }
+  };
 }
 
 export { GroupSkillService };

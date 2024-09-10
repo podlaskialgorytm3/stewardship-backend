@@ -17,5 +17,10 @@ router.get(
   userAuthentication.authMiddleware,
   groupSkillController.getBelongingSkills
 );
+router.get(
+  "/group-skill/not-belonging",
+  userAuthentication.authMiddleware,
+  groupSkillController.getNotBelongingSkills
+);
 
 export default router;

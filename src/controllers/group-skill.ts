@@ -33,6 +33,22 @@ class GroupSkillController {
       response.status(400).json(error);
     }
   };
+  public getNotBelongingSkills = async (
+    request: Request,
+    response: Response
+  ) => {
+    try {
+      const { groupId } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.groupSkillService.getNotBelongingSkills({
+        token: token as string,
+        groupId: groupId as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      return response.status(400).json(error);
+    }
+  };
 }
 
 export { GroupSkillController };
