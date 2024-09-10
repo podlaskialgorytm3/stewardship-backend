@@ -1,37 +1,47 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../configs/connect';
+import { Model, DataTypes } from "sequelize";
+import { sequelize } from "../configs/connect";
 
 class GroupUser extends Model {
-    public id!: string;
-    public role!: string;
-    public userId!: string;
-    public groupId!: string;
+  public id!: string;
+  public role!: string;
+  public userId!: string;
+  public groupId!: string;
+  public position!: string;
+  public scheduleRuleId!: string;
 }
 
 GroupUser.init(
-    {
-        id: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            primaryKey: true,
-        },
-        role: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        userId: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        groupId: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
+  {
+    id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
     },
-    {
-        tableName: 'group_users',
-        sequelize,
-    }
+    role: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    groupId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    position: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    scheduleRuleId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    tableName: "group_users",
+    sequelize,
+  }
 );
 
 export default GroupUser;
