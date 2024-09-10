@@ -9,6 +9,7 @@ import taskInfoRouter from "./routes/task-info";
 import taskAffilationRouter from "./routes/task-affilation";
 import subTaskRouter from "./routes/sub-task";
 import dahboardRouter from "./routes/dashboard";
+import skillRouter from "./routes/skill";
 import createTables from "./configs/create-tables";
 
 const app = express();
@@ -25,6 +26,7 @@ app.use("/stewardship", [
   taskAffilationRouter,
   subTaskRouter,
   dahboardRouter,
+  skillRouter,
 ]);
 
 //createTables();

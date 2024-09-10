@@ -19,6 +19,22 @@ class GroupUserService {
         );
       });
   };
+  public getRole = async ({
+    groupId,
+    token,
+  }: {
+    groupId: string;
+    token: string;
+  }) => {
+    try {
+      const member = (await this.getUserByTokenGroup(token, groupId)) as {
+        role: string;
+      };
+      return member.role;
+    } catch (error) {
+      return null;
+    }
+  };
   public addUser = async (
     userId: string,
     role: string,
