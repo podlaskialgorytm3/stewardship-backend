@@ -11,5 +11,10 @@ router.post(
   userAuthentication.authMiddleware,
   skillController.postSkill
 );
+router.get(
+  "/skill",
+  userAuthentication.authMiddleware,
+  skillController.getSkills
+);
 
 export default router;

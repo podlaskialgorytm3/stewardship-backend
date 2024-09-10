@@ -69,6 +69,38 @@ class SkillService {
       };
     }
   };
+  public getSkills = async ({ groupId }: { groupId: string }) => {
+    try {
+      const skills = await SkillModal.findAll({
+        where: {
+          groupId,
+        },
+      });
+      if (skills.length === 0) {
+        return {
+          type: "info",
+          message: "No skills found",
+        };
+      }
+      return {
+        type: "success",
+        message: "Skills retrieved successfully",
+        data: skills.map((skill) => {
+          return {
+            id: skill.id,
+            groupId: skill.groupId,
+            skillName: skill.skillName,
+            isRemote: skill.isRemote,
+          };
+        }),
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while getting the skills: " + error,
+      };
+    }
+  };
 }
 
 export { SkillService };

@@ -22,6 +22,17 @@ class SkillController {
       response.status(400).json(error);
     }
   };
+  public getSkills = async (request: Request, response: Response) => {
+    try {
+      const { groupId } = request.query;
+      const result = await this.skillService.getSkills({
+        groupId: groupId as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { SkillController };
