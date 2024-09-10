@@ -5,6 +5,8 @@ import TaskAffilationService from "../services/task-affilation";
 import GroupUserRequestService from "../services/group-user-request";
 import TaskInfoService from "../services/task-info";
 import SubTaskService from "../services/sub-task";
+import { SkillService } from "../services/skill";
+import { GroupSkillService } from "../services/group-skill";
 
 const groupUser = new GroupUserService();
 const group = new GroupService();
@@ -13,6 +15,8 @@ const taskAffilation = new TaskAffilationService();
 const groupUserRequest = new GroupUserRequestService();
 const taskInfo = new TaskInfoService();
 const subTask = new SubTaskService();
+const skill = new SkillService();
+const groupSkill = new GroupSkillService();
 
 const createTables = async () => {
   groupUser.createTable();
@@ -22,6 +26,8 @@ const createTables = async () => {
   groupUserRequest.createTable();
   taskInfo.createTable();
   subTask.createTable();
+  skill.createTable();
+  groupSkill.createTable();
 };
 
 export default createTables;
