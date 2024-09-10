@@ -39,7 +39,7 @@ class UserController {
   };
   public getUserLogin = async (request: Request, response: Response) => {
     try {
-      const { email, password } = request.body;
+      const { email, password } = request.query;
       const token = await userAuthentication.authonticateUser(
         email as string,
         password as string

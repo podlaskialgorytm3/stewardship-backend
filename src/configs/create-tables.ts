@@ -1,18 +1,18 @@
-import GroupUserController from "../controllers/group-user";
-import GroupController from "../controllers/group";
-import UserController from "../controllers/user";
-import TaskAffilationController from "../controllers/task-affilation";
-import GroupUserRequestController from "../controllers/group-user-request";
-import TaskInfoController from "../controllers/task-info";
-import SubTaskController from "../controllers/sub-task";
+import GroupUserService from "../services/group-user";
+import GroupService from "../services/group";
+import UserService from "../services/user";
+import TaskAffilationService from "../services/task-affilation";
+import GroupUserRequestService from "../services/group-user-request";
+import TaskInfoService from "../services/task-info";
+import SubTaskService from "../services/sub-task";
 
-const groupUser = new GroupUserController();
-const group = new GroupController();
-const user = new UserController();
-const taskAffilation = new TaskAffilationController();
-const groupUserRequest = new GroupUserRequestController();
-const taskInfo = new TaskInfoController();
-const subTask = new SubTaskController();
+const groupUser = new GroupUserService();
+const group = new GroupService();
+const user = new UserService();
+const taskAffilation = new TaskAffilationService();
+const groupUserRequest = new GroupUserRequestService();
+const taskInfo = new TaskInfoService();
+const subTask = new SubTaskService();
 
 const createTables = async () => {
   groupUser.createTable();
