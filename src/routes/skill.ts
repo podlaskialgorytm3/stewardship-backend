@@ -16,5 +16,10 @@ router.get(
   userAuthentication.authMiddleware,
   skillController.getSkills
 );
+router.delete(
+  "/skill",
+  userAuthentication.authMiddleware,
+  skillController.deleteSkill
+);
 
 export default router;

@@ -101,6 +101,52 @@ class SkillService {
       };
     }
   };
+  public deleteSkill = async ({
+    skillId,
+    groupId,
+    token,
+  }: {
+    skillId: string;
+    groupId: string;
+    token: string;
+  }) => {
+    const role = (await this.groupUserService.getRole({
+      groupId,
+      token,
+    })) as string;
+    if (role !== "admin") {
+      return {
+        type: "info",
+        message: "You are not authorized to delete a skill",
+      };
+    } else {
+      try {
+        const skill = await SkillModal.findOne({
+          where: {
+            id: skillId,
+            groupId,
+          },
+        });
+        if (!skill) {
+          return {
+            type: "info",
+            message: "Skill not found",
+          };
+        } else {
+          await skill.destroy();
+          return {
+            type: "success",
+            message: "Skill deleted successfully",
+          };
+        }
+      } catch (error) {
+        return {
+          type: "error",
+          message: "An error occurred while deleting the skill: " + error,
+        };
+      }
+    }
+  };
 }
 
 export { SkillService };
