@@ -12,6 +12,7 @@ import dahboardRouter from "./routes/dashboard";
 import skillRouter from "./routes/skill";
 import groupSkillRouter from "./routes/group-skill";
 import scheduleRuleRouter from "./routes/schedule-rule";
+import shiftRouter from "./routes/shift";
 import createTables from "./configs/create-tables";
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/stewardship", [
   skillRouter,
   groupSkillRouter,
   scheduleRuleRouter,
+  shiftRouter,
 ]);
 
 //createTables();
