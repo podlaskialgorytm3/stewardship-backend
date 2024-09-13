@@ -1,4 +1,4 @@
-import Joi from "joi";
+import Joi from "Joi";
 
 export const ScheduleRuleSchema = Joi.object({
   groupId: Joi.string().required(),
