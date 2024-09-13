@@ -12,4 +12,10 @@ router.post(
   scheduleRuleController.postScheduleRule
 );
 
+router.get(
+  "/schedule-rule",
+  userAuthentication.authMiddleware,
+  scheduleRuleController.getScheduleRules
+);
+
 export default router;

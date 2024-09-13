@@ -17,5 +17,12 @@ export const ScheduleRuleSchema = Joi.object({
   "minRestBeetwenShifts.required": "Maximum rest between shifts is required",
   "minWeeklyRest.required": "Maximum weekly rest is required",
 });
-
-export type ScheduleRuleType = Joi.Schema<typeof ScheduleRuleSchema>;
+export interface ScheduleRuleInterface {
+  id: string;
+  groupId: string;
+  scheduleRuleName: string;
+  maxDailyHours: number;
+  maxWeeklyHours: number;
+  minRestBeetwenShifts: number;
+  minWeeklyRest: number;
+}

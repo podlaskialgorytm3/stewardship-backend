@@ -2,7 +2,10 @@ import { ScheduleRuleModal } from "../models/schedule-rule";
 
 import GroupUserService from "./group-user";
 
-import { ScheduleRuleSchema } from "../types/schedule-rule";
+import {
+  ScheduleRuleSchema,
+  ScheduleRuleInterface,
+} from "../types/schedule-rule";
 
 import { v4 as uuidv4 } from "uuid";
 
@@ -85,6 +88,49 @@ class ScheduleRuleService {
       return {
         type: "error",
         message: "An error occurred while creating a schedule rule: " + error,
+      };
+    }
+  };
+  public getScheduleRules = async ({
+    groupId,
+    token,
+  }: {
+    groupId: string;
+    token: string;
+  }) => {
+    try {
+      const role = (await this.groupUserService.getRole({
+        groupId,
+        token,
+      })) as string;
+      if (role !== "admin") {
+        return {
+          type: "info",
+          message: "You are not authorized to get schedule rules",
+        };
+      }
+      const scheduleRules = await ScheduleRuleModal.findAll({
+        where: {
+          groupId,
+        },
+      });
+      const scheduleRuleArray = scheduleRules.map(
+        (scheduleRule: ScheduleRuleInterface) => {
+          return {
+            id: scheduleRule.id,
+            scheduleRuleName: scheduleRule.scheduleRuleName,
+            maxDailyHours: scheduleRule.maxDailyHours,
+            maxWeeklyHours: scheduleRule.maxWeeklyHours,
+            minRestBeetwenShifts: scheduleRule.minRestBeetwenShifts,
+            minWeeklyRest: scheduleRule.minWeeklyRest,
+          };
+        }
+      );
+      return scheduleRuleArray;
+    } catch (error) {
+      return {
+        message: "An error occurred while getting schedule rules: " + error,
+        type: "error",
       };
     }
   };
