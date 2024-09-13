@@ -46,6 +46,18 @@ class ScheduleRuleController {
       response.status(400).json(error);
     }
   };
+
+  public getScheduleRuleById = async (request: Request, response: Response) => {
+    try {
+      const scheduleRuleId = request.params.scheduleRuleId as string;
+      const result = await this.scheduleRuleService.getScheduleRuleById({
+        scheduleRuleId,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { ScheduleRuleController };

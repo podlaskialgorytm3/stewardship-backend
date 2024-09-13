@@ -134,6 +134,34 @@ class ScheduleRuleService {
       };
     }
   };
+  public getScheduleRuleById = async ({
+    scheduleRuleId,
+  }: {
+    scheduleRuleId: string;
+  }) => {
+    try {
+      const scheduleRule = await ScheduleRuleModal.findOne({
+        where: {
+          id: scheduleRuleId,
+        },
+      });
+      const scheduleRuleObject = scheduleRule?.get() as ScheduleRuleInterface;
+      return {
+        id: scheduleRuleObject.id,
+        scheduleRuleName: scheduleRuleObject.scheduleRuleName,
+        maxDailyHours: scheduleRuleObject.maxDailyHours,
+        maxWeeklyHours: scheduleRuleObject.maxWeeklyHours,
+        minRestBeetwenShifts: scheduleRuleObject.minRestBeetwenShifts,
+        minWeeklyRest: scheduleRuleObject.minWeeklyRest,
+      };
+    } catch (error) {
+      return {
+        message:
+          "An error occurred while getting schedule rule by id: " + error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export { ScheduleRuleService };

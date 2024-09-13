@@ -18,4 +18,10 @@ router.get(
   scheduleRuleController.getScheduleRules
 );
 
+router.get(
+  "/schedule-rule/:scheduleRuleId",
+  userAuthentication.authMiddleware,
+  scheduleRuleController.getScheduleRuleById
+);
+
 export default router;
