@@ -4,11 +4,11 @@ import { sequelize } from "../configs/connect";
 class ScheduleRuleModal extends Model {
   public id!: string;
   public groupId!: string;
-  public scheduleRoleName!: string;
+  public scheduleRuleName!: string;
   public maxDailyHours!: number;
   public maxWeeklyHours!: number;
-  public maxRestBeetwenShifs!: number;
-  public maxWeeklyRest!: number;
+  public minRestBeetwenShifts!: number;
+  public minWeeklyRest!: number;
 }
 
 ScheduleRuleModal.init(
@@ -21,7 +21,7 @@ ScheduleRuleModal.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    scheduleRoleName: {
+    scheduleRuleName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -33,11 +33,11 @@ ScheduleRuleModal.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    maxRestBeetwenShifs: {
+    minRestBeetwenShifts: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    maxWeeklyRest: {
+    minWeeklyRest: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

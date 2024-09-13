@@ -11,6 +11,7 @@ import subTaskRouter from "./routes/sub-task";
 import dahboardRouter from "./routes/dashboard";
 import skillRouter from "./routes/skill";
 import groupSkillRouter from "./routes/group-skill";
+import scheduleRuleRouter from "./routes/schedule-rule";
 import createTables from "./configs/create-tables";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/stewardship", [
   dahboardRouter,
   skillRouter,
   groupSkillRouter,
+  scheduleRuleRouter,
 ]);
 
 //createTables();
