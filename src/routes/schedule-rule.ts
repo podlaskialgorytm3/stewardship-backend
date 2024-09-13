@@ -30,4 +30,10 @@ router.put(
   scheduleRuleController.putScheduleRule
 );
 
+router.delete(
+  "/schedule-rule/:scheduleRuleId",
+  userAuthentication.authMiddleware,
+  scheduleRuleController.deleteScheduleRule
+);
+
 export default router;

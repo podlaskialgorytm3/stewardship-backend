@@ -86,6 +86,22 @@ class ScheduleRuleController {
       response.status(400).json(error);
     }
   };
+
+  deleteScheduleRule = async (request: Request, response: Response) => {
+    try {
+      const scheduleRuleId = request.params.scheduleRuleId as string;
+      const groupId = request.query.groupId as string;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.scheduleRuleService.deleteScheduleRule({
+        scheduleRuleId,
+        groupId,
+        token,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { ScheduleRuleController };

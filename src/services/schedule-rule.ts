@@ -1,4 +1,5 @@
 import { ScheduleRuleModal } from "../models/schedule-rule";
+import GroupUserModal from "../models/group-user";
 
 import GroupUserService from "./group-user";
 
@@ -239,6 +240,46 @@ class ScheduleRuleService {
     } catch (error) {
       return {
         message: "An error occurred while updating schedule rule: " + error,
+        type: "error",
+      };
+    }
+  };
+
+  public deleteScheduleRule = async ({
+    scheduleRuleId,
+    groupId,
+    token,
+  }: {
+    scheduleRuleId: string;
+    groupId: string;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          type: "info",
+          message: "You are not authorized to delete a schedule rule",
+        };
+      }
+      await ScheduleRuleModal.destroy({
+        where: {
+          id: scheduleRuleId,
+        },
+      });
+      await GroupUserModal.update(
+        {
+          scheduleRuleId: "",
+        },
+        { where: { groupId } }
+      );
+      return {
+        type: "success",
+        message: "Schedule rule deleted successfully",
+      };
+    } catch (error) {
+      return {
+        message: "An error occurred while deleting schedule rule: " + error,
         type: "error",
       };
     }
