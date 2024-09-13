@@ -24,4 +24,10 @@ router.get(
   scheduleRuleController.getScheduleRuleById
 );
 
+router.put(
+  "/schedule-rule/:scheduleRuleId",
+  userAuthentication.authMiddleware,
+  scheduleRuleController.putScheduleRule
+);
+
 export default router;

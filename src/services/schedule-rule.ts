@@ -162,6 +162,87 @@ class ScheduleRuleService {
       };
     }
   };
+  public updateScheduleRule = async ({
+    groupId,
+    scheduleRuleId,
+    scheduleRuleName,
+    maxDailyHours,
+    maxWeeklyHours,
+    minRestBeetwenShifts,
+    minWeeklyRest,
+    token,
+  }: {
+    groupId: string;
+    scheduleRuleId: string;
+    scheduleRuleName: string;
+    maxDailyHours: number;
+    maxWeeklyHours: number;
+    minRestBeetwenShifts: number;
+    minWeeklyRest: number;
+    token: string;
+  }) => {
+    try {
+      const role = (await this.groupUserService.getRole({
+        groupId,
+        token,
+      })) as string;
+      if (role !== "admin") {
+        return {
+          type: "info",
+          message: "You are not authorized to update a schedule rule",
+        };
+      } else {
+        const { error } = ScheduleRuleSchema.validate({
+          groupId,
+          scheduleRuleName,
+          maxDailyHours,
+          maxWeeklyHours,
+          minRestBeetwenShifts,
+          minWeeklyRest,
+        });
+        if (error) {
+          return {
+            type: "error",
+            message: error.details[0].message,
+          };
+        }
+        const scheduleRule = await ScheduleRuleModal.findOne({
+          where: {
+            id: scheduleRuleId,
+          },
+        });
+        if (!scheduleRule) {
+          return {
+            type: "info",
+            message: "Schedule rule not found",
+          };
+        }
+        await ScheduleRuleModal.update(
+          {
+            scheduleRuleName,
+            maxDailyHours,
+            maxWeeklyHours,
+            minRestBeetwenShifts,
+            minWeeklyRest,
+          },
+          {
+            where: {
+              id: scheduleRuleId,
+            },
+          }
+        );
+        return {
+          type: "success",
+          message: "Schedule rule updated successfully",
+        };
+      }
+    } catch (error) {
+      return {
+        message: "An error occurred while updating schedule rule: " + error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export { ScheduleRuleService };
