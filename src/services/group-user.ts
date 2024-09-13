@@ -544,6 +544,49 @@ class GroupUserService {
       };
     }
   };
+  public updateScheduleRule = async ({
+    scheduleRuleId,
+    groupUserId,
+    token,
+  }: {
+    scheduleRuleId: string;
+    groupUserId: string;
+    token: string;
+  }) => {
+    try {
+      const groupId = await this.getGroupIdByGroupUserId({ groupUserId });
+      const changer = (await this.getUserByTokenGroup(
+        token,
+        groupId as string
+      )) as { role: string };
+      if (changer.role !== "admin") {
+        return {
+          type: "info",
+          message: "You are not authorized to update a schedule rule",
+        };
+      }
+      await GroupUser.update(
+        {
+          scheduleRuleId,
+        },
+        {
+          where: {
+            id: groupUserId,
+          },
+        }
+      );
+      return {
+        type: "success",
+        message: "Schedule rule updated successfully",
+      };
+    } catch (error) {
+      return {
+        message: "An error occurred while updating schedule rule: " + error,
+        type: "error",
+      };
+    }
+  };
+
   public getGroupIdByGroupUserId = async ({
     groupUserId,
   }: {

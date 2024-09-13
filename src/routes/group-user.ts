@@ -42,5 +42,10 @@ router.put(
   userAuthentication.authMiddleware,
   groupUserController.putPosition
 );
+router.put(
+  "/group-user/schedule-rule",
+  userAuthentication.authMiddleware,
+  groupUserController.putScheduleRule
+);
 
 export default router;

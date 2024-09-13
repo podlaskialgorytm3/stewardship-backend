@@ -129,6 +129,21 @@ class GroupUserController {
       response.status(400).json(error);
     }
   };
+
+  public putScheduleRule = async (request: Request, response: Response) => {
+    try {
+      const { groupUserId, scheduleRuleId } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await groupUserService.updateScheduleRule({
+        scheduleRuleId: scheduleRuleId as string,
+        groupUserId: groupUserId as string,
+        token,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export default GroupUserController;
