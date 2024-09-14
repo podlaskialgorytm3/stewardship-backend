@@ -46,6 +46,16 @@ class ShiftController {
       response.status(400).json(error);
     }
   };
+
+  public getShift = async (request: Request, response: Response) => {
+    try {
+      const shiftId = request.params.shiftId as string;
+      const result = await this.shiftService.getShiftById({ shiftId });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { ShiftController };

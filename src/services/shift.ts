@@ -115,6 +115,34 @@ class ShiftService {
       };
     }
   };
+  public getShiftById = async ({ shiftId }: { shiftId: string }) => {
+    try {
+      const shift = await ShiftModal.findOne({ where: { id: shiftId } });
+      if (shift) {
+        return {
+          id: shift.id,
+          groupId: shift.groupId,
+          nameOfShift: shift.nameOfShift,
+          startFrom: shift.startFrom,
+          startTo: shift.startTo,
+          endFrom: shift.endFrom,
+          endTo: shift.endTo,
+          minDailyHours: shift.minDailyHours,
+          maxDailyHours: shift.maxDailyHours,
+        };
+      } else {
+        return {
+          message: "Shift not found",
+          type: "error",
+        };
+      }
+    } catch (error) {
+      return {
+        message: "An error occurred while fetching the shift: " + error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export { ShiftService };
