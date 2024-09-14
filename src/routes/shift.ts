@@ -13,4 +13,10 @@ router.post(
   shiftController.postShift
 );
 
+router.get(
+  "/shift",
+  userAuthentication.authMiddleware,
+  shiftController.getShifts
+);
+
 export default router;

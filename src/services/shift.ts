@@ -91,6 +91,30 @@ class ShiftService {
       };
     }
   };
+  public getShifts = async ({ groupId }: { groupId: string }) => {
+    try {
+      const shifts = await ShiftModal.findAll({ where: { groupId } });
+      const shiftsArray = shifts.map((shift: ShiftInterface) => {
+        return {
+          id: shift.id,
+          groupId: shift.groupId,
+          nameOfShift: shift.nameOfShift,
+          startFrom: shift.startFrom,
+          startTo: shift.startTo,
+          endFrom: shift.endFrom,
+          endTo: shift.endTo,
+          minDailyHours: shift.minDailyHours,
+          maxDailyHours: shift.maxDailyHours,
+        };
+      });
+      return shiftsArray;
+    } catch (error) {
+      return {
+        message: "An error occurred while fetching the shifts: " + error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export { ShiftService };
