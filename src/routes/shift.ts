@@ -25,4 +25,10 @@ router.get(
   shiftController.getShift
 );
 
+router.put(
+  "/shift/:shiftId",
+  userAuthentication.authMiddleware,
+  shiftController.putShift
+);
+
 export default router;

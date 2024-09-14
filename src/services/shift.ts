@@ -143,6 +143,84 @@ class ShiftService {
       };
     }
   };
+
+  public updateShift = async ({
+    groupId,
+    shiftId,
+    nameOfShift,
+    startFrom,
+    startTo,
+    endFrom,
+    endTo,
+    minDailyHours,
+    maxDailyHours,
+    token,
+  }: {
+    groupId: string;
+    shiftId: string;
+    nameOfShift: string;
+    startFrom: string;
+    startTo: string;
+    endFrom: string;
+    endTo: string;
+    minDailyHours: number;
+    maxDailyHours: number;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          message: "You are not authorized to update a shift",
+          type: "error",
+        };
+      }
+      const shift = await ShiftModal.findOne({ where: { id: shiftId } });
+      if (!shift) {
+        return {
+          message: "Shift not found",
+          type: "error",
+        };
+      }
+      const { error } = ShiftSchema.validate({
+        groupId,
+        nameOfShift,
+        startFrom,
+        startTo,
+        endFrom,
+        endTo,
+        minDailyHours,
+        maxDailyHours,
+      });
+      if (error) {
+        return {
+          message: error.details[0].message,
+          type: "error",
+        };
+      }
+      await ShiftModal.update(
+        {
+          nameOfShift,
+          startFrom,
+          startTo,
+          endFrom,
+          endTo,
+          minDailyHours,
+          maxDailyHours,
+        },
+        { where: { id: shiftId } }
+      );
+      return {
+        message: "Shift updated successfully",
+        type: "success",
+      };
+    } catch (error) {
+      return {
+        message: "An error occurred while updating the shift: " + error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export { ShiftService };
