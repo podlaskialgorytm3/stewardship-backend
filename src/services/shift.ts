@@ -221,6 +221,43 @@ class ShiftService {
       };
     }
   };
+
+  public deleteShift = async ({
+    groupId,
+    shiftId,
+    token,
+  }: {
+    groupId: string;
+    shiftId: string;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          message: "You are not authorized to delete a shift",
+          type: "error",
+        };
+      }
+      const shift = await ShiftModal.findOne({ where: { id: shiftId } });
+      if (!shift) {
+        return {
+          message: "Shift not found",
+          type: "error",
+        };
+      }
+      await ShiftModal.destroy({ where: { id: shiftId } });
+      return {
+        message: "Shift deleted successfully",
+        type: "success",
+      };
+    } catch (error) {
+      return {
+        message: "An error occurred while deleting the shift: " + error,
+        type: "error",
+      };
+    }
+  };
 }
 
 export { ShiftService };

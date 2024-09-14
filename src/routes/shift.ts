@@ -31,4 +31,10 @@ router.put(
   shiftController.putShift
 );
 
+router.delete(
+  "/shift/:shiftId",
+  userAuthentication.authMiddleware,
+  shiftController.deleteShift
+);
+
 export default router;

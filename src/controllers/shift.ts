@@ -88,6 +88,21 @@ class ShiftController {
       response.status(400).json(error);
     }
   };
+  public deleteShift = async (request: Request, response: Response) => {
+    try {
+      const shiftId = request.params.shiftId as string;
+      const groupId = request.query.groupId as string;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.shiftService.deleteShift({
+        groupId,
+        shiftId,
+        token,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { ShiftController };
