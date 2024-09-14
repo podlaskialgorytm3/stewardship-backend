@@ -6,7 +6,7 @@ export const DayRestrictionSchema = Joi.object({
   maxFollowingDay: Joi.number().required(),
 });
 
-export interface DayRestriction {
+export interface DayRestrictionInterface {
   id: string;
   scheduleRuleId: string;
   dayOfWeek: string;

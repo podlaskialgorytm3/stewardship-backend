@@ -5,7 +5,7 @@ class DayRestrictionModal extends Model {
   public id!: string;
   public scheduleRuleId!: string;
   public dayOfWeek!: string;
-  public maxFollowingDay!: string;
+  public maxFollowingDay!: number;
 }
 
 DayRestrictionModal.init(
@@ -23,7 +23,7 @@ DayRestrictionModal.init(
       allowNull: false,
     },
     maxFollowingDay: {
-      type: DataTypes.STRING,
+      type: DataTypes.NUMBER,
       allowNull: false,
     },
   },
