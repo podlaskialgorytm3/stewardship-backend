@@ -23,7 +23,7 @@ DayRestrictionModal.init(
       allowNull: false,
     },
     maxFollowingDay: {
-      type: DataTypes.NUMBER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
