@@ -73,6 +73,32 @@ class DayRestrictionService {
       };
     }
   };
+  public getDayRestrictions = async ({
+    scheduleRuleId,
+  }: {
+    scheduleRuleId: string;
+  }) => {
+    try {
+      const dayRestrictions = await DayRestrictionModal.findAll({
+        where: {
+          scheduleRuleId,
+        },
+      });
+      const dayRestrictionArray = await Promise.all(
+        dayRestrictions.map(async (dayRestriction) => {
+          return {
+            id: dayRestriction.id,
+            scheduleRuleId: dayRestriction.scheduleRuleId,
+            dayOfWeek: dayRestriction.dayOfWeek,
+            maxFollowingDay: dayRestriction.maxFollowingDay,
+          };
+        })
+      );
+      return dayRestrictionArray;
+    } catch (error) {
+      return null;
+    }
+  };
 }
 
 export { DayRestrictionService };
