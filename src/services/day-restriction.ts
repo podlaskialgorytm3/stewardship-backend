@@ -178,6 +178,39 @@ class DayRestrictionService {
       };
     }
   };
+  public deleteDayRestriction = async ({
+    groupId,
+    dayRestrictionId,
+    token,
+  }: {
+    groupId: string;
+    dayRestrictionId: string;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          message: "You are not authorized to delete a day restriction",
+          type: "error",
+        };
+      }
+      await DayRestrictionModal.destroy({
+        where: {
+          id: dayRestrictionId,
+        },
+      });
+      return {
+        type: "success",
+        message: "Day restriction deleted successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while deleting day restriction: " + error,
+      };
+    }
+  };
 }
 
 export { DayRestrictionService };

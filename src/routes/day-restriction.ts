@@ -31,4 +31,10 @@ router.put(
   dayRestrictionController.putDayRestriction
 );
 
+router.delete(
+  "/day-restriction",
+  userAuthentication.authMiddleware,
+  dayRestrictionController.deleteDayRestriction
+);
+
 export default router;
