@@ -177,6 +177,45 @@ class EmploymentTypeService {
       };
     }
   };
+  public deleteEmploymentType = async ({
+    groupId,
+    employmentTypeId,
+    token,
+  }: {
+    groupId: string;
+    employmentTypeId: string;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          type: "error",
+          message: "You must be an admin to delete an employment type",
+        };
+      }
+      if (!employmentTypeId) {
+        return {
+          type: "error",
+          message: "Employment type ID is required",
+        };
+      }
+      await EmploymentTypeModal.destroy({
+        where: {
+          id: employmentTypeId,
+        },
+      });
+      return {
+        type: "success",
+        message: "Employment type deleted successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while deleting employment type: " + error,
+      };
+    }
+  };
 }
 
 export { EmploymentTypeService };

@@ -61,6 +61,23 @@ class EmploymentTypeController {
       response.status(400).json(error);
     }
   };
+  public deleteEmploymentType = async (
+    request: Request,
+    response: Response
+  ) => {
+    try {
+      const { groupId, employmentTypeId } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.employmentTypeService.deleteEmploymentType({
+        groupId: groupId as string,
+        employmentTypeId: employmentTypeId as string,
+        token,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { EmploymentTypeController };

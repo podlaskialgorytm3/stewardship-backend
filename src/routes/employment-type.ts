@@ -30,4 +30,10 @@ router.put(
   userAuthentication.authMiddleware,
   employmentTypeController.putEmploymentType
 );
+
+router.delete(
+  "/employment-type",
+  userAuthentication.authMiddleware,
+  employmentTypeController.deleteEmploymentType
+);
 export default router;
