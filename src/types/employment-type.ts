@@ -11,7 +11,6 @@ export const EmploymentTypeSchema = Joi.object({
 });
 
 export interface EmploymentTypeInterface {
-  id: string;
   groupId: string;
   employmentName: string;
   workingHours: number;

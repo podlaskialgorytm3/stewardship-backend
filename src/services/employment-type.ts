@@ -119,6 +119,64 @@ class EmploymentTypeService {
       return null;
     }
   };
+  public updateEmploymentType = async ({
+    groupId,
+    employmentTypeId,
+    employmentName,
+    workingHours,
+    token,
+  }: EmploymentTypeInterface & {
+    groupId: string;
+    token: string;
+    employmentTypeId: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          type: "error",
+          message: "You must be an admin to update an employment type",
+        };
+      }
+      const { error } = EmploymentTypeSchema.validate({
+        groupId,
+        employmentName,
+        workingHours,
+      });
+      if (error) {
+        return {
+          type: "error",
+          message: error.message,
+        };
+      }
+      if (!employmentTypeId) {
+        return {
+          type: "error",
+          message: "Employment type ID is required",
+        };
+      }
+      await EmploymentTypeModal.update(
+        {
+          employmentName,
+          workingHours,
+        },
+        {
+          where: {
+            id: employmentTypeId,
+          },
+        }
+      );
+      return {
+        type: "success",
+        message: "Employment type updated successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while updating employment type: " + error,
+      };
+    }
+  };
 }
 
 export { EmploymentTypeService };

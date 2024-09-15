@@ -25,4 +25,9 @@ router.get(
   employmentTypeController.getEmploymentType
 );
 
+router.put(
+  "/employment-type",
+  userAuthentication.authMiddleware,
+  employmentTypeController.putEmploymentType
+);
 export default router;
