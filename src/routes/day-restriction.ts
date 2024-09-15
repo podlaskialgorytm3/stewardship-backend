@@ -13,4 +13,10 @@ router.post(
   dayRestrictionController.postDayRestriction
 );
 
+router.get(
+  "/day-restriction",
+  userAuthentication.authMiddleware,
+  dayRestrictionController.getDayRestriction
+);
+
 export default router;

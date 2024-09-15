@@ -24,6 +24,17 @@ class DayRestrictionController {
       response.status(400).json(error);
     }
   };
+  public getDayRestriction = async (request: Request, response: Response) => {
+    try {
+      const { scheduleRuleId } = request.query;
+      const result = await this.dayRestrictionService.getDayRestrictions({
+        scheduleRuleId: scheduleRuleId as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { DayRestrictionController };
