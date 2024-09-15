@@ -39,6 +39,12 @@ class EmploymentTypeService {
   }) => {
     try {
       const role = await this.groupUserService.getRole({ groupId, token });
+      console.log(
+        "ROLA UŻYTKOWNIKA:  = = = = = = ",
+        groupId,
+        " = = = = = = ",
+        token
+      );
       if (role !== "admin") {
         return {
           type: "error",
