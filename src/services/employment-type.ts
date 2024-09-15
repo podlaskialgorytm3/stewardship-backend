@@ -39,12 +39,6 @@ class EmploymentTypeService {
   }) => {
     try {
       const role = await this.groupUserService.getRole({ groupId, token });
-      console.log(
-        "ROLA UŻYTKOWNIKA:  = = = = = = ",
-        groupId,
-        " = = = = = = ",
-        token
-      );
       if (role !== "admin") {
         return {
           type: "error",
@@ -78,6 +72,27 @@ class EmploymentTypeService {
         type: "error",
         message: "An error occurred while creating employment type: " + error,
       };
+    }
+  };
+  public getEmploymentTypes = async ({ groupId }: { groupId: string }) => {
+    try {
+      const employmentTypes = await EmploymentTypeModal.findAll({
+        where: {
+          groupId,
+        },
+      });
+      const employmentTypesArray = await Promise.all(
+        employmentTypes.map(async (employmentType) => {
+          return {
+            id: employmentType.id,
+            employmentName: employmentType.employmentName,
+            workingHours: employmentType.workingHours,
+          };
+        })
+      );
+      return employmentTypesArray;
+    } catch (error) {
+      return null;
     }
   };
 }
