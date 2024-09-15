@@ -1,5 +1,6 @@
 import { ScheduleRuleModal } from "../models/schedule-rule";
 import GroupUserModal from "../models/group-user";
+import { DayRestrictionModal } from "../models/day-restriction";
 
 import GroupUserService from "./group-user";
 
@@ -273,6 +274,11 @@ class ScheduleRuleService {
         },
         { where: { groupId } }
       );
+      await DayRestrictionModal.destroy({
+        where: {
+          scheduleRuleId,
+        },
+      });
       return {
         type: "success",
         message: "Schedule rule deleted successfully",
