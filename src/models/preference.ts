@@ -3,11 +3,12 @@ import { sequelize } from "../configs/connect";
 
 class PreferenceModal extends Model {
   public id!: string;
-  public mounthYear!: string;
+  public month!: number;
+  public year!: number;
   public groupUserId!: string;
   public shiftId!: string;
   public preferedDays!: string;
-  public employmentType!: string;
+  public employmenTypeId!: string;
 }
 
 PreferenceModal.init(
@@ -16,8 +17,12 @@ PreferenceModal.init(
       type: DataTypes.STRING,
       primaryKey: true,
     },
-    mounthYear: {
-      type: DataTypes.STRING,
+    month: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    year: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     groupUserId: {
@@ -33,10 +38,9 @@ PreferenceModal.init(
       allowNull: false,
       defaultValue: "mixed",
     },
-    employmentType: {
+    employmenTypeId: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "full-time",
     },
   },
   {

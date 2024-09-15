@@ -4,7 +4,8 @@ import { sequelize } from "../configs/connect";
 class WorkScheduleModal extends Model {
   public id!: string;
   public groupUserId!: string;
-  public monthYear!: string;
+  public month!: number;
+  public year!: number;
   public day!: string;
   public isWorkingDay!: boolean;
   public start!: string;
@@ -21,8 +22,12 @@ WorkScheduleModal.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    monthYear: {
-      type: DataTypes.STRING,
+    month: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    year: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     day: {
