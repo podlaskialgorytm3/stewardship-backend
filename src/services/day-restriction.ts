@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   DayRestrictionSchema,
   DayRestrictionInterface,
+  DayRestrictionUpdateSchema,
 } from "../types/day-restriction";
 
 import GroupUserService from "./group-user";
@@ -122,6 +123,59 @@ class DayRestrictionService {
       return dayRestrictionObject;
     } catch (error) {
       return null;
+    }
+  };
+  public updateDayRestriction = async ({
+    groupId,
+    dayRestrictionId,
+    dayOfWeek,
+    maxFollowingDay,
+    token,
+  }: {
+    groupId: string;
+    dayRestrictionId: string;
+    dayOfWeek: string;
+    maxFollowingDay: number;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          message: "You are not authorized to update a day restriction",
+          type: "error",
+        };
+      }
+      const { error } = DayRestrictionUpdateSchema.validate({
+        dayOfWeek,
+        maxFollowingDay,
+      });
+      if (error) {
+        return {
+          message: error.details[0].message,
+          type: "error",
+        };
+      }
+      await DayRestrictionModal.update(
+        {
+          dayOfWeek,
+          maxFollowingDay,
+        },
+        {
+          where: {
+            id: dayRestrictionId,
+          },
+        }
+      );
+      return {
+        type: "success",
+        message: "Day restriction updated successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while updating day restriction: " + error,
+      };
     }
   };
 }
