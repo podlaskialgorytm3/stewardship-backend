@@ -22,11 +22,22 @@ class EmploymentTypeController {
       response.status(400).json(error);
     }
   };
-  public getEmploymentType = async (request: Request, response: Response) => {
+  public getEmploymentTypes = async (request: Request, response: Response) => {
     try {
       const { groupId } = request.query;
       const result = await this.employmentTypeService.getEmploymentTypes({
         groupId: groupId as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public getEmploymentType = async (request: Request, response: Response) => {
+    try {
+      const { employmentTypeId } = request.params;
+      const result = await this.employmentTypeService.getEmploymentType({
+        employmentTypeId: employmentTypeId as string,
       });
       response.status(200).json(result);
     } catch (error) {

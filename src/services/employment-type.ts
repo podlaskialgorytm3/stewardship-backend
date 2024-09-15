@@ -95,6 +95,30 @@ class EmploymentTypeService {
       return null;
     }
   };
+  public getEmploymentType = async ({
+    employmentTypeId,
+  }: {
+    employmentTypeId: string;
+  }) => {
+    try {
+      const employmentType = await EmploymentTypeModal.findOne({
+        where: {
+          id: employmentTypeId,
+        },
+      });
+      if (!employmentType) {
+        return null;
+      }
+      const employmentTypeObject = {
+        id: employmentType.id,
+        employmentName: employmentType.employmentName,
+        workingHours: employmentType.workingHours,
+      };
+      return employmentTypeObject;
+    } catch (error) {
+      return null;
+    }
+  };
 }
 
 export { EmploymentTypeService };

@@ -16,6 +16,12 @@ router.post(
 router.get(
   "/employment-type",
   userAuthentication.authMiddleware,
+  employmentTypeController.getEmploymentTypes
+);
+
+router.get(
+  "/employment-type/:employmentTypeId",
+  userAuthentication.authMiddleware,
   employmentTypeController.getEmploymentType
 );
 
