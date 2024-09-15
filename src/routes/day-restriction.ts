@@ -16,6 +16,12 @@ router.post(
 router.get(
   "/day-restriction",
   userAuthentication.authMiddleware,
+  dayRestrictionController.getDayRestrictions
+);
+
+router.get(
+  "/day-restriction/:dayRestrictionId",
+  userAuthentication.authMiddleware,
   dayRestrictionController.getDayRestriction
 );
 

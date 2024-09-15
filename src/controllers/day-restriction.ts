@@ -24,11 +24,22 @@ class DayRestrictionController {
       response.status(400).json(error);
     }
   };
-  public getDayRestriction = async (request: Request, response: Response) => {
+  public getDayRestrictions = async (request: Request, response: Response) => {
     try {
       const { scheduleRuleId } = request.query;
       const result = await this.dayRestrictionService.getDayRestrictions({
         scheduleRuleId: scheduleRuleId as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public getDayRestriction = async (request: Request, response: Response) => {
+    try {
+      const { dayRestrictionId } = request.params;
+      const result = await this.dayRestrictionService.getDayRestriction({
+        dayRestrictionId: dayRestrictionId as string,
       });
       response.status(200).json(result);
     } catch (error) {

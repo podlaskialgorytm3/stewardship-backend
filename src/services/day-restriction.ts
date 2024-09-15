@@ -2,7 +2,10 @@ import { DayRestrictionModal } from "../models/day-restriction";
 
 import { v4 as uuidv4 } from "uuid";
 
-import { DayRestrictionSchema } from "../types/day-restriction";
+import {
+  DayRestrictionSchema,
+  DayRestrictionInterface,
+} from "../types/day-restriction";
 
 import GroupUserService from "./group-user";
 
@@ -95,6 +98,28 @@ class DayRestrictionService {
         })
       );
       return dayRestrictionArray;
+    } catch (error) {
+      return null;
+    }
+  };
+  public getDayRestriction = async ({
+    dayRestrictionId,
+  }: {
+    dayRestrictionId: string;
+  }) => {
+    try {
+      const dayRestriction = (await DayRestrictionModal.findOne({
+        where: {
+          id: dayRestrictionId,
+        },
+      })) as DayRestrictionInterface;
+      const dayRestrictionObject = {
+        id: dayRestriction.id,
+        scheduleRuleId: dayRestriction.scheduleRuleId,
+        dayOfWeek: dayRestriction.dayOfWeek,
+        maxFollowingDay: dayRestriction.maxFollowingDay,
+      };
+      return dayRestrictionObject;
     } catch (error) {
       return null;
     }
