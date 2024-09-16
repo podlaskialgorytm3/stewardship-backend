@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 class UnavailableDayService {
   month: number;
   year: number;
-  monthDays: Object;
+  monthDays: { [key: number]: number };
   constructor() {
     this.month = new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
     this.year =
