@@ -216,6 +216,90 @@ class PreferenceService {
       return null;
     }
   };
+  public updatePreference = async ({
+    groupId,
+    preferenceId,
+    shiftId,
+    preferedDays,
+    employmentTypeId,
+    token,
+  }: {
+    groupId: string;
+    preferenceId: string;
+    shiftId: string;
+    preferedDays: string;
+    employmentTypeId: string;
+    token: string;
+  }) => {
+    try {
+      const groupUser = (await this.groupUserService.getUserByTokenGroup(
+        token,
+        groupId
+      )) as { id: string };
+      const groupUserId = await this.getGroupUserIdByPreferenceId({
+        preferenceId,
+      });
+      if (groupUser.id !== groupUserId) {
+        return {
+          type: "error",
+          message: "You don't have permission to update this preference",
+        };
+      }
+      const { error } = PreferenceSchema.validate({
+        shiftId,
+        preferedDays,
+        employmentTypeId,
+      });
+      if (error) {
+        return {
+          type: "error",
+          message: error.details[0].message,
+        };
+      }
+      await PreferenceModal.update(
+        {
+          shiftId,
+          preferedDays,
+          employmentTypeId,
+        },
+        {
+          where: {
+            id: preferenceId,
+          },
+        }
+      );
+      return {
+        type: "success",
+        message: "Preference updated successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while updating the preference: " + error,
+      };
+    }
+  };
+  private getGroupUserIdByPreferenceId = async ({
+    preferenceId,
+  }: {
+    preferenceId: string;
+  }) => {
+    try {
+      const preference = await PreferenceModal.findOne({
+        where: {
+          id: preferenceId,
+        },
+      });
+      return preference?.groupUserId;
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while getting the group user id by preference id: " +
+          error,
+      };
+    }
+  };
 }
 
 export { PreferenceService };
