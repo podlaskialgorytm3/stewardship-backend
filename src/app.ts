@@ -16,6 +16,7 @@ import shiftRouter from "./routes/shift";
 import dayRestrictionRouter from "./routes/day-restriction";
 import employmentTypeRouter from "./routes/employment-type";
 import preferenceRouter from "./routes/preference";
+import unavailableDayRouter from "./routes/unavailable-day";
 import createTables from "./configs/create-tables";
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/stewardship", [
   dayRestrictionRouter,
   employmentTypeRouter,
   preferenceRouter,
+  unavailableDayRouter,
 ]);
 
 //createTables();

@@ -23,7 +23,7 @@ UnavaiableDayModal.init(
     },
   },
   {
-    tableName: "unavaiable_days",
+    tableName: "unavailable_days",
     sequelize,
   }
 );

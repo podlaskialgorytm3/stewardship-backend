@@ -11,7 +11,7 @@ import { ScheduleRuleService } from "../services/schedule-rule";
 import { ShiftService } from "../services/shift";
 import { DayRestrictionService } from "../services/day-restriction";
 import { PreferenceService } from "../services/preference";
-import { UnavaiableDayService } from "../services/unavaiable-day";
+import { UnavailableDayService } from "../services/unavailable-day";
 import { WorkScheduleService } from "../services/work-schedule";
 import { EmploymentTypeService } from "../services/employment-type";
 
@@ -28,7 +28,7 @@ const scheduleRule = new ScheduleRuleService();
 const shift = new ShiftService();
 const dayRestriction = new DayRestrictionService();
 const preference = new PreferenceService();
-const unavaiableDay = new UnavaiableDayService();
+const unavaiableDay = new UnavailableDayService();
 const workSchedule = new WorkScheduleService();
 const employmentType = new EmploymentTypeService();
 
