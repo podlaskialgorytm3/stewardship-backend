@@ -1,4 +1,5 @@
 import { PreferenceModal } from "../models/preference";
+import GroupUserModal from "../models/group-user";
 
 import GroupUserService from "./group-user";
 
@@ -122,6 +123,47 @@ class PreferenceService {
           "An error occurred while checking if the preference is single: " +
           error,
       };
+    }
+  };
+  public getPreferences = async ({
+    groupId,
+    token,
+  }: {
+    groupId: string;
+    token: string;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin") {
+        return {
+          type: "error",
+          message: "You don't have permission to get the preferences",
+        };
+      }
+      const groupUser = await GroupUserModal.findAll({
+        where: {
+          groupId,
+        },
+      });
+      const groupUserIds = groupUser.map((user) => user.id);
+      const preferences = await PreferenceModal.findAll({
+        where: {
+          groupUserId: groupUserIds,
+        },
+      });
+      const preferncesArray = preferences.map((preference) => {
+        return {
+          id: preference.id,
+          month: preference.month,
+          year: preference.year,
+          shiftId: preference.shiftId,
+          preferedDays: preference.preferedDays,
+          employmentTypeId: preference.employmentTypeId,
+        };
+      });
+      return preferncesArray;
+    } catch (error) {
+      return null;
     }
   };
 }

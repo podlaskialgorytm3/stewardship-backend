@@ -12,4 +12,10 @@ router.post(
   preferenceController.postPreference
 );
 
+router.get(
+  "/preference",
+  userAuthentication.authMiddleware,
+  preferenceController.getPreferences
+);
+
 export default router;
