@@ -4,8 +4,13 @@ import { PreferenceService } from "../services/preference";
 
 class PreferenceController {
   preferenceService: PreferenceService;
+  month: number;
+  year: number;
   constructor() {
     this.preferenceService = new PreferenceService();
+    this.month = new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
+    this.year =
+      this.month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
   }
   public postPreference = async (request: Request, response: Response) => {
     try {
@@ -52,8 +57,8 @@ class PreferenceController {
         groupId: groupId as string,
         groupUserId: groupUserId as string,
         token,
-        month: Number(month),
-        year: Number(year),
+        month: Number(month) || this.month,
+        year: Number(year) || this.year,
       });
       response.status(200).json(result);
     } catch (error) {

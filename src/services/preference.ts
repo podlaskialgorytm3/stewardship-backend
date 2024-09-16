@@ -171,14 +171,14 @@ class PreferenceService {
     groupId,
     groupUserId,
     token,
-    month = this.month,
-    year = this.year,
+    month,
+    year,
   }: {
     groupId: string;
     groupUserId: string;
     token: string;
-    month?: number;
-    year?: number;
+    month: number;
+    year: number;
   }) => {
     try {
       const role = await this.groupUserService.getRole({ groupId, token });
