@@ -143,6 +143,35 @@ class UnavailableDayService {
       };
     }
   };
+  public getUnavailableDaysByPreferenceId = async ({
+    preferenceId,
+  }: {
+    preferenceId: string;
+  }) => {
+    try {
+      if (!preferenceId) {
+        return {
+          type: "error",
+          message: "Please provide all required fields",
+        };
+      }
+      const unavaiableDays = await UnavaiableDayModal.findAll({
+        where: {
+          preferenceId,
+        },
+      });
+      const unavaiableDaysArray = unavaiableDays.map((unavaiableDay) => {
+        return {
+          id: unavaiableDay.id,
+          day: unavaiableDay.day,
+          preferenceId: unavaiableDay.preferenceId,
+        };
+      });
+      return unavaiableDaysArray;
+    } catch (error) {
+      return null;
+    }
+  };
 }
 
 export { UnavailableDayService };

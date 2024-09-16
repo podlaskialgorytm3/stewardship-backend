@@ -18,4 +18,10 @@ router.delete(
   unavailableDayController.deleteUnavailableDay
 );
 
+router.get(
+  "/unavailable-day",
+  userAuthentication.authMiddleware,
+  unavailableDayController.getUnavailableDays
+);
+
 export default router;

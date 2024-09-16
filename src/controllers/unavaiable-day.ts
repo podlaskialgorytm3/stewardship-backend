@@ -33,6 +33,18 @@ class UnavailableDayController {
       response.status(400).json(error);
     }
   };
+  public getUnavailableDays = async (request: Request, response: Response) => {
+    try {
+      const { preferenceId } = request.query;
+      const result =
+        await this.unavailableDayService.getUnavailableDaysByPreferenceId({
+          preferenceId: preferenceId as string,
+        });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { UnavailableDayController };
