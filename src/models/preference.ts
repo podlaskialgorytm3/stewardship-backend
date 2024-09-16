@@ -8,7 +8,7 @@ class PreferenceModal extends Model {
   public groupUserId!: string;
   public shiftId!: string;
   public preferedDays!: string;
-  public employmenTypeId!: string;
+  public employmentTypeId!: string;
 }
 
 PreferenceModal.init(
@@ -38,7 +38,7 @@ PreferenceModal.init(
       allowNull: false,
       defaultValue: "mixed",
     },
-    employmenTypeId: {
+    employmentTypeId: {
       type: DataTypes.STRING,
       allowNull: false,
     },
