@@ -43,6 +43,23 @@ class PreferenceController {
       response.status(400).json(error);
     }
   };
+  public getPreference = async (request: Request, response: Response) => {
+    try {
+      const groupUserId = request.params.groupUserId as string;
+      const { groupId, month, year } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.preferenceService.getPreference({
+        groupId: groupId as string,
+        groupUserId: groupUserId as string,
+        token,
+        month: Number(month),
+        year: Number(year),
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { PreferenceController };

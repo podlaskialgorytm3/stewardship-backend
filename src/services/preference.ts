@@ -9,8 +9,13 @@ import { v4 as uuidv4 } from "uuid";
 
 class PreferenceService {
   groupUserService: GroupUserService;
+  month: number;
+  year: number;
   constructor() {
     this.groupUserService = new GroupUserService();
+    this.month = new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
+    this.year =
+      this.month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
   }
   public createTable = async () => {
     PreferenceModal.sync({ alter: true })
@@ -42,15 +47,11 @@ class PreferenceService {
         token,
         groupId
       )) as { id: string };
-      const month =
-        new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
-      const year =
-        month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
       if (
         !(await this.isPreferenceNotExist({
           groupUserId: groupUser.id,
-          month,
-          year,
+          month: this.month,
+          year: this.year,
         }))
       ) {
         return {
@@ -77,8 +78,8 @@ class PreferenceService {
       }
       await PreferenceModal.create({
         id: uuidv4(),
-        month,
-        year,
+        month: this.month,
+        year: this.year,
         groupUserId: groupUser.id,
         shiftId,
         preferedDays,
@@ -149,6 +150,49 @@ class PreferenceService {
       const preferences = await PreferenceModal.findAll({
         where: {
           groupUserId: groupUserIds,
+        },
+      });
+      const preferncesArray = preferences.map((preference) => {
+        return {
+          id: preference.id,
+          month: preference.month,
+          year: preference.year,
+          shiftId: preference.shiftId,
+          preferedDays: preference.preferedDays,
+          employmentTypeId: preference.employmentTypeId,
+        };
+      });
+      return preferncesArray;
+    } catch (error) {
+      return null;
+    }
+  };
+  public getPreference = async ({
+    groupId,
+    groupUserId,
+    token,
+    month = this.month,
+    year = this.year,
+  }: {
+    groupId: string;
+    groupUserId: string;
+    token: string;
+    month?: number;
+    year?: number;
+  }) => {
+    try {
+      const role = await this.groupUserService.getRole({ groupId, token });
+      if (role !== "admin" && role !== "user") {
+        return {
+          type: "error",
+          message: "You don't have permission to get the preferences",
+        };
+      }
+      const preferences = await PreferenceModal.findAll({
+        where: {
+          groupUserId,
+          month,
+          year,
         },
       });
       const preferncesArray = preferences.map((preference) => {

@@ -18,4 +18,10 @@ router.get(
   preferenceController.getPreferences
 );
 
+router.get(
+  "/preference/:groupUserId",
+  userAuthentication.authMiddleware,
+  preferenceController.getPreference
+);
+
 export default router;
