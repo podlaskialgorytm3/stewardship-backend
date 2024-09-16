@@ -12,4 +12,10 @@ router.post(
   unavailableDayController.postUnavaiableDay
 );
 
+router.delete(
+  "/unavailable-day/:unavialableDayId",
+  userAuthentication.authMiddleware,
+  unavailableDayController.deleteUnavailableDay
+);
+
 export default router;

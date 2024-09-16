@@ -115,6 +115,34 @@ class UnavailableDayService {
       return false;
     }
   };
+  public deleteUnavailableDay = async ({
+    unavialableDayId,
+  }: {
+    unavialableDayId: string;
+  }) => {
+    try {
+      if (!unavialableDayId) {
+        return {
+          type: "error",
+          message: "This unavaiable day does not exist",
+        };
+      }
+      await UnavaiableDayModal.destroy({
+        where: {
+          id: unavialableDayId,
+        },
+      });
+      return {
+        type: "success",
+        message: "Unavaiable day deleted successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while deleting unavaiable day: " + error,
+      };
+    }
+  };
 }
 
 export { UnavailableDayService };
