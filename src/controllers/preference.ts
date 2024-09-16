@@ -37,11 +37,13 @@ class PreferenceController {
   };
   public getPreferences = async (request: Request, response: Response) => {
     try {
-      const groupId = request.query.groupId as string;
+      const { groupId, month, year } = request.query;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.preferenceService.getPreferences({
-        groupId,
+        groupId: groupId as string,
         token,
+        month: Number(month) || this.month,
+        year: Number(year) || this.year,
       });
       response.status(200).json(result);
     } catch (error) {

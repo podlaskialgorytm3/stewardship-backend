@@ -129,9 +129,13 @@ class PreferenceService {
   public getPreferences = async ({
     groupId,
     token,
+    month,
+    year,
   }: {
     groupId: string;
     token: string;
+    month: number;
+    year: number;
   }) => {
     try {
       const role = await this.groupUserService.getRole({ groupId, token });
@@ -150,6 +154,8 @@ class PreferenceService {
       const preferences = await PreferenceModal.findAll({
         where: {
           groupUserId: groupUserIds,
+          month,
+          year,
         },
       });
       const preferncesArray = preferences.map((preference) => {
