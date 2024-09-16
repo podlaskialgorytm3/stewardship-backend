@@ -30,4 +30,10 @@ router.put(
   preferenceController.putPreference
 );
 
+router.delete(
+  "/preference/:preferenceId",
+  userAuthentication.authMiddleware,
+  preferenceController.deletePreference
+);
+
 export default router;

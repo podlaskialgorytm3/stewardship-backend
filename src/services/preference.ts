@@ -300,6 +300,45 @@ class PreferenceService {
       };
     }
   };
+  public deletePreference = async ({
+    groupId,
+    preferenceId,
+    token,
+  }: {
+    groupId: string;
+    preferenceId: string;
+    token: string;
+  }) => {
+    try {
+      const groupUser = (await this.groupUserService.getUserByTokenGroup(
+        token,
+        groupId
+      )) as { id: string };
+      const groupUserId = await this.getGroupUserIdByPreferenceId({
+        preferenceId,
+      });
+      if (groupUser.id !== groupUserId) {
+        return {
+          type: "error",
+          message: "You don't have permission to delete this preference",
+        };
+      }
+      await PreferenceModal.destroy({
+        where: {
+          id: preferenceId,
+        },
+      });
+      return {
+        type: "success",
+        message: "Preference deleted successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while deleting the preference: " + error,
+      };
+    }
+  };
 }
 
 export { PreferenceService };
