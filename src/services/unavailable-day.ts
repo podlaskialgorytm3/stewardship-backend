@@ -79,6 +79,9 @@ class UnavailableDayService {
       if (this.monthDays[this.month] < parseInt(day)) {
         return false;
       }
+      if (parseInt(day) < 1) {
+        return false;
+      }
       return true;
     } catch (error) {
       return false;
