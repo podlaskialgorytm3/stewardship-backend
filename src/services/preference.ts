@@ -45,7 +45,18 @@ class PreferenceService {
         new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
       const year =
         month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
-      // in here will be written the logic to valid if preference in given mounth is single
+      if (
+        !(await this.isPreferenceNotExist({
+          groupUserId: groupUser.id,
+          month,
+          year,
+        }))
+      ) {
+        return {
+          type: "info",
+          message: "Preference for this month already exist, please update it",
+        };
+      }
       if (groupUser.id === null) {
         return {
           type: "error",
@@ -80,6 +91,36 @@ class PreferenceService {
       return {
         type: "error",
         message: "An error occurred while creating the preference: " + error,
+      };
+    }
+  };
+  private isPreferenceNotExist = async ({
+    groupUserId,
+    month,
+    year,
+  }: {
+    groupUserId: string;
+    month: number;
+    year: number;
+  }) => {
+    try {
+      const preferences = await PreferenceModal.findAll({
+        where: {
+          groupUserId,
+          month,
+          year,
+        },
+      });
+      if (preferences.length > 0) {
+        return false;
+      }
+      return true;
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while checking if the preference is single: " +
+          error,
       };
     }
   };
