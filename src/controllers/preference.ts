@@ -67,6 +67,24 @@ class PreferenceController {
       response.status(400).json(error);
     }
   };
+  public putPreference = async (request: Request, response: Response) => {
+    try {
+      const { groupId, preferenceId, shiftId, preferedDays, employmentTypeId } =
+        request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result = await this.preferenceService.updatePreference({
+        groupId: groupId as string,
+        preferenceId: preferenceId as string,
+        shiftId: shiftId as string,
+        preferedDays: preferedDays as string,
+        employmentTypeId: employmentTypeId as string,
+        token: token as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { PreferenceController };
