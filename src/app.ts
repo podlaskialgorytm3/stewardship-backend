@@ -15,6 +15,7 @@ import scheduleRuleRouter from "./routes/schedule-rule";
 import shiftRouter from "./routes/shift";
 import dayRestrictionRouter from "./routes/day-restriction";
 import employmentTypeRouter from "./routes/employment-type";
+import preferenceRouter from "./routes/preference";
 import createTables from "./configs/create-tables";
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/stewardship", [
   shiftRouter,
   dayRestrictionRouter,
   employmentTypeRouter,
+  preferenceRouter,
 ]);
 
 //createTables();

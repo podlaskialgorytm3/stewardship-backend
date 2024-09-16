@@ -41,13 +41,12 @@ class PreferenceService {
         token,
         groupId
       )) as { id: string };
-      const groupUserId = groupUser.id;
       const month =
         new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
       const year =
         month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
       // in here will be written the logic to valid if preference in given mounth is single
-      if (groupUserId) {
+      if (groupUser.id === null) {
         return {
           type: "error",
           message: "This user not exist in this group",
@@ -68,7 +67,7 @@ class PreferenceService {
         id: uuidv4(),
         month,
         year,
-        groupUserId,
+        groupUserId: groupUser.id,
         shiftId,
         preferedDays,
         employmentTypeId,
