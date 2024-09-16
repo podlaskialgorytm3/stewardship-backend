@@ -5,7 +5,7 @@ import GroupUserService from "./group-user";
 
 import { v4 as uuidv4 } from "uuid";
 
-import { SkillInterface } from "../types/work-schedule";
+import { SkillInterface } from "../types/skill";
 
 class SkillService {
   groupUserService: GroupUserService;
