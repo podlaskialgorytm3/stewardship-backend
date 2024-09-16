@@ -57,6 +57,12 @@ class UnavailableDayService {
           message: "Day does not exist",
         };
       }
+      if (await this.checkIfUnavaiableDayIsInDatabase({ day, preferenceId })) {
+        return {
+          type: "error",
+          message: "Day is already unavaiable",
+        };
+      }
       const id = uuidv4();
       await UnavaiableDayModal.create({
         id,
@@ -83,6 +89,28 @@ class UnavailableDayService {
         return false;
       }
       return true;
+    } catch (error) {
+      return false;
+    }
+  };
+  private checkIfUnavaiableDayIsInDatabase = async ({
+    day,
+    preferenceId,
+  }: {
+    day: string;
+    preferenceId: string;
+  }) => {
+    try {
+      const result = await UnavaiableDayModal.findOne({
+        where: {
+          day,
+          preferenceId,
+        },
+      });
+      if (result) {
+        return true;
+      }
+      return false;
     } catch (error) {
       return false;
     }
