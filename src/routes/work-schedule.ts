@@ -18,4 +18,10 @@ router.get(
   workScheduleController.getDaysForMonth
 );
 
+router.get(
+  "/work-schedule",
+  userAuthentication.authMiddleware,
+  workScheduleController.getWorkSchedule
+);
+
 export default router;

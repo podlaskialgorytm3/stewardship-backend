@@ -48,6 +48,22 @@ class WorkScheduleController {
       response.status(400).json(error);
     }
   };
+  public getWorkSchedule = async (request: Request, response: Response) => {
+    try {
+      const { groupId, month, year } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const result =
+        await this.workScheduleService.getWorkScheduleForMembersGroup({
+          groupId: groupId as string,
+          month: Number(month),
+          year: Number(year),
+          token: token as string,
+        });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { WorkScheduleController };
