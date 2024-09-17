@@ -3,33 +3,21 @@ import { WorkScheduleModal } from "../models/work-schedule";
 import { WorkScheduleSchema } from "../types/work-schedule";
 
 import GroupUserService from "./group-user";
+import { WorkScheduleValidate } from "./work-schedule/work-schedule-validate";
 
 import { v4 as uuidv4 } from "uuid";
 
 class WorkScheduleService {
   groupUserService: GroupUserService;
+  workScheduleValidate: WorkScheduleValidate;
   month: number;
   year: number;
-  monthDays: { [key: number]: number };
   constructor() {
     this.groupUserService = new GroupUserService();
+    this.workScheduleValidate = new WorkScheduleValidate();
     this.month = new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
     this.year =
       this.month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
-    this.monthDays = {
-      1: 31,
-      2: this.year % 4 === 0 ? 29 : 28,
-      3: 31,
-      4: 30,
-      5: 31,
-      6: 30,
-      7: 31,
-      8: 31,
-      9: 30,
-      10: 31,
-      11: 30,
-      12: 31,
-    };
   }
   public createTable = async () => {
     WorkScheduleModal.sync({ alter: true })
@@ -90,14 +78,16 @@ class WorkScheduleService {
           message: "You don't have enough data.",
         };
       }
-      if (this.isDayOffMonth({ days, month, quantityOfDays })) {
+      if (
+        this.workScheduleValidate.isDayOffMonth({ days, month, quantityOfDays })
+      ) {
         return {
           type: "error",
           message: "The days are not valid",
         };
       }
       if (
-        await this.isDayUsed({
+        await this.workScheduleValidate.isDayUsed({
           groupUserId,
           days,
           month,
@@ -109,7 +99,7 @@ class WorkScheduleService {
           message: "The days are already used",
         };
       }
-      if (this.checkIfDaysAreSame({ days })) {
+      if (this.workScheduleValidate.checkIfDaysAreSame({ days })) {
         return {
           type: "error",
           message: "The days are the same",
@@ -184,74 +174,6 @@ class WorkScheduleService {
         type: "error",
         message: "An error occurred while creating the Work Schedule: " + error,
       };
-    }
-  };
-  private isDayOffMonth = ({
-    days,
-    month,
-    quantityOfDays,
-  }: {
-    days: string[];
-    month: number;
-    quantityOfDays: number;
-  }) => {
-    try {
-      for (let i = 0; i < quantityOfDays; i++) {
-        const dayNumber = parseInt(days[i]);
-        if (dayNumber < 1 || dayNumber > this.monthDays[month]) {
-          return true;
-        }
-      }
-      return false;
-    } catch (error) {
-      return {
-        type: "error",
-        message: "An error occurred while validating the days: " + error,
-      };
-    }
-  };
-  private isDayUsed = async ({
-    groupUserId,
-    days,
-    month,
-    year,
-  }: {
-    groupUserId: string;
-    days: string[];
-    month: number;
-    year: number;
-  }) => {
-    try {
-      const data = await Promise.all(
-        days.map(async (day) => {
-          const workSchedule = await WorkScheduleModal.findOne({
-            where: {
-              groupUserId,
-              day,
-              month,
-              year,
-            },
-          });
-          if (workSchedule) {
-            return true;
-          }
-          return false;
-        })
-      );
-      return data.includes(true);
-    } catch (error) {
-      return {
-        type: "error",
-        message: "An error occurred while checking if day is working: " + error,
-      };
-    }
-  };
-  private checkIfDaysAreSame = ({ days }: { days: string[] }) => {
-    try {
-      const daysSet = new Set(days);
-      return days.length !== daysSet.size;
-    } catch (error) {
-      return true;
     }
   };
 }
