@@ -31,7 +31,6 @@ class SingleDay {
   }) => {
     try {
       const { error } = WorkScheduleSchema.validate({
-        groupUserId,
         day,
         isWorkingDay,
         start,
@@ -58,6 +57,43 @@ class SingleDay {
       return {
         type: "error",
         message: "An error occurred while creating the Work Schedule: " + error,
+      };
+    }
+  };
+  public updateSingleDay = async ({
+    workScheduleId,
+    isWorkingDay,
+    day,
+    start,
+    end,
+  }: {
+    workScheduleId: string;
+    isWorkingDay: boolean;
+    day: number;
+    start: string;
+    end: string;
+  }) => {
+    try {
+      await WorkScheduleModal.update(
+        {
+          isWorkingDay,
+          start: isWorkingDay ? start : null,
+          end: isWorkingDay ? end : null,
+        },
+        {
+          where: {
+            id: workScheduleId,
+          },
+        }
+      );
+      return {
+        type: "success",
+        message: "Work Schedule has been updated successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while updating the Work Schedule: " + error,
       };
     }
   };

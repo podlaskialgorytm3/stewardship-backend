@@ -197,6 +197,7 @@ class WorkScheduleService {
             year: number;
             month: number;
             schedule: {
+              id: string;
               isWorkingDay: boolean;
               day: number;
               start: string | null;
@@ -204,6 +205,7 @@ class WorkScheduleService {
             }[];
           }[],
           schedule: {
+            id: string;
             groupUserId: string;
             year: number;
             month: number;
@@ -213,8 +215,16 @@ class WorkScheduleService {
             end: string | null;
           }
         ) => {
-          const { groupUserId, year, month, isWorkingDay, day, start, end } =
-            schedule;
+          const {
+            id,
+            groupUserId,
+            year,
+            month,
+            isWorkingDay,
+            day,
+            start,
+            end,
+          } = schedule;
           let existingEntry = acc.find(
             (entry) =>
               entry.groupUserId === groupUserId &&
@@ -233,6 +243,7 @@ class WorkScheduleService {
             acc.push(existingEntry);
           }
           existingEntry.schedule.push({
+            id,
             isWorkingDay,
             day,
             start: isWorkingDay ? start : null,
