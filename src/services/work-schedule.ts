@@ -109,6 +109,12 @@ class WorkScheduleService {
           message: "The days are already used",
         };
       }
+      if (this.checkIfDaysAreSame({ days })) {
+        return {
+          type: "error",
+          message: "The days are the same",
+        };
+      }
       for (let i = 0; i < quantityOfDays; i++) {
         await this.createWorkSchedule({
           groupUserId,
@@ -238,6 +244,14 @@ class WorkScheduleService {
         type: "error",
         message: "An error occurred while checking if day is working: " + error,
       };
+    }
+  };
+  private checkIfDaysAreSame = ({ days }: { days: string[] }) => {
+    try {
+      const daysSet = new Set(days);
+      return days.length !== daysSet.size;
+    } catch (error) {
+      return true;
     }
   };
 }
