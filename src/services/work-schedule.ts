@@ -23,57 +23,6 @@ class WorkScheduleService {
         );
       });
   };
-  private createWorkSchedule = async ({
-    groupUserId,
-    year,
-    month,
-    day,
-    isWorkingDay,
-    start,
-    end,
-  }: {
-    groupUserId: string;
-    year: number;
-    month: number;
-    day: string;
-    isWorkingDay: boolean;
-    start: string;
-    end: string;
-  }) => {
-    try {
-      const { error } = WorkScheduleSchema.validate({
-        groupUserId,
-        year,
-        month,
-        day,
-        isWorkingDay,
-        start,
-        end,
-      });
-      if (error) {
-        return {
-          type: "error",
-          message: "Validation Error: " + error.details[0].message,
-        };
-      }
-      const id = uuidv4();
-      await WorkScheduleModal.create({
-        id,
-        groupUserId,
-        year,
-        month,
-        day,
-        isWorkingDay,
-        start,
-        end,
-      });
-    } catch (error) {
-      return {
-        type: "error",
-        message: "An error occurred while creating the Work Schedule: " + error,
-      };
-    }
-  };
   public createWorkScheduleForOneMonth = async ({
     groupId,
     groupUserId,
@@ -126,6 +75,57 @@ class WorkScheduleService {
         type: "success",
         message: "Work Schedule has been created successfully",
       };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while creating the Work Schedule: " + error,
+      };
+    }
+  };
+  private createWorkSchedule = async ({
+    groupUserId,
+    year,
+    month,
+    day,
+    isWorkingDay,
+    start,
+    end,
+  }: {
+    groupUserId: string;
+    year: number;
+    month: number;
+    day: string;
+    isWorkingDay: boolean;
+    start: string;
+    end: string;
+  }) => {
+    try {
+      const { error } = WorkScheduleSchema.validate({
+        groupUserId,
+        year,
+        month,
+        day,
+        isWorkingDay,
+        start,
+        end,
+      });
+      if (error) {
+        return {
+          type: "error",
+          message: "Validation Error: " + error.details[0].message,
+        };
+      }
+      const id = uuidv4();
+      await WorkScheduleModal.create({
+        id,
+        groupUserId,
+        year,
+        month,
+        day,
+        isWorkingDay,
+        start,
+        end,
+      });
     } catch (error) {
       return {
         type: "error",
