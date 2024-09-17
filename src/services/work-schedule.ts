@@ -96,7 +96,6 @@ class WorkScheduleService {
           message: "The days are not valid",
         };
       }
-
       for (let i = 0; i < quantityOfDays; i++) {
         await this.createWorkSchedule({
           groupUserId,
@@ -139,10 +138,10 @@ class WorkScheduleService {
     try {
       const { error } = WorkScheduleSchema.validate({
         groupUserId,
-        year,
-        month,
         day,
         isWorkingDay,
+        start,
+        end,
       });
       if (error) {
         return {
