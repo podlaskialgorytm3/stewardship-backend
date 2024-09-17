@@ -191,6 +191,8 @@ class WorkScheduleService {
         (
           acc: {
             groupUserId: string;
+            name: string;
+            img: string;
             year: number;
             month: number;
             schedule: {
@@ -221,6 +223,8 @@ class WorkScheduleService {
           if (!existingEntry) {
             existingEntry = {
               groupUserId,
+              name: "",
+              img: "",
               year,
               month,
               schedule: [],
@@ -238,7 +242,19 @@ class WorkScheduleService {
         },
         []
       );
-      return workSchedule;
+      const scheduleWithNames = await Promise.all(
+        workSchedule.map(async (schedule) => {
+          const groupUser = (await this.groupUserService.getUserByGroupUserId(
+            schedule.groupUserId
+          )) as { name: string; img: string };
+          return {
+            ...schedule,
+            name: groupUser.name,
+            img: groupUser.img,
+          };
+        })
+      );
+      return scheduleWithNames;
     } catch (error) {
       return {
         type: "error",
