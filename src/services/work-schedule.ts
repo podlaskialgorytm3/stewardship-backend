@@ -79,7 +79,24 @@ class WorkScheduleService {
       const ends = end.split(",").map(Number);
       const days = day.split(",");
       const workingDays = isWorkingDay.split(",");
-      const quantityOfDays = days.length;
+      const quantityOfDays = days.length as number;
+      if (
+        starts.length !== quantityOfDays ||
+        ends.length !== quantityOfDays ||
+        workingDays.length !== quantityOfDays
+      ) {
+        return {
+          type: "error",
+          message: "You don't have enough data.",
+        };
+      }
+      if (this.isDayOffMonth({ days, month, quantityOfDays })) {
+        return {
+          type: "error",
+          message: "The days are not valid",
+        };
+      }
+
       for (let i = 0; i < quantityOfDays; i++) {
         await this.createWorkSchedule({
           groupUserId,
@@ -148,6 +165,30 @@ class WorkScheduleService {
       return {
         type: "error",
         message: "An error occurred while creating the Work Schedule: " + error,
+      };
+    }
+  };
+  private isDayOffMonth = ({
+    days,
+    month,
+    quantityOfDays,
+  }: {
+    days: string[];
+    month: number;
+    quantityOfDays: number;
+  }) => {
+    try {
+      for (let i = 0; i < quantityOfDays; i++) {
+        const dayNumber = parseInt(days[i]);
+        if (dayNumber < 1 || dayNumber > this.monthDays[month]) {
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while validating the days: " + error,
       };
     }
   };
