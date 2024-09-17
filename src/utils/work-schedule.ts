@@ -23,6 +23,9 @@ class WorkScheduleUtils {
 
     return totalHoursDecimal;
   }
+  public sumHours = ({ hours }: { hours: number[] }) => {
+    return hours.reduce((acc, curr) => acc + curr, 0);
+  };
 }
 
 export { WorkScheduleUtils };
