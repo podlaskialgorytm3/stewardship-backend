@@ -24,4 +24,10 @@ router.get(
   workScheduleController.getWorkSchedule
 );
 
+router.get(
+  "/work-schedule/user",
+  userAuthentication.authMiddleware,
+  workScheduleController.getWorkScheduleForOneUser
+);
+
 export default router;
