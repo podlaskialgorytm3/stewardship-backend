@@ -63,13 +63,11 @@ class SingleDay {
   public updateSingleDay = async ({
     workScheduleId,
     isWorkingDay,
-    day,
     start,
     end,
   }: {
     workScheduleId: string;
     isWorkingDay: boolean;
-    day: number;
     start: string;
     end: string;
   }) => {

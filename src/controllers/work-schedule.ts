@@ -81,6 +81,24 @@ class WorkScheduleController {
       response.status(400).json(error);
     }
   };
+  public putWorkSchedule = async (request: Request, response: Response) => {
+    try {
+      const { groupId, workScheduleId, isWorkingDay, start, end } =
+        request.query;
+      const token = request.headers["authorization"]?.split(" ")[1];
+      const result = await this.workScheduleService.updateSingleDay({
+        groupId: groupId as string,
+        workScheduleId: workScheduleId as string,
+        isWorkingDay: isWorkingDay === "true",
+        start: start as string,
+        end: end as string,
+        token: token as string,
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { WorkScheduleController };

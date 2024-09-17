@@ -336,6 +336,49 @@ class WorkScheduleService {
       };
     }
   };
+  public updateSingleDay = async ({
+    groupId,
+    workScheduleId,
+    isWorkingDay,
+    start,
+    end,
+    token,
+  }: {
+    groupId: string;
+    workScheduleId: string;
+    isWorkingDay: boolean;
+    start: string;
+    end: string;
+    token: string;
+  }) => {
+    try {
+      const role = (await this.groupUserService.getRole({
+        groupId,
+        token,
+      })) as string;
+      if (role !== "admin") {
+        return {
+          type: "error",
+          message: "You are not authorized to perform this operation",
+        };
+      }
+      await this.singleDay.updateSingleDay({
+        workScheduleId,
+        isWorkingDay,
+        start,
+        end,
+      });
+      return {
+        type: "success",
+        message: "Work Schedule has been updated successfully",
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while updating the Work Schedule: " + error,
+      };
+    }
+  };
 }
 
 export { WorkScheduleService };

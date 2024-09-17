@@ -30,4 +30,10 @@ router.get(
   workScheduleController.getWorkScheduleForOneUser
 );
 
+router.put(
+  "/work-schedule",
+  userAuthentication.authMiddleware,
+  workScheduleController.putWorkSchedule
+);
+
 export default router;
