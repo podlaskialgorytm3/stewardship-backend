@@ -96,6 +96,19 @@ class WorkScheduleService {
           message: "The days are not valid",
         };
       }
+      if (
+        await this.isDayUsed({
+          groupUserId,
+          days,
+          month,
+          year,
+        })
+      ) {
+        return {
+          type: "error",
+          message: "The days are already used",
+        };
+      }
       for (let i = 0; i < quantityOfDays; i++) {
         await this.createWorkSchedule({
           groupUserId,
@@ -188,6 +201,42 @@ class WorkScheduleService {
       return {
         type: "error",
         message: "An error occurred while validating the days: " + error,
+      };
+    }
+  };
+  private isDayUsed = async ({
+    groupUserId,
+    days,
+    month,
+    year,
+  }: {
+    groupUserId: string;
+    days: string[];
+    month: number;
+    year: number;
+  }) => {
+    try {
+      const data = await Promise.all(
+        days.map(async (day) => {
+          const workSchedule = await WorkScheduleModal.findOne({
+            where: {
+              groupUserId,
+              day,
+              month,
+              year,
+            },
+          });
+          if (workSchedule) {
+            return true;
+          }
+          return false;
+        })
+      );
+      return data.includes(true);
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while checking if day is working: " + error,
       };
     }
   };
