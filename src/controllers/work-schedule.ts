@@ -37,6 +37,17 @@ class WorkScheduleController {
       response.status(400).json(error);
     }
   };
+  public getDaysForMonth = async (request: Request, response: Response) => {
+    try {
+      const { month } = request.query;
+      const result = await this.workScheduleService.getDaysForMonth({
+        month: Number(month),
+      });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
 }
 
 export { WorkScheduleController };

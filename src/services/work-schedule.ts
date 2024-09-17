@@ -126,6 +126,29 @@ class WorkScheduleService {
       };
     }
   };
+  public getDaysForMonth = async ({ month }: { month: number }) => {
+    try {
+      if (month < 1 || month > 12) {
+        return {
+          type: "error",
+          message: "The month is not valid",
+          days: 0,
+        };
+      }
+      return {
+        type: "success",
+        message: "The days for the month have been retrieved successfully",
+        days: this.workScheduleValidate.monthDays[month || this.month],
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while getting the days for the month: " + error,
+        days: 0,
+      };
+    }
+  };
 }
 
 export { WorkScheduleService };

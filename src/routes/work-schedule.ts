@@ -12,4 +12,10 @@ router.post(
   workScheduleController.postWorkSchedule
 );
 
+router.get(
+  "/work-schedule/days",
+  userAuthentication.authMiddleware,
+  workScheduleController.getDaysForMonth
+);
+
 export default router;
