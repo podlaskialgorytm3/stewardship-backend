@@ -338,10 +338,27 @@ class WorkScheduleService {
               day: schedule.day,
               start: schedule.isWorkingDay ? schedule.start : null,
               end: schedule.isWorkingDay ? schedule.end : null,
+              time: schedule.isWorkingDay
+                ? this.workScheduleUtils.calculateWorkTimeDecimal({
+                    startTime: schedule.start,
+                    endTime: schedule.end,
+                  })
+                : 0,
             })),
         }))
       );
-      return formattedSchedules.filter(
+      const formattedSchedulesWithTotalHours = formattedSchedules.map(
+        (schedule) => {
+          return {
+            totalHours: this.workScheduleUtils.sumHours({
+              hours: schedule.schedule.map((day) => day.time),
+            }),
+            ...schedule,
+          };
+        }
+      );
+
+      return formattedSchedulesWithTotalHours.filter(
         (schedule) => schedule.schedule.length > 0
       );
     } catch (error) {
