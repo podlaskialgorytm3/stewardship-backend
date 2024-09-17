@@ -230,19 +230,15 @@ class WorkScheduleService {
           existingEntry.schedule.push({
             isWorkingDay,
             day,
-            start,
-            end,
+            start: isWorkingDay ? start : null,
+            end: isWorkingDay ? end : null,
           });
 
           return acc;
         },
         []
       );
-      return {
-        type: "success",
-        message: "The work schedule has been retrieved successfully",
-        schedule: workSchedule,
-      };
+      return workSchedule;
     } catch (error) {
       return {
         type: "error",
