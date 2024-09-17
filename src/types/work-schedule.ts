@@ -2,8 +2,6 @@ import Joi from "Joi";
 
 export const WorkScheduleSchema = Joi.object({
   groupUserId: Joi.string().required(),
-  year: Joi.number().required(),
-  month: Joi.number().required(),
   day: Joi.string().required(),
   isWorkingDay: Joi.boolean().required(),
   start: Joi.string().required(),
