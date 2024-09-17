@@ -608,6 +608,23 @@ class GroupUserService {
       };
     }
   };
+  public getGroupNameByGroupUserId = async ({
+    groupUserId,
+  }: {
+    groupUserId: string;
+  }) => {
+    try {
+      const groupId = await this.getGroupIdByGroupUserId({ groupUserId });
+      const group = await Group.findOne({
+        where: {
+          id: groupId,
+        },
+      });
+      return group?.name;
+    } catch (error) {
+      return null;
+    }
+  };
 }
 
 export default GroupUserService;
