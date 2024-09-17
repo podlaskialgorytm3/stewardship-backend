@@ -23,7 +23,58 @@ class WorkScheduleService {
         );
       });
   };
-  public createWorkSchedule = async ({
+  private createWorkSchedule = async ({
+    groupUserId,
+    year,
+    month,
+    day,
+    isWorkingDay,
+    start,
+    end,
+  }: {
+    groupUserId: string;
+    year: number;
+    month: number;
+    day: string;
+    isWorkingDay: boolean;
+    start: string;
+    end: string;
+  }) => {
+    try {
+      const { error } = WorkScheduleSchema.validate({
+        groupUserId,
+        year,
+        month,
+        day,
+        isWorkingDay,
+        start,
+        end,
+      });
+      if (error) {
+        return {
+          type: "error",
+          message: "Validation Error: " + error.details[0].message,
+        };
+      }
+      const id = uuidv4();
+      await WorkScheduleModal.create({
+        id,
+        groupUserId,
+        year,
+        month,
+        day,
+        isWorkingDay,
+        start,
+        end,
+      });
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while creating the Work Schedule: " + error,
+      };
+    }
+  };
+  public createWorkScheduleForOneMonth = async ({
     groupId,
     groupUserId,
     year,
@@ -38,8 +89,8 @@ class WorkScheduleService {
     groupUserId: string;
     year: number;
     month: number;
-    day: number;
-    isWorkingDay: boolean;
+    day: string;
+    isWorkingDay: string;
     start: string;
     end: string;
     token: string;
@@ -52,38 +103,28 @@ class WorkScheduleService {
       if (role !== "admin") {
         return {
           type: "error",
-          message: "You are not authorized to perform this action",
+          message: "You are not authorized to perform this operation",
         };
       }
-      const { error } = WorkScheduleSchema.validate({
-        groupUserId,
-        year,
-        month,
-        day,
-        isWorkingDay,
-        start,
-        end,
-      });
-      if (error) {
-        return {
-          type: "error",
-          message: error.details[0].message,
-        };
+      const starts = start.split(",").map(Number);
+      const ends = end.split(",").map(Number);
+      const days = day.split(",");
+      const workingDays = isWorkingDay.split(",");
+      const quantityOfDays = days.length;
+      for (let i = 0; i < quantityOfDays; i++) {
+        await this.createWorkSchedule({
+          groupUserId,
+          year,
+          month,
+          day: days[i],
+          isWorkingDay: workingDays[i] === "true",
+          start: starts[i].toString(),
+          end: ends[i].toString(),
+        });
       }
-      const id = uuidv4();
-      await WorkScheduleModal.create({
-        id,
-        groupUserId,
-        year,
-        month,
-        day,
-        isWorkingDay,
-        start,
-        end,
-      });
       return {
         type: "success",
-        message: "Work Schedule created successfully",
+        message: "Work Schedule has been created successfully",
       };
     } catch (error) {
       return {
