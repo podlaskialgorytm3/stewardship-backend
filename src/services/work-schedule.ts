@@ -1,5 +1,6 @@
 import { WorkScheduleModal } from "../models/work-schedule";
 import GroupUserModal from "../models/group-user";
+import UserModal from "../models/user";
 
 import GroupUserService from "./group-user";
 import { WorkScheduleValidate } from "./work-schedule/work-schedule-validate";
@@ -255,6 +256,62 @@ class WorkScheduleService {
         })
       );
       return scheduleWithNames;
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while getting the work schedule: " + error,
+        schedule: null,
+      };
+    }
+  };
+  public getWorkScheduleForOneUser = async ({
+    month,
+    year,
+    token,
+  }: {
+    month: number;
+    year: number;
+    token: string;
+  }) => {
+    try {
+      const user = await UserModal.findOne({
+        where: {
+          accessToken: token,
+        },
+      });
+      const userId = user?.id;
+      const groupUser = await GroupUserModal.findAll({
+        where: {
+          userId,
+        },
+      });
+      const groupUserId = groupUser.map((groupUser) => groupUser.id);
+
+      const schedules = await WorkScheduleModal.findAll({
+        where: {
+          groupUserId,
+          month: Number(month),
+          year: Number(year),
+        },
+        order: [["day", "ASC"]],
+      });
+
+      const formattedSchedules = groupUserId.map((id) => ({
+        groupUserId: id,
+        month,
+        year,
+        schedule: schedules
+          .filter((schedule) => schedule.groupUserId === id)
+          .map((schedule) => ({
+            isWorkingDay: schedule.isWorkingDay,
+            day: schedule.day,
+            start: schedule.isWorkingDay ? schedule.start : null,
+            end: schedule.isWorkingDay ? schedule.end : null,
+          })),
+      }));
+      return formattedSchedules.filter(
+        (schedule) => schedule.schedule.length > 0
+      );
     } catch (error) {
       return {
         type: "error",
