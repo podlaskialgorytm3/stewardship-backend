@@ -1,20 +1,19 @@
 import { WorkScheduleModal } from "../models/work-schedule";
 
-import { WorkScheduleSchema } from "../types/work-schedule";
-
 import GroupUserService from "./group-user";
 import { WorkScheduleValidate } from "./work-schedule/work-schedule-validate";
-
-import { v4 as uuidv4 } from "uuid";
+import { SingleDay } from "./work-schedule/single-day";
 
 class WorkScheduleService {
   groupUserService: GroupUserService;
   workScheduleValidate: WorkScheduleValidate;
+  singleDay: SingleDay;
   month: number;
   year: number;
   constructor() {
     this.groupUserService = new GroupUserService();
     this.workScheduleValidate = new WorkScheduleValidate();
+    this.singleDay = new SingleDay();
     this.month = new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
     this.year =
       this.month > 12 ? new Date().getFullYear() + 1 : new Date().getFullYear();
@@ -106,7 +105,7 @@ class WorkScheduleService {
         };
       }
       for (let i = 0; i < quantityOfDays; i++) {
-        await this.createWorkSchedule({
+        await this.singleDay.createSchedule({
           groupUserId,
           year,
           month,
@@ -120,55 +119,6 @@ class WorkScheduleService {
         type: "success",
         message: "Work Schedule has been created successfully",
       };
-    } catch (error) {
-      return {
-        type: "error",
-        message: "An error occurred while creating the Work Schedule: " + error,
-      };
-    }
-  };
-  private createWorkSchedule = async ({
-    groupUserId,
-    year,
-    month,
-    day,
-    isWorkingDay,
-    start,
-    end,
-  }: {
-    groupUserId: string;
-    year: number;
-    month: number;
-    day: number;
-    isWorkingDay: boolean;
-    start: string;
-    end: string;
-  }) => {
-    try {
-      const { error } = WorkScheduleSchema.validate({
-        groupUserId,
-        day,
-        isWorkingDay,
-        start,
-        end,
-      });
-      if (error) {
-        return {
-          type: "error",
-          message: "Validation Error: " + error.details[0].message,
-        };
-      }
-      const id = uuidv4();
-      await WorkScheduleModal.create({
-        id,
-        groupUserId,
-        year: year || this.year,
-        month: month || this.month,
-        day,
-        isWorkingDay,
-        start,
-        end,
-      });
     } catch (error) {
       return {
         type: "error",
