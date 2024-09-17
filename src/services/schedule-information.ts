@@ -1,4 +1,5 @@
 import GroupUserService from "./group-user";
+import { PreferenceService } from "./preference";
 import { SkillService } from "./skill";
 import { GroupSkillService } from "./group-skill";
 import { ScheduleRuleService } from "./schedule-rule";
@@ -8,6 +9,7 @@ import { UnavailableDayService } from "./unavailable-day";
 
 class ScheduleInformationService {
   groupUserService: GroupUserService;
+  preferenceService: PreferenceService;
   skillService: SkillService;
   groupSkillService: GroupSkillService;
   scheduleRuleService: ScheduleRuleService;
@@ -20,6 +22,7 @@ class ScheduleInformationService {
 
   constructor() {
     this.groupUserService = new GroupUserService();
+    this.preferenceService = new PreferenceService();
     this.skillService = new SkillService();
     this.groupSkillService = new GroupSkillService();
     this.scheduleRuleService = new ScheduleRuleService();
