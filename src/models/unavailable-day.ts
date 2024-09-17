@@ -4,7 +4,7 @@ import { sequelize } from "../configs/connect";
 class UnavaiableDayModal extends Model {
   public id!: string;
   public preferenceId!: string;
-  public day!: string;
+  public day!: number;
 }
 
 UnavaiableDayModal.init(
@@ -18,7 +18,7 @@ UnavaiableDayModal.init(
       allowNull: false,
     },
     day: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },

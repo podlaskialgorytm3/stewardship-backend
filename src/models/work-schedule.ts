@@ -6,7 +6,7 @@ class WorkScheduleModal extends Model {
   public groupUserId!: string;
   public month!: number;
   public year!: number;
-  public day!: string;
+  public day!: number;
   public isWorkingDay!: boolean;
   public start!: string;
   public end!: string;
@@ -31,7 +31,7 @@ WorkScheduleModal.init(
       allowNull: false,
     },
     day: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     isWorkingDay: {

@@ -12,7 +12,7 @@ class UnavailableDayController {
       const { preferenceId, day } = request.query;
       const result = await this.unavailableDayService.createUnavaiableDay({
         preferenceId: preferenceId as string,
-        day: day as string,
+        day: Number(day) as number,
       });
       response.status(200).json(result);
     } catch (error) {

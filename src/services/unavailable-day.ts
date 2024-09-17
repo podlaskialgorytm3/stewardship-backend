@@ -42,7 +42,7 @@ class UnavailableDayService {
     day,
   }: {
     preferenceId: string;
-    day: string;
+    day: number;
   }) => {
     try {
       if (!preferenceId || !day) {
@@ -80,12 +80,12 @@ class UnavailableDayService {
       };
     }
   };
-  private checkIfUnavaiableDayExists = async ({ day }: { day: string }) => {
+  private checkIfUnavaiableDayExists = async ({ day }: { day: number }) => {
     try {
-      if (this.monthDays[this.month] < parseInt(day)) {
+      if (this.monthDays[this.month] < day) {
         return false;
       }
-      if (parseInt(day) < 1) {
+      if (day < 1) {
         return false;
       }
       return true;
@@ -97,7 +97,7 @@ class UnavailableDayService {
     day,
     preferenceId,
   }: {
-    day: string;
+    day: number;
     preferenceId: string;
   }) => {
     try {

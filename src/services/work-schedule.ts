@@ -101,7 +101,7 @@ class WorkScheduleService {
           groupUserId,
           year,
           month,
-          day: days[i],
+          day: Number(days[i]),
           isWorkingDay: workingDays[i] === "true",
           start: starts[i].toString(),
           end: ends[i].toString(),
@@ -130,7 +130,7 @@ class WorkScheduleService {
     groupUserId: string;
     year: number;
     month: number;
-    day: string;
+    day: number;
     isWorkingDay: boolean;
     start: string;
     end: string;
