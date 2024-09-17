@@ -200,6 +200,7 @@ class WorkScheduleService {
             img: string;
             year: number;
             month: number;
+            totalHours: number;
             schedule: {
               id: string;
               isWorkingDay: boolean;
@@ -241,6 +242,7 @@ class WorkScheduleService {
               groupUserId,
               name: "",
               img: "",
+              totalHours: 0,
               year,
               month,
               schedule: [],
@@ -274,6 +276,9 @@ class WorkScheduleService {
             ...schedule,
             name: groupUser.name,
             img: groupUser.img,
+            totalHours: this.workScheduleUtils.sumHours({
+              hours: schedule.schedule.map((day) => day.time),
+            }),
           };
         })
       );
