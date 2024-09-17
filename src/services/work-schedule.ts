@@ -296,19 +296,24 @@ class WorkScheduleService {
         order: [["day", "ASC"]],
       });
 
-      const formattedSchedules = groupUserId.map((id) => ({
-        groupUserId: id,
-        month,
-        year,
-        schedule: schedules
-          .filter((schedule) => schedule.groupUserId === id)
-          .map((schedule) => ({
-            isWorkingDay: schedule.isWorkingDay,
-            day: schedule.day,
-            start: schedule.isWorkingDay ? schedule.start : null,
-            end: schedule.isWorkingDay ? schedule.end : null,
-          })),
-      }));
+      const formattedSchedules = await Promise.all(
+        groupUserId.map(async (id) => ({
+          groupUserId: id,
+          groupName: await this.groupUserService.getGroupNameByGroupUserId({
+            groupUserId: id,
+          }),
+          month,
+          year,
+          schedule: schedules
+            .filter((schedule) => schedule.groupUserId === id)
+            .map((schedule) => ({
+              isWorkingDay: schedule.isWorkingDay,
+              day: schedule.day,
+              start: schedule.isWorkingDay ? schedule.start : null,
+              end: schedule.isWorkingDay ? schedule.end : null,
+            })),
+        }))
+      );
       return formattedSchedules.filter(
         (schedule) => schedule.schedule.length > 0
       );
