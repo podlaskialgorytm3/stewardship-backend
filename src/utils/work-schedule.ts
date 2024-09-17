@@ -3,16 +3,16 @@ class WorkScheduleUtils {
     startTime,
     endTime,
   }: {
-    startTime: string;
-    endTime: string;
-  }) {
+    startTime: string | null;
+    endTime: string | null;
+  }): number {
     const timeToMinutes = (time: string): number => {
       const [hours, minutes] = time.split(":").map(Number);
       return hours * 60 + minutes;
     };
 
-    const startMinutes = timeToMinutes(startTime);
-    const endMinutes = timeToMinutes(endTime);
+    const startMinutes = timeToMinutes(startTime || "");
+    const endMinutes = timeToMinutes(endTime || "");
 
     const totalMinutes =
       endMinutes >= startMinutes

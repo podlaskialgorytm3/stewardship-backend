@@ -6,15 +6,19 @@ import GroupUserService from "./group-user";
 import { WorkScheduleValidate } from "./work-schedule/work-schedule-validate";
 import { SingleDay } from "./work-schedule/single-day";
 
+import { WorkScheduleUtils } from "../utils/work-schedule";
+
 class WorkScheduleService {
   groupUserService: GroupUserService;
   workScheduleValidate: WorkScheduleValidate;
   singleDay: SingleDay;
+  workScheduleUtils: WorkScheduleUtils;
   month: number;
   year: number;
   constructor() {
     this.groupUserService = new GroupUserService();
     this.workScheduleValidate = new WorkScheduleValidate();
+    this.workScheduleUtils = new WorkScheduleUtils();
     this.singleDay = new SingleDay();
     this.month = new Date().getMonth() + 2 > 12 ? 1 : new Date().getMonth() + 2;
     this.year =
@@ -202,6 +206,7 @@ class WorkScheduleService {
               day: number;
               start: string | null;
               end: string | null;
+              time: number;
             }[];
           }[],
           schedule: {
@@ -248,6 +253,12 @@ class WorkScheduleService {
             day,
             start: isWorkingDay ? start : null,
             end: isWorkingDay ? end : null,
+            time: isWorkingDay
+              ? this.workScheduleUtils.calculateWorkTimeDecimal({
+                  startTime: start,
+                  endTime: end,
+                })
+              : 0,
           });
 
           return acc;
