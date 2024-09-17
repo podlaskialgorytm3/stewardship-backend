@@ -68,8 +68,8 @@ class WorkScheduleService {
           message: "You are not authorized to perform this operation",
         };
       }
-      const starts = start.split(",").map(Number);
-      const ends = end.split(",").map(Number);
+      const starts = start.split(",");
+      const ends = end.split(",");
       const days = day.split(",");
       const workingDays = isWorkingDay.split(",");
       const quantityOfDays = days.length as number;
