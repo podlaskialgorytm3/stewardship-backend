@@ -1,4 +1,5 @@
 import { WorkScheduleModal } from "../models/work-schedule";
+import GroupUserModal from "../models/group-user";
 
 import GroupUserService from "./group-user";
 import { WorkScheduleValidate } from "./work-schedule/work-schedule-validate";
@@ -146,6 +147,107 @@ class WorkScheduleService {
         message:
           "An error occurred while getting the days for the month: " + error,
         days: 0,
+      };
+    }
+  };
+  public getWorkScheduleForMembersGroup = async ({
+    groupId,
+    month,
+    year,
+    token,
+  }: {
+    groupId: string;
+    month: number;
+    year: number;
+    token: string;
+  }) => {
+    try {
+      const role = (await this.groupUserService.getRole({
+        groupId,
+        token,
+      })) as string;
+      if (role !== "admin") {
+        return {
+          type: "error",
+          message: "You are not authorized to perform this operation",
+          schedule: null,
+        };
+      }
+      const groupUsers = await GroupUserModal.findAll({
+        where: {
+          groupId,
+        },
+      });
+      const groupUserIds = groupUsers.map((groupUser) => groupUser.id);
+      const schedules = await WorkScheduleModal.findAll({
+        where: {
+          groupUserId: groupUserIds,
+          month,
+          year,
+        },
+        order: [["day", "ASC"]],
+      });
+      const workSchedule = schedules.reduce(
+        (
+          acc: {
+            groupUserId: string;
+            year: number;
+            month: number;
+            schedule: {
+              isWorkingDay: boolean;
+              day: number;
+              start: string | null;
+              end: string | null;
+            }[];
+          }[],
+          schedule: {
+            groupUserId: string;
+            year: number;
+            month: number;
+            day: number;
+            isWorkingDay: boolean;
+            start: string | null;
+            end: string | null;
+          }
+        ) => {
+          const { groupUserId, year, month, isWorkingDay, day, start, end } =
+            schedule;
+          let existingEntry = acc.find(
+            (entry) =>
+              entry.groupUserId === groupUserId &&
+              entry.year === year &&
+              entry.month === month
+          );
+          if (!existingEntry) {
+            existingEntry = {
+              groupUserId,
+              year,
+              month,
+              schedule: [],
+            };
+            acc.push(existingEntry);
+          }
+          existingEntry.schedule.push({
+            isWorkingDay,
+            day,
+            start,
+            end,
+          });
+
+          return acc;
+        },
+        []
+      );
+      return {
+        type: "success",
+        message: "The work schedule has been retrieved successfully",
+        schedule: workSchedule,
+      };
+    } catch (error) {
+      return {
+        type: "error",
+        message: "An error occurred while getting the work schedule: " + error,
+        schedule: null,
       };
     }
   };
