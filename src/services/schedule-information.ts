@@ -45,17 +45,18 @@ class ScheduleInformationService {
     month,
     year,
     token,
+    permission,
   }: {
     groupId: string;
     month: number;
     year: number;
     token: string;
+    permission: boolean;
   }) => {
     try {
-      const role = (await this.groupUserService.getRole({
-        groupId,
-        token,
-      })) as string;
+      const role = permission
+        ? ("admin" as string)
+        : ((await this.groupUserService.getRole({ groupId, token })) as string);
       if (role !== "admin") {
         return {
           type: "error",
@@ -162,6 +163,7 @@ class ScheduleInformationService {
         month,
         year,
         token,
+        permission: false,
       });
       if (Array.isArray(scheduleInformation)) {
         return scheduleInformation.filter(
@@ -201,12 +203,55 @@ class ScheduleInformationService {
         month,
         year,
         token,
+        permission: false,
       });
       if (Array.isArray(scheduleInformation)) {
         return scheduleInformation.filter((scheduleInformation) => {
           return scheduleInformation.skils.some((userSkill) => {
             return userSkill.id === skillId;
           });
+        });
+      } else {
+        return {
+          type: "error",
+          message: "Failed to retrieve schedule information",
+        };
+      }
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while getting schedule information: " + error,
+      };
+    }
+  };
+  public getScheduleInformationForUser = async ({
+    groupId,
+    month,
+    year,
+    token,
+  }: {
+    groupId: string;
+    month: number;
+    year: number;
+    token: string;
+  }) => {
+    try {
+      const groupUser = (await this.groupUserService.getUserByTokenGroup(
+        token,
+        groupId
+      )) as { id: string };
+      const groupUserId = groupUser?.id;
+      const scheduleInformation = await this.getScheduleInfomationByGroupId({
+        groupId,
+        month,
+        year,
+        token,
+        permission: true,
+      });
+      if (Array.isArray(scheduleInformation)) {
+        return scheduleInformation.filter((scheduleInformation) => {
+          return scheduleInformation.groupUserId === groupUserId;
         });
       } else {
         return {
