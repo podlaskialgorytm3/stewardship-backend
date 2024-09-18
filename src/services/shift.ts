@@ -137,10 +137,7 @@ class ShiftService {
         };
       }
     } catch (error) {
-      return {
-        message: "An error occurred while fetching the shift: " + error,
-        type: "error",
-      };
+      return [];
     }
   };
 
