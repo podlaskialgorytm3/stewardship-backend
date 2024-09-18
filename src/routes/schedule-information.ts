@@ -12,4 +12,10 @@ router.get(
   scheduleInformationController.getScheduleInfomationByGroupId
 );
 
+router.get(
+  "/scheudule-information/position",
+  userAuthentication.authMiddleware,
+  scheduleInformationController.getScheduleInformationByPosition
+);
+
 export default router;
