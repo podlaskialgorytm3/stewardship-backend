@@ -140,11 +140,7 @@ class ScheduleInformationService {
       );
       return scheduleInformation;
     } catch (error) {
-      return {
-        type: "error",
-        message:
-          "An error occurred while fetching schedule information: " + error,
-      };
+      return [];
     }
   };
 }
