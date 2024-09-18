@@ -181,6 +181,47 @@ class ScheduleInformationService {
       };
     }
   };
+
+  public getScheduleInformationBySkill = async ({
+    groupId,
+    skillId,
+    month,
+    year,
+    token,
+  }: {
+    groupId: string;
+    skillId: string;
+    month: number;
+    year: number;
+    token: string;
+  }) => {
+    try {
+      const scheduleInformation = await this.getScheduleInfomationByGroupId({
+        groupId,
+        month,
+        year,
+        token,
+      });
+      if (Array.isArray(scheduleInformation)) {
+        return scheduleInformation.filter((scheduleInformation) => {
+          return scheduleInformation.skils.some((userSkill) => {
+            return userSkill.id === skillId;
+          });
+        });
+      } else {
+        return {
+          type: "error",
+          message: "Failed to retrieve schedule information",
+        };
+      }
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while getting schedule information: " + error,
+      };
+    }
+  };
 }
 
 export { ScheduleInformationService };
