@@ -180,6 +180,7 @@ class GroupUserService {
             id: groupUser?.id as string,
             name: user?.name as string,
             position: groupUser?.position as string,
+            scheduleRuleId: groupUser?.scheduleRuleId as string,
             group: group?.name as string,
             email: user?.email as string,
             img: user?.img as string,
