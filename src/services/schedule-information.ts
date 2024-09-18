@@ -143,6 +143,44 @@ class ScheduleInformationService {
       return [];
     }
   };
+  public getScheduleInformationByPosition = async ({
+    groupId,
+    position,
+    month,
+    year,
+    token,
+  }: {
+    groupId: string;
+    position: string;
+    month: number;
+    year: number;
+    token: string;
+  }) => {
+    try {
+      const scheduleInformation = await this.getScheduleInfomationByGroupId({
+        groupId,
+        month,
+        year,
+        token,
+      });
+      if (Array.isArray(scheduleInformation)) {
+        return scheduleInformation.filter(
+          (scheduleInformation) => scheduleInformation.position === position
+        );
+      } else {
+        return {
+          type: "error",
+          message: "Failed to retrieve schedule information",
+        };
+      }
+    } catch (error) {
+      return {
+        type: "error",
+        message:
+          "An error occurred while getting schedule information: " + error,
+      };
+    }
+  };
 }
 
 export { ScheduleInformationService };
