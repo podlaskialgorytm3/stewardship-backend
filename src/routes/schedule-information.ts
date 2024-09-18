@@ -18,4 +18,10 @@ router.get(
   scheduleInformationController.getScheduleInformationByPosition
 );
 
+router.get(
+  "/scheudule-information/skill",
+  userAuthentication.authMiddleware,
+  scheduleInformationController.getScheduleInformationBySkill
+);
+
 export default router;
