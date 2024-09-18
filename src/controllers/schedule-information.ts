@@ -20,6 +20,7 @@ class ScheduleInformationController {
           month: Number(month),
           year: Number(year),
           token: token as string,
+          permission: false,
         });
       response.status(200).json(result);
     } catch (error) {
@@ -57,6 +58,25 @@ class ScheduleInformationController {
         await this.scheudleInformationService.getScheduleInformationBySkill({
           groupId: groupId as string,
           skillId: skillId as string,
+          month: Number(month),
+          year: Number(year),
+          token: token as string,
+        });
+      response.status(200).json(result);
+    } catch (error) {
+      response.status(400).json(error);
+    }
+  };
+  public getScheduleInformationForUser = async (
+    request: Request,
+    response: Response
+  ) => {
+    try {
+      const { groupId, month, year } = request.query;
+      const token = request.headers["authorization"]?.split(" ")[1] as string;
+      const result =
+        await this.scheudleInformationService.getScheduleInformationForUser({
+          groupId: groupId as string,
           month: Number(month),
           year: Number(year),
           token: token as string,
