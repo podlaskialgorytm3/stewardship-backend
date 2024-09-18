@@ -53,6 +53,24 @@ class GroupSkillService {
           message: "Skill does not exist for this group",
         };
       }
+      const userSkills = (await this.getBelongingSkills({ groupUserId })) as {
+        id: string;
+      }[];
+      if (!Array.isArray(userSkills)) {
+        return {
+          type: "error",
+          message: "An error occurred while fetching user skills",
+        };
+      }
+      const isSkillAlreadyAdded = userSkills.find(
+        (userSkill) => userSkill.id === skillId
+      );
+      if (isSkillAlreadyAdded) {
+        return {
+          type: "error",
+          message: "Skill is already added to user",
+        };
+      }
       if (role !== "admin") {
         return {
           type: "error",
