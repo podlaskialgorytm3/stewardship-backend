@@ -124,17 +124,12 @@ class GroupSkillService {
   };
   public getNotBelongingSkills = async ({
     groupId,
-    token,
+    groupUserId,
   }: {
     groupId: string;
-    token: string;
+    groupUserId: string;
   }) => {
     try {
-      const groupUser = (await this.groupUserService.getUserByTokenGroup(
-        token,
-        groupId
-      )) as { id: string };
-      const groupUserId = groupUser.id;
       const groupUserSkills = await GroupSkillModal.findAll({
         where: {
           groupUserId,
