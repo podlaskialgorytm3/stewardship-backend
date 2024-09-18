@@ -211,7 +211,7 @@ class PreferenceService {
           employmentTypeId: preference.employmentTypeId,
         };
       });
-      return preferncesArray;
+      return preferncesArray[0];
     } catch (error) {
       return null;
     }
