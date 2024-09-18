@@ -6,4 +6,10 @@ const router = express.Router();
 const userAuthentication = new UserAuthentication();
 const scheduleInformationController = new ScheduleInformationController();
 
+router.get(
+  "/scheudule-information",
+  userAuthentication.authMiddleware,
+  scheduleInformationController.getScheduleInfomationByGroupId
+);
+
 export default router;
