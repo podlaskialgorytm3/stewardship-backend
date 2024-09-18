@@ -7,21 +7,27 @@ const userAuthentication = new UserAuthentication();
 const scheduleInformationController = new ScheduleInformationController();
 
 router.get(
-  "/scheudule-information",
+  "/schedule-information",
   userAuthentication.authMiddleware,
   scheduleInformationController.getScheduleInfomationByGroupId
 );
 
 router.get(
-  "/scheudule-information/position",
+  "/schedule-information/position",
   userAuthentication.authMiddleware,
   scheduleInformationController.getScheduleInformationByPosition
 );
 
 router.get(
-  "/scheudule-information/skill",
+  "/schedule-information/skill",
   userAuthentication.authMiddleware,
   scheduleInformationController.getScheduleInformationBySkill
+);
+
+router.get(
+  "/schedule-information/user",
+  userAuthentication.authMiddleware,
+  scheduleInformationController.getScheduleInformationForUser
 );
 
 export default router;
