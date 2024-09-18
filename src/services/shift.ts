@@ -137,7 +137,7 @@ class ShiftService {
         };
       }
     } catch (error) {
-      return [];
+      return null;
     }
   };
 
