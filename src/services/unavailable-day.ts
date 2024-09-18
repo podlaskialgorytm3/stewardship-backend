@@ -149,12 +149,6 @@ class UnavailableDayService {
     preferenceId: string;
   }) => {
     try {
-      if (!preferenceId) {
-        return {
-          type: "error",
-          message: "Please provide all required fields",
-        };
-      }
       const unavaiableDays = await UnavaiableDayModal.findAll({
         where: {
           preferenceId,
