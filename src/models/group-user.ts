@@ -31,11 +31,11 @@ GroupUser.init(
     },
     position: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     scheduleRuleId: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
