@@ -142,6 +142,7 @@ class GroupUserService {
             email: user?.email as string,
             img: user?.img as string,
             role: groupUser.role,
+            position: groupUser.position as string,
           };
         })
       );
