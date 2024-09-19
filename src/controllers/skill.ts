@@ -9,7 +9,7 @@ class SkillController {
   }
   public postSkill = async (request: Request, response: Response) => {
     try {
-      const { skillName, isRemote, groupId } = request.query;
+      const { skillName, isRemote, groupId } = request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.skillService.createSkill({
         skillName: skillName as string,
