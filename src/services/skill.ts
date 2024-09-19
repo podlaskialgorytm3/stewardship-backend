@@ -80,10 +80,7 @@ class SkillService {
         },
       });
       if (skills.length === 0) {
-        return {
-          type: "info",
-          message: "No skills found",
-        };
+        return [];
       }
       return skills.map((skill) => {
         return {
