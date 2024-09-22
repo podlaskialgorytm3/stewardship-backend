@@ -8,7 +8,7 @@ class GroupSkillController {
   }
   public postGroupSkill = async (request: Request, response: Response) => {
     try {
-      const { groupUserId, skillId } = request.query;
+      const { groupUserId, skillId } = request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.groupSkillService.addSkillToUser({
         groupUserId: groupUserId as string,
