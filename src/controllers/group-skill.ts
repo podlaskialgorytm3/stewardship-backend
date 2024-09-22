@@ -36,9 +36,8 @@ class GroupSkillController {
     response: Response
   ) => {
     try {
-      const { groupId, groupUserId } = request.query;
+      const { groupUserId } = request.query;
       const result = await this.groupSkillService.getNotBelongingSkills({
-        groupId: groupId as string,
         groupUserId: groupUserId as string,
       });
       response.status(200).json(result);

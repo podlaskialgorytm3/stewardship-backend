@@ -134,17 +134,12 @@ class GroupSkillService {
       );
       return skills;
     } catch (error) {
-      return {
-        type: "error",
-        message: "An error occurred while getting skills",
-      };
+      return [];
     }
   };
   public getNotBelongingSkills = async ({
-    groupId,
     groupUserId,
   }: {
-    groupId: string;
     groupUserId: string;
   }) => {
     try {
@@ -154,6 +149,9 @@ class GroupSkillService {
         },
         attributes: ["skillId"],
       });
+      const groupId = (await this.groupUserService.getGroupIdByGroupUserId({
+        groupUserId,
+      } as { groupUserId: string })) as string;
       const groupUserSkillsId = groupUserSkills.map((skill) => skill.skillId);
       const groupSkills = await SkillModal.findAll({
         where: {
