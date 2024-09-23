@@ -16,7 +16,7 @@ class ScheduleRuleController {
         maxWeeklyHours,
         minRestBeetwenShifts,
         minWeeklyRest,
-      } = request.query;
+      } = request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.scheduleRuleService.createScheduleRule({
         groupId: groupId as string,
