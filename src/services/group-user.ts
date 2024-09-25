@@ -143,6 +143,7 @@ class GroupUserService {
             img: user?.img as string,
             role: groupUser.role,
             position: groupUser.position as string,
+            scheduleRuleId: groupUser.scheduleRuleId as string,
           };
         })
       );
