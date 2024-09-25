@@ -18,7 +18,7 @@ class ShiftController {
         endTo,
         minDailyHours,
         maxDailyHours,
-      } = request.query;
+      } = request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.shiftService.createShift({
         groupId: groupId as string,
