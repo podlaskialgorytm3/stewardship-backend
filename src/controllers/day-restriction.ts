@@ -10,7 +10,7 @@ class DayRestrictionController {
   public postDayRestriction = async (request: Request, response: Response) => {
     try {
       const { scheduleRuleId, dayOfWeek, maxFollowingDay, groupId } =
-        request.query;
+        request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.dayRestrictionService.createDayRestriction({
         scheduleRuleId: scheduleRuleId as string,
