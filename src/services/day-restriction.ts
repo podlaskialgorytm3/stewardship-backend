@@ -50,9 +50,7 @@ class DayRestrictionService {
       }
       const dayRestrictions = await this.getDayRestrictions({ scheduleRuleId });
       const dayRestrictionExists = dayRestrictions?.find(
-        (dayRestriction) =>
-          dayRestriction.dayOfWeek === dayOfWeek &&
-          dayRestriction.maxFollowingDay === maxFollowingDay
+        (dayRestriction) => dayRestriction.dayOfWeek === dayOfWeek
       );
       if (dayRestrictionExists) {
         return {
