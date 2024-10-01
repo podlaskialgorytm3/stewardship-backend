@@ -9,7 +9,7 @@ class EmploymentTypeController {
   }
   public postEmploymentType = async (request: Request, response: Response) => {
     try {
-      const { groupId, employmentName, workingHours } = request.query;
+      const { groupId, employmentName, workingHours } = request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.employmentTypeService.createEmploymentType({
         groupId: groupId as string,
