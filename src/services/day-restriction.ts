@@ -48,6 +48,18 @@ class DayRestrictionService {
           type: "error",
         };
       }
+      const dayRestrictions = await this.getDayRestrictions({ scheduleRuleId });
+      const dayRestrictionExists = dayRestrictions?.find(
+        (dayRestriction) =>
+          dayRestriction.dayOfWeek === dayOfWeek &&
+          dayRestriction.maxFollowingDay === maxFollowingDay
+      );
+      if (dayRestrictionExists) {
+        return {
+          message: "Day restriction already exists",
+          type: "error",
+        };
+      }
       const id = uuidv4();
       const { error } = DayRestrictionSchema.validate({
         scheduleRuleId,
