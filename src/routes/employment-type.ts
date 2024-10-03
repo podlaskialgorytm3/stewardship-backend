@@ -26,7 +26,7 @@ router.get(
 );
 
 router.put(
-  "/employment-type",
+  "/employment-type/:employmentTypeId",
   userAuthentication.authMiddleware,
   employmentTypeController.putEmploymentType
 );

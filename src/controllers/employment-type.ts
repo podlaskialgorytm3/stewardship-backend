@@ -46,8 +46,8 @@ class EmploymentTypeController {
   };
   public putEmploymentType = async (request: Request, response: Response) => {
     try {
-      const { groupId, employmentTypeId, employmentName, workingHours } =
-        request.query;
+      const employmentTypeId = request.params.employmentTypeId;
+      const { groupId, employmentName, workingHours } = request.body;
       const token = request.headers["authorization"]?.split(" ")[1] as string;
       const result = await this.employmentTypeService.updateEmploymentType({
         groupId: groupId as string,
