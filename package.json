@@ -27,11 +27,11 @@
     "@types/uuid": "^9.0.8",
     "nodemon": "^3.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.7.2"
   },
   "scripts": {
     "start": "ts-node src/app.ts",
     "dev": "nodemon src/app.ts",
-    "build": "tsc -p ."
+    "build": "tsc -p"
   }
 }
