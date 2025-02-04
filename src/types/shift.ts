@@ -1,4 +1,4 @@
-import Joi from "Joi";
+import Joi from "joi";
 
 export const ShiftSchema = Joi.object({
   groupId: Joi.string().required(),

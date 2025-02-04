@@ -1,12 +1,13 @@
-import UserController from "../controllers/user";
-import GroupUserController from "../controllers/group-user";
+import UserService from "../services/user";
+import GroupUserService from "../services/group-user";
 
 class GroupUserUtils {
-  private userController = new UserController();
-  private groupUserController = new GroupUserController();
+  private userService = new UserService();
+  private groupUserService = new GroupUserService();
+
   public getRole = async (groupId: string, token: string) => {
-    const user = await this.userController.getUserByToken(token);
-    const groupUser = (await this.groupUserController.getUser(
+    const user = await this.userService.getUserByToken(token);
+    const groupUser = (await this.groupUserService.getUser(
       groupId,
       user?.id as string
     )) as { role: string };

@@ -1,4 +1,4 @@
-import Joi from "Joi";
+import Joi from "joi";
 
 export const DayRestrictionSchema = Joi.object({
   scheduleRuleId: Joi.string().required(),

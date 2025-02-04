@@ -1,4 +1,4 @@
-import Joi from "Joi";
+import Joi from "joi";
 
 export const WorkScheduleSchema = Joi.object({
   day: Joi.number().required(),
